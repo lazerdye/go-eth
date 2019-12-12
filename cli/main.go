@@ -12,12 +12,11 @@ import (
 )
 
 var (
-	//keystore = kingpin.Flag("keystore", "Location of the wallet keystore").String()
-	//password = kingpin.Flag("password", "Password for keystore").Envar("WALLET_PASSWORD").String()
+	keystore = kingpin.Flag("keystore", "Location of the wallet keystore").String()
+	password = kingpin.Flag("password", "Password for keystore").Envar("WALLET_PASSWORD").String()
 
-	accountCmd      = kingpin.Command("account", "Account operations")
-	accountKeystore = accountCmd.Flag("keystore", "Location of the wallet keystore").Required().String()
-	list            = accountCmd.Command("list", "List the accounts")
+	accountCmd = kingpin.Command("account", "Account operations")
+	list       = accountCmd.Command("list", "List the accounts")
 
 	clientCmd           = kingpin.Command("client", "Client operations")
 	clientServer        = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
@@ -27,6 +26,12 @@ var (
 	tokenBalanceCmd     = tokenCmd.Command("balance", "Get the balance of the token")
 	tokenName           = tokenBalanceCmd.Arg("name", "Name of the token").Required().String()
 	tokenBalanceAccount = tokenBalanceCmd.Arg("account", "Account to get token balance of").Required().String()
+
+	tokenTransferCmd           = tokenCmd.Command("transfer", "Transfer a token")
+	tokenTransferName          = tokenTransferCmd.Arg("name", "Name of the token to transfer").Required().String()
+	tokenTransferAmount        = tokenTransferCmd.Arg("amount", "Amount of the token to transfer").Required().Float64()
+	tokenTransferSourceAccount = tokenTransferCmd.Arg("source-account", "Account to transfer token from").Required().String()
+	tokenTransferDestAccount   = tokenTransferCmd.Arg("dest-account", "Account to transfer token to").Required().String()
 )
 
 func doAccount(keystore string) error {
@@ -39,6 +44,18 @@ func doAccount(keystore string) error {
 		return err
 	}
 	return nil
+}
+
+func unlockAccount(keystore, password, address string) (*wallet.Account, error) {
+	w, err := wallet.Open(keystore)
+	if err != nil {
+		return nil, err
+	}
+	account, err := w.Account(address)
+	if err != nil {
+		return nil, err
+	}
+	return account, account.Unlock(password)
 }
 
 func doClientBalance(server, account string) error {
@@ -69,7 +86,22 @@ func doClientTokenBalance(server, tokenName, account string) error {
 		return err
 	}
 	fmt.Printf("Balance of %s in %s: %g\n", account, tokenName, bal)
-    return nil
+	return nil
+}
+
+func doClientTokenTransfer(server string, account *wallet.Account, tokenName, sourceAccount, destAccount string, amount float64) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	token, err := c.Token(tokenName)
+	if err != nil {
+		return err
+	}
+	if err := token.Transfer(account, destAccount, amount); err != nil {
+		return err
+	}
+	return nil
 }
 
 func main() {
@@ -78,7 +110,10 @@ func main() {
 
 	switch kingpin.Parse() {
 	case "account list":
-		if err := doAccount(*accountKeystore); err != nil {
+		if *keystore == "" {
+			log.Fatal("Parameter --keystore required")
+		}
+		if err := doAccount(*keystore); err != nil {
 			log.Fatal(err)
 		}
 	case "client balance":
@@ -89,5 +124,18 @@ func main() {
 		if err := doClientTokenBalance(*clientServer, *tokenName, *tokenBalanceAccount); err != nil {
 			log.Fatal(err)
 		}
+	case "client token transfer":
+		fmt.Printf("XXX %s %s\n", *keystore, password)
+		if *keystore == "" || *password == "" {
+			log.Fatal("Parameter --keystore and --password required")
+		}
+		account, err := unlockAccount(*keystore, *password, *tokenTransferSourceAccount)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := doClientTokenTransfer(*clientServer, account, *tokenTransferName, *tokenTransferSourceAccount, *tokenTransferDestAccount, *tokenTransferAmount); err != nil {
+			log.Fatal(err)
+		}
+
 	}
 }
