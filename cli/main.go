@@ -32,6 +32,7 @@ var (
 	tokenTransferAmount        = tokenTransferCmd.Arg("amount", "Amount of the token to transfer").Required().Float64()
 	tokenTransferSourceAccount = tokenTransferCmd.Arg("source-account", "Account to transfer token from").Required().String()
 	tokenTransferDestAccount   = tokenTransferCmd.Arg("dest-account", "Account to transfer token to").Required().String()
+	tokenTransferTransmitFlag  = tokenTransferCmd.Flag("transmit", "Transmit transaction").Bool()
 )
 
 func doAccount(keystore string) error {
@@ -89,7 +90,8 @@ func doClientTokenBalance(server, tokenName, account string) error {
 	return nil
 }
 
-func doClientTokenTransfer(server string, account *wallet.Account, tokenName, sourceAccount, destAccount string, amount float64) error {
+func doClientTokenTransfer(server string, account *wallet.Account, tokenName, sourceAccount, destAccount string,
+	amount float64, transmit bool) error {
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -98,7 +100,7 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	if err != nil {
 		return err
 	}
-	if err := token.Transfer(account, destAccount, amount); err != nil {
+	if err := token.Transfer(account, destAccount, amount, transmit); err != nil {
 		return err
 	}
 	return nil
@@ -133,7 +135,8 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if err := doClientTokenTransfer(*clientServer, account, *tokenTransferName, *tokenTransferSourceAccount, *tokenTransferDestAccount, *tokenTransferAmount); err != nil {
+		if err := doClientTokenTransfer(*clientServer, account, *tokenTransferName, *tokenTransferSourceAccount,
+			*tokenTransferDestAccount, *tokenTransferAmount, *tokenTransferTransmitFlag); err != nil {
 			log.Fatal(err)
 		}
 

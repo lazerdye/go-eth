@@ -6,7 +6,7 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum"
+	//"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -73,7 +73,7 @@ func (c *Client) BalanceOf(ctx context.Context, addressHex string) (float64, err
 	return f64Value, nil
 }
 
-func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amount float64) error {
+func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amount float64, transmit bool) error {
 	nonce, err := c.client.PendingNonceAt(context.Background(), sourceAccount.Account.Address)
 	if err != nil {
 		return err
@@ -97,20 +97,23 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 	data = append(data, paddedAddress...)
 	data = append(data, paddedAmount...)
 
-	gasLimit, err := c.client.EstimateGas(context.Background(), ethereum.CallMsg{
-		To:   &toAddress,
-		Data: data,
-	})
-	if err != nil {
-		return err
-	}
+	//gasLimit, err := c.client.EstimateGas(context.Background(), ethereum.CallMsg{
+	//	To:   &toAddress,
+	//	Data: data,
+	//})
+	//if err != nil {
+	//	return err
+	//}
+	gasLimit := uint64(200000)
 	log.Infof("Gas limit: %d", gasLimit)
 
-	value := big.NewInt(0) // no ethereum transferred
 	gasPrice, err := c.client.SuggestGasPrice(context.Background())
 	if err != nil {
 		return err
 	}
+	log.Infof("Gas price: %d", gasPrice)
+
+	value := big.NewInt(0) // no ethereum transferred
 	tx := types.NewTransaction(nonce, c.info.contract, value, gasLimit, gasPrice, data)
 	log.Infof("Transaction: %+v", tx)
 
@@ -128,9 +131,11 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 
 	fmt.Printf("Transaction: %s\n", txSigned.Hash().Hex())
 
-	err = c.client.SendTransaction(context.Background(), txSigned)
-	if err != nil {
-		return err
+	if transmit {
+		err = c.client.SendTransaction(context.Background(), txSigned)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil
