@@ -1,5 +1,5 @@
 
-PACKAGE=gitlab.com/lazerdye/go-eth
+PACKAGE=github.com/lazerdye/go-eth
 
 all: token/erc20.go
 

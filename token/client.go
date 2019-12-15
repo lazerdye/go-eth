@@ -15,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/sha3"
 
-	"gitlab.com/lazerdye/go-eth/wallet"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 const (

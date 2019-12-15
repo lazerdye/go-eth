@@ -8,8 +8,8 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
-	"gitlab.com/lazerdye/go-eth/dutchx"
-	"gitlab.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/dutchx"
+	"github.com/lazerdye/go-eth/token"
 )
 
 type Client struct {

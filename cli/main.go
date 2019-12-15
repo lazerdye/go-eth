@@ -7,8 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
 
-	"gitlab.com/lazerdye/go-eth/client"
-	"gitlab.com/lazerdye/go-eth/wallet"
+	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (

@@ -134,11 +134,11 @@ func (c *Client) Listen() error {
 		case err := <-auctionClearedSub.Err():
 			return err
 		case auctionCleared := <-auctionClearedChan:
-			fmt.Printf("AuctionCleared: %s %s %+v\n", auctionCleared.SellToken, auctionCleared.BuyToken, *auctionCleared)
+			fmt.Printf("AuctionCleared: %s %s %+v\n", auctionCleared.SellToken.Hex(), auctionCleared.BuyToken.Hex(), *auctionCleared)
 		case err := <-auctionStartScheduledSub.Err():
 			return err
 		case auctionStartScheduled := <-auctionStartScheduledChan:
-			fmt.Printf("AuctionStartScheduled: %s %s %+v\n", auctionStartScheduled.SellToken, auctionStartScheduled.BuyToken, *auctionStartScheduled)
+			fmt.Printf("AuctionStartScheduled: %s %s %+v\n", auctionStartScheduled.SellToken.Hex(), auctionStartScheduled.BuyToken.Hex(), *auctionStartScheduled)
 		case err := <-feeSub.Err():
 			return err
 		case fee := <-feeChan:
@@ -146,11 +146,11 @@ func (c *Client) Listen() error {
 		case err := <-newBuyOrderSub.Err():
 			return err
 		case newBuyOrder := <-newBuyOrderChan:
-			fmt.Printf("NewBuyOrder: %+v\n", *newBuyOrder)
+			fmt.Printf("NewBuyOrder: %s %s %+v\n", newBuyOrder.SellToken.Hex(), newBuyOrder.BuyToken.Hex(), *newBuyOrder)
 		case err := <-newBuyerFundsClaimSub.Err():
 			return err
 		case newBuyerFundsClaim := <-newBuyerFundsClaimChan:
-			fmt.Printf("NewBuyerFundsClaim: %+v\n", *newBuyerFundsClaim)
+			fmt.Printf("NewBuyerFundsClaim: %s %s %+v\n", newBuyerFundsClaim.SellToken.Hex(), newBuyerFundsClaim.BuyToken.Hex(), *newBuyerFundsClaim)
 		case err := <-newDepositSub.Err():
 			return err
 		case newDeposit := <-newDepositChan:
