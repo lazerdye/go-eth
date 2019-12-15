@@ -33,6 +33,11 @@ var (
 	tokenTransferSourceAccount = tokenTransferCmd.Arg("source-account", "Account to transfer token from").Required().String()
 	tokenTransferDestAccount   = tokenTransferCmd.Arg("dest-account", "Account to transfer token to").Required().String()
 	tokenTransferTransmitFlag  = tokenTransferCmd.Flag("transmit", "Transmit transaction").Bool()
+
+	tokenDutchExchangeCmd             = tokenCmd.Command("dutchx", "DutchX operations")
+	tokenDutchExchangeAddress1        = tokenDutchExchangeCmd.Flag("address1", "Address 1").Required().String()
+	tokenDutchExchangeAddress2        = tokenDutchExchangeCmd.Flag("address2", "Address 1").Required().String()
+	tokenDutchExchangeGetAuctionIndex = tokenDutchExchangeCmd.Command("getAuctionIndex", "Get auction index")
 )
 
 func doAccount(keystore string) error {
@@ -106,6 +111,22 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	return nil
 }
 
+func doClientTokenDutchxGetAuctionIndex(server, address1, address2 string) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	d, err := c.Dutchx()
+	if err != nil {
+		return err
+	}
+	err = d.GetAuctionIndex(address1, address2)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -139,6 +160,9 @@ func main() {
 			*tokenTransferDestAccount, *tokenTransferAmount, *tokenTransferTransmitFlag); err != nil {
 			log.Fatal(err)
 		}
-
+	case "client token dutchx getAuctionIndex":
+		if err := doClientTokenDutchxGetAuctionIndex(*clientServer, *tokenDutchExchangeAddress1, *tokenDutchExchangeAddress2); err != nil {
+			log.Fatal(err)
+		}
 	}
 }

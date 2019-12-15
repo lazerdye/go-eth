@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/ethclient"
 
+	"gitlab.com/lazerdye/go-eth/dutchx"
 	"gitlab.com/lazerdye/go-eth/token"
 )
 
@@ -25,6 +26,10 @@ func Dial(url string) (*Client, error) {
 
 func (c *Client) Token(name string) (*token.Client, error) {
 	return token.NewClient(name, c.c)
+}
+
+func (c *Client) Dutchx() (*dutchx.Client, error) {
+	return dutchx.NewClient(c.c)
 }
 
 func (c *Client) EthBalanceOf(ctx context.Context, address string) (float64, error) {
