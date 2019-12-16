@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/common"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
 
@@ -121,10 +122,11 @@ func doClientTokenDutchxGetAuctionIndex(server, address1, address2 string) error
 	if err != nil {
 		return err
 	}
-	err = d.GetAuctionIndex(address1, address2)
+	prices, err := d.GetAuctionIndex(common.HexToAddress(address1), common.HexToAddress(address2))
 	if err != nil {
 		return err
 	}
+	fmt.Printf("%+v\n", prices)
 	return nil
 }
 
