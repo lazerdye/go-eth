@@ -111,37 +111,7 @@ func (c *Client) GetCurrentAuctionVolume(address1, address2 common.Address) (*Au
 	return newAuctionVolumeInfo(bvol, svol), nil
 }
 
-//	start, err := c.instance.GetAuctionStart(&bind.CallOpts{}, address1, address2)
-//	if err != nil {
-//		return err
-//	}
-//	log.Infof("Value: %+v", start)
-//
-//	bvol, err := c.instance.BuyVolumes(&bind.CallOpts{}, address1, address2)
-//	if err != nil {
-//		return err
-//	}
-//	log.Infof("BuyVolumes: %+v", bvol)
-//
-//	svolc, err := c.instance.SellVolumesCurrent(&bind.CallOpts{}, address1, address2)
-//	if err != nil {
-//		return err
-//	}
-//	log.Infof("SellVolumesCurrent: %+v", svolc)
-//
-//	svoln, err := c.instance.SellVolumesNext(&bind.CallOpts{}, address1, address2)
-//	if err != nil {
-//		return err
-//	}
-//	log.Infof("SellVolumesNext: %+v", svoln)
-
 func (c *Client) Listen() error {
-	//query := ethereum.FilterQuery{
-	//	Addresses: []common.Address{
-	//		common.HexToAddress(DutchXProxy),
-	//		common.HexToAddress(DutchXMaster),
-	//	},
-	//}
 	approvalChan := make(chan *DutchExchangeApproval)
 	approvalSub, err := c.instance.WatchApproval(&bind.WatchOpts{}, approvalChan, nil)
 	if err != nil {
