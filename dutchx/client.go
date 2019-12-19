@@ -3,6 +3,7 @@ package dutchx
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
+	"math"
 	"math/big"
 
 	//"github.com/ethereum/go-ethereum"
@@ -61,6 +62,20 @@ func newAuctionPriceInfo(price struct {
 	return &priceInfo
 }
 
+type AuctionVolumeInfo struct {
+	Buy  big.Float
+	Sell big.Float
+}
+
+func newAuctionVolumeInfo(buyVolume, sellVolume *big.Int) *AuctionVolumeInfo {
+	var priceInfo AuctionVolumeInfo
+
+	priceInfo.Buy.Quo(new(big.Float).SetInt(buyVolume), big.NewFloat(math.Pow10(18)))
+	priceInfo.Sell.Quo(new(big.Float).SetInt(sellVolume), big.NewFloat(math.Pow10(18)))
+
+	return &priceInfo
+}
+
 func (c *Client) GetCurrentAuctionPrice(address1, address2 common.Address) (*AuctionPriceInfo, error) {
 	auctionIndex, err := c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
 	if err != nil {
@@ -82,6 +97,18 @@ func (c *Client) GetPriceOfTokenInLastAuction(address common.Address) (*AuctionP
 		return nil, err
 	}
 	return newAuctionPriceInfo(price), nil
+}
+
+func (c *Client) GetCurrentAuctionVolume(address1, address2 common.Address) (*AuctionVolumeInfo, error) {
+	bvol, err := c.instance.BuyVolumes(&bind.CallOpts{}, address1, address2)
+	if err != nil {
+		return nil, err
+	}
+	svol, err := c.instance.SellVolumesCurrent(&bind.CallOpts{}, address1, address2)
+	if err != nil {
+		return nil, err
+	}
+	return newAuctionVolumeInfo(bvol, svol), nil
 }
 
 //	start, err := c.instance.GetAuctionStart(&bind.CallOpts{}, address1, address2)
