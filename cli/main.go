@@ -35,11 +35,11 @@ var (
 	tokenTransferDestAccount   = tokenTransferCmd.Arg("dest-account", "Account to transfer token to").Required().String()
 	tokenTransferTransmitFlag  = tokenTransferCmd.Flag("transmit", "Transmit transaction").Bool()
 
-	tokenDutchExchangeCmd             = tokenCmd.Command("dutchx", "DutchX operations")
-	tokenDutchExchangeAddress1        = tokenDutchExchangeCmd.Flag("address1", "Address 1").String()
-	tokenDutchExchangeAddress2        = tokenDutchExchangeCmd.Flag("address2", "Address 1").String()
-	tokenDutchExchangeGetAuctionIndex = tokenDutchExchangeCmd.Command("getAuctionIndex", "Get auction index")
-	tokenDutchExchangeListen          = tokenDutchExchangeCmd.Command("listen", "Listen for events")
+	tokenDutchExchangeCmd            = tokenCmd.Command("dutchx", "DutchX operations")
+	tokenDutchExchangeAddress1       = tokenDutchExchangeCmd.Flag("address1", "Address 1").String()
+	tokenDutchExchangeAddress2       = tokenDutchExchangeCmd.Flag("address2", "Address 1").String()
+	tokenDutchExchangeGetAuctionInfo = tokenDutchExchangeCmd.Command("getAuctionInfo", "Get auction info")
+	tokenDutchExchangeListen         = tokenDutchExchangeCmd.Command("listen", "Listen for events")
 )
 
 func doAccount(keystore string) error {
@@ -113,7 +113,7 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	return nil
 }
 
-func doClientTokenDutchxGetAuctionIndex(server, address1, address2 string) error {
+func doClientTokenDutchxGetAuctionInfo(server, address1Str, address2Str string) error {
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -122,11 +122,23 @@ func doClientTokenDutchxGetAuctionIndex(server, address1, address2 string) error
 	if err != nil {
 		return err
 	}
-	prices, err := d.GetAuctionIndex(common.HexToAddress(address1), common.HexToAddress(address2))
+	address1 := common.HexToAddress(address1Str)
+	address2 := common.HexToAddress(address2Str)
+	index, err := d.GetAuctionIndex(address1, address2)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", prices)
+	fmt.Printf("Current Auction: %d\n", index.Int64())
+	prices, err := d.GetCurrentAuctionPrice(address1, address2)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Auction Prices: %s (%s)\n", prices.Price.String(), prices.InvPrice.String())
+	volume, err := d.GetCurrentAuctionVolume(address1, address2)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Auction Volume: %s / %s\n", volume.Buy.String(), volume.Sell.String())
 	return nil
 }
 
@@ -179,8 +191,8 @@ func main() {
 			*tokenTransferDestAccount, *tokenTransferAmount, *tokenTransferTransmitFlag); err != nil {
 			log.Fatal(err)
 		}
-	case "client token dutchx getAuctionIndex":
-		if err := doClientTokenDutchxGetAuctionIndex(*clientServer, *tokenDutchExchangeAddress1, *tokenDutchExchangeAddress2); err != nil {
+	case "client token dutchx getAuctionInfo":
+		if err := doClientTokenDutchxGetAuctionInfo(*clientServer, *tokenDutchExchangeAddress1, *tokenDutchExchangeAddress2); err != nil {
 			log.Fatal(err)
 		}
 	case "client token dutchx listen":

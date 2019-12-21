@@ -31,13 +31,8 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 	return &Client{client, instance}, nil
 }
 
-func (c *Client) GetAuctionIndex(address1, address2 common.Address) (int64, error) {
-	value, err := c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
-	if err != nil {
-		return int64(0), err
-	}
-	log.Infof("Value: %+v", value)
-	return value.Int64(), nil
+func (c *Client) GetAuctionIndex(address1, address2 common.Address) (*big.Int, error) {
+	return c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
 }
 
 type AuctionPriceInfo struct {
