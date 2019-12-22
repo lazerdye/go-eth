@@ -2,7 +2,6 @@ package dutchx
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"math"
 	"math/big"
 
@@ -31,8 +30,21 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 	return &Client{client, instance}, nil
 }
 
-func (c *Client) GetAuctionIndex(address1, address2 common.Address) (*big.Int, error) {
-	return c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
+func (c *Client) GetAuctionIndex(address1, address2 common.Address) (int64, error) {
+	index, err := c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
+	if err != nil {
+		return int64(0), err
+	}
+	return index.Int64(), nil
+}
+
+func (c *Client) GetAuctionStart(address1, address2 common.Address) (*big.Int, error) {
+	return c.instance.GetAuctionStart(&bind.CallOpts{}, address1, address2)
+}
+
+func (c *Client) GetAuctionClearingTime(address1, address2 common.Address, auctionIndex int64) (*big.Int, error) {
+	index := new(big.Int).SetInt64(auctionIndex)
+	return c.instance.GetClearingTime(&bind.CallOpts{}, address1, address2, index)
 }
 
 type AuctionPriceInfo struct {
@@ -71,17 +83,13 @@ func newAuctionVolumeInfo(buyVolume, sellVolume *big.Int) *AuctionVolumeInfo {
 	return &priceInfo
 }
 
-func (c *Client) GetCurrentAuctionPrice(address1, address2 common.Address) (*AuctionPriceInfo, error) {
-	auctionIndex, err := c.instance.GetAuctionIndex(&bind.CallOpts{}, address1, address2)
-	if err != nil {
-		return nil, err
-	}
+func (c *Client) GetCurrentAuctionPrice(address1, address2 common.Address, auctionIndexInt64 int64) (*AuctionPriceInfo, error) {
+	auctionIndex := new(big.Int).SetInt64(auctionIndexInt64)
 
 	price, err := c.instance.GetCurrentAuctionPrice(&bind.CallOpts{}, address1, address2, auctionIndex)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Price for auction %+v: %+v", auctionIndex, price)
 
 	return newAuctionPriceInfo(price), nil
 }

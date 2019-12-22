@@ -66,21 +66,22 @@ func unlockAccount(keystore, password, address string) (*wallet.Account, error) 
 	return account, account.Unlock(password)
 }
 
-func doClientBalance(server, account string) error {
+func doClientBalance(server, addressStr string) error {
+	address := common.HexToAddress(addressStr)
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
 	}
-	eth, err := c.EthBalanceOf(context.Background(), account)
+	eth, err := c.BalanceOf(context.Background(), address)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Balance of %s: %g\n", account, eth)
+	fmt.Printf("Balance of %s: %g\n", address.String(), eth)
 
 	return nil
 }
 
-func doClientTokenBalance(server, tokenName, account string) error {
+func doClientTokenBalance(server, tokenName, addressStr string) error {
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -89,11 +90,12 @@ func doClientTokenBalance(server, tokenName, account string) error {
 	if err != nil {
 		return err
 	}
-	bal, err := token.BalanceOf(context.Background(), account)
+	address := common.HexToAddress(addressStr)
+	bal, err := token.BalanceOf(context.Background(), address)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Balance of %s in %s: %g\n", account, tokenName, bal)
+	fmt.Printf("Balance of %s in %s: %g\n", address, tokenName, bal)
 	return nil
 }
 
@@ -128,8 +130,18 @@ func doClientTokenDutchxGetAuctionInfo(server, address1Str, address2Str string) 
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Current Auction: %d\n", index.Int64())
-	prices, err := d.GetCurrentAuctionPrice(address1, address2)
+	fmt.Printf("Current Auction: %d\n", index)
+	start, err := d.GetAuctionStart(address1, address2)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Auction Start: %d\n", start.Int64())
+	clear, err := d.GetAuctionClearingTime(address1, address2, index)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Auction Clearing Time: %d\n", clear.Int64())
+	prices, err := d.GetCurrentAuctionPrice(address1, address2, index)
 	if err != nil {
 		return err
 	}

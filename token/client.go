@@ -45,10 +45,10 @@ type Client struct {
 	info     tokenInfo
 }
 
-func NewClient(name string, client *ethclient.Client) (*Client, error) {
-	token, ok := tokenRepo[name]
+func NewClient(tokenName string, client *ethclient.Client) (*Client, error) {
+	token, ok := tokenRepo[tokenName]
 	if !ok {
-		return nil, errors.Errorf("Token not registered: %s", name)
+		return nil, errors.Errorf("Token not registered: %s", tokenName)
 	}
 	instance, err := NewToken(token.contract, client)
 	if err != nil {
@@ -57,19 +57,14 @@ func NewClient(name string, client *ethclient.Client) (*Client, error) {
 	return &Client{client, instance, token}, nil
 }
 
-func (c *Client) BalanceOf(ctx context.Context, addressHex string) (float64, error) {
-	address := common.HexToAddress(addressHex)
+func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
 	balance, err := c.instance.BalanceOf(&bind.CallOpts{}, address)
 	if err != nil {
-		return float64(0), err
+		return nil, err
 	}
 
-	fbalance := new(big.Float)
-	fbalance.SetString(balance.String())
-	rawValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(c.info.decimals)))
-
-	f64Value, _ := rawValue.Float64()
-	return f64Value, nil
+	balanceFloat := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(math.Pow10(c.info.decimals)))
+	return balanceFloat, nil
 }
 
 func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amount float64, transmit bool) error {

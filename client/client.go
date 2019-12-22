@@ -16,6 +16,10 @@ type Client struct {
 	c *ethclient.Client
 }
 
+const (
+	ethDigits = 18
+)
+
 func Dial(url string) (*Client, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {
@@ -24,25 +28,20 @@ func Dial(url string) (*Client, error) {
 	return &Client{client}, nil
 }
 
-func (c *Client) Token(name string) (*token.Client, error) {
-	return token.NewClient(name, c.c)
+func (c *Client) Token(tokenName string) (*token.Client, error) {
+	return token.NewClient(tokenName, c.c)
 }
 
 func (c *Client) Dutchx() (*dutchx.Client, error) {
 	return dutchx.NewClient(c.c)
 }
 
-func (c *Client) EthBalanceOf(ctx context.Context, address string) (float64, error) {
-	account := common.HexToAddress(address)
-	balance, err := c.c.BalanceAt(ctx, account, nil)
+func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
+	balance, err := c.c.BalanceAt(ctx, address, nil)
 	if err != nil {
-		return float64(0), err
+		return nil, err
 	}
 
-	fbalance := new(big.Float)
-	fbalance.SetString(balance.String())
-	ethValue := new(big.Float).Quo(fbalance, big.NewFloat(math.Pow10(18)))
-
-	retValue, _ := ethValue.Float64()
-	return retValue, nil
+	balanceFloat := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(math.Pow10(ethDigits)))
+	return balanceFloat, nil
 }
