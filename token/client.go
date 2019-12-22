@@ -19,9 +19,13 @@ import (
 )
 
 const (
-	DGDName     = "DGD"
+	DGD         = "dgd"
 	DGDContract = "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
 	DGDDecimals = 9
+
+	STORJ         = "storj"
+	STORJContrace = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
+	STORJDecimals = 8
 )
 
 var (
@@ -35,8 +39,19 @@ type tokenInfo struct {
 
 func init() {
 	tokenRepo = map[string]tokenInfo{
-		DGDName: {common.HexToAddress(DGDContract), DGDDecimals},
+		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
+		STORJ: {common.HexToAddress(STORJContrace), STORJDecimals},
 	}
+}
+
+func Tokens() []string {
+	ret := make([]string, len(tokenRepo))
+	i := 0
+	for n, _ := range tokenRepo {
+		ret[i] = n
+		i++
+	}
+	return ret
 }
 
 type Client struct {
