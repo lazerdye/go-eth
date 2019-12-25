@@ -5,10 +5,10 @@ import (
 	"math"
 	"math/big"
 
-	//"github.com/ethereum/go-ethereum"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	//"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 )
 
@@ -80,6 +80,8 @@ func newAuctionVolumeInfo(buyVolume, sellVolume *big.Int) *AuctionVolumeInfo {
 	priceInfo.Buy.Quo(new(big.Float).SetInt(buyVolume), big.NewFloat(math.Pow10(18)))
 	priceInfo.Sell.Quo(new(big.Float).SetInt(sellVolume), big.NewFloat(math.Pow10(18)))
 
+	log.Infof("Buy: %s ; Sell: %s", priceInfo.Buy.String(), priceInfo.Sell.String())
+
 	return &priceInfo
 }
 
@@ -112,6 +114,14 @@ func (c *Client) GetCurrentAuctionVolume(address1, address2 common.Address) (*Au
 		return nil, err
 	}
 	return newAuctionVolumeInfo(bvol, svol), nil
+}
+
+func (c *Client) GetFeeRatio(account common.Address) (*AuctionPriceInfo, error) {
+	ratio, err := c.instance.GetFeeRatio(&bind.CallOpts{}, account)
+	if err != nil {
+		return nil, err
+	}
+	return newAuctionPriceInfo(ratio), nil
 }
 
 func (c *Client) Listen() error {

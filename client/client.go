@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/ethclient"
 
 	"github.com/lazerdye/go-eth/dutchx"
+	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
 )
 
@@ -34,6 +35,10 @@ func (c *Client) Token(tokenName string) (*token.Client, error) {
 
 func (c *Client) Dutchx() (*dutchx.Client, error) {
 	return dutchx.NewClient(c.c)
+}
+
+func (c *Client) Kyber() (*kyber.Client, error) {
+	return kyber.NewClient(c.c)
 }
 
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {

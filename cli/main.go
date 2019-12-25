@@ -37,9 +37,17 @@ var (
 
 	tokenDutchExchangeCmd            = tokenCmd.Command("dutchx", "DutchX operations")
 	tokenDutchExchangeAddress1       = tokenDutchExchangeCmd.Flag("address1", "Address 1").String()
-	tokenDutchExchangeAddress2       = tokenDutchExchangeCmd.Flag("address2", "Address 1").String()
+	tokenDutchExchangeAddress2       = tokenDutchExchangeCmd.Flag("address2", "Address 2").String()
+	tokenDutchExchangeAccount        = tokenDutchExchangeCmd.Flag("account", "Account").String()
 	tokenDutchExchangeGetAuctionInfo = tokenDutchExchangeCmd.Command("getAuctionInfo", "Get auction info")
+	tokenDutchExchangeGetFeeRatio    = tokenDutchExchangeCmd.Command("getFeeRatio", "Get fee ratio")
 	tokenDutchExchangeListen         = tokenDutchExchangeCmd.Command("listen", "Listen for events")
+
+	tokenKyberCmd          = tokenCmd.Command("kyber", "Kyber Network")
+	tokenKyberSource       = tokenKyberCmd.Flag("source", "Source exchange").String()
+	tokenKyberDest         = tokenKyberCmd.Flag("dest", "Dest exchange").String()
+	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Int64()
+	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
 
 func doAccount(keystore string) error {
@@ -170,6 +178,40 @@ func doClientTokenDutchxListen(server string) error {
 	return nil
 }
 
+func doClientTokenDutchxGetFeeRatio(server string, address string) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	d, err := c.Dutchx()
+	if err != nil {
+		return err
+	}
+	ratio, err := d.GetFeeRatio(common.HexToAddress(address))
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Fee Ratio for account %s: %s\n", address, ratio.Price.String())
+	return nil
+}
+
+func doClientTokenKyberExpectedRate(server string, source, dest string, quantity int64) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	k, err := c.Kyber()
+	if err != nil {
+		return err
+	}
+	rate, err := k.GetExpectedRate(common.HexToAddress(source), common.HexToAddress(dest), quantity)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Rate: %s\n", rate.String())
+	return nil
+}
+
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -207,8 +249,16 @@ func main() {
 		if err := doClientTokenDutchxGetAuctionInfo(*clientServer, *tokenDutchExchangeAddress1, *tokenDutchExchangeAddress2); err != nil {
 			log.Fatal(err)
 		}
+	case "client token dutchx getFeeRatio":
+		if err := doClientTokenDutchxGetFeeRatio(*clientServer, *tokenDutchExchangeAccount); err != nil {
+			log.Fatal(err)
+		}
 	case "client token dutchx listen":
 		if err := doClientTokenDutchxListen(*clientServer); err != nil {
+			log.Fatal(err)
+		}
+	case "client token kyber expectedRate":
+		if err := doClientTokenKyberExpectedRate(*clientServer, *tokenKyberSource, *tokenKyberDest, *tokenKyberQuantity); err != nil {
 			log.Fatal(err)
 		}
 	}
