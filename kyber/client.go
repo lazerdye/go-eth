@@ -2,6 +2,7 @@ package kyber
 
 import (
 	"fmt"
+	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -29,12 +30,14 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) GetExpectedRate(source, dest common.Address, quantity int64) (*big.Int, error) {
-	quantityBig := new(big.Int).SetInt64(quantity)
-	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{}, source, dest, quantityBig)
+func (c *Client) GetExpectedRate(source, dest common.Address, quantity *big.Int) (*big.Float, *big.Float, error) {
+	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{}, source, dest, quantity)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	fmt.Println("Rate: %+v", rate)
-	return rate.ExpectedRate, nil
+	fmt.Println("Raw: %+v", rate)
+
+	expectedRate := new(big.Float).Quo(new(big.Float).SetInt(rate.ExpectedRate), big.NewFloat(math.Pow10(18)))
+	slippageRate := new(big.Float).Quo(new(big.Float).SetInt(rate.SlippageRate), big.NewFloat(math.Pow10(18)))
+	return expectedRate, slippageRate, nil
 }

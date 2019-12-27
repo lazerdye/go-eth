@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"math"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 	log "github.com/sirupsen/logrus"
@@ -46,7 +48,7 @@ var (
 	tokenKyberCmd          = tokenCmd.Command("kyber", "Kyber Network")
 	tokenKyberSource       = tokenKyberCmd.Flag("source", "Source exchange").String()
 	tokenKyberDest         = tokenKyberCmd.Flag("dest", "Dest exchange").String()
-	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Int64()
+	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Float64()
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
 
@@ -195,7 +197,7 @@ func doClientTokenDutchxGetFeeRatio(server string, address string) error {
 	return nil
 }
 
-func doClientTokenKyberExpectedRate(server string, source, dest string, quantity int64) error {
+func doClientTokenKyberExpectedRate(server string, source, dest string, quantityFloat float64) error {
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -204,11 +206,13 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	if err != nil {
 		return err
 	}
-	rate, err := k.GetExpectedRate(common.HexToAddress(source), common.HexToAddress(dest), quantity)
+	quantityInt, _ := new(big.Float).Mul(new(big.Float).SetFloat64(quantityFloat), big.NewFloat(math.Pow10(18))).Int(nil)
+	expectedRate, slippageRate, err := k.GetExpectedRate(common.HexToAddress(source), common.HexToAddress(dest), quantityInt)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Rate: %s\n", rate.String())
+	fmt.Printf("Expected Rate: %s\n", expectedRate.String())
+	fmt.Printf("Slippage Rate: %s\n", slippageRate.String())
 	return nil
 }
 
@@ -258,6 +262,9 @@ func main() {
 			log.Fatal(err)
 		}
 	case "client token kyber expectedRate":
+		if *tokenKyberSource == "" || *tokenKyberDest == "" {
+			log.Fatal("Both --source and --dest flags required")
+		}
 		if err := doClientTokenKyberExpectedRate(*clientServer, *tokenKyberSource, *tokenKyberDest, *tokenKyberQuantity); err != nil {
 			log.Fatal(err)
 		}
