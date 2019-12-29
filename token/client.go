@@ -19,13 +19,49 @@ import (
 )
 
 const (
+	WETH         = "weth"
+	WETHContract = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
+	WETHDecimals = 18
+
+	CUSD         = "cusd"
+	CUSDContract = "0x1410d4eC3D276C0eBbf16ccBE88A4383aE734eD0"
+	CUSDDecimals = 18
+
+	DAI         = "dai"
+	DAIContract = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+	DAIDecimals = 18
+
 	DGD         = "dgd"
 	DGDContract = "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
 	DGDDecimals = 9
 
+	FOAM         = "foam"
+	FOAMContract = "0x4946Fcea7C692606e8908002e55A582af44AC121"
+	FOAMDecimals = 18
+
+	GWIT         = "gwit"
+	GWITContract = "0x55D0Bb8D7e7fBf5B863C7923c4645FF83c3D0033"
+	GWITDecimals = 18
+
+	LABX         = "labx"
+	LABXContract = "0xF0daeC652dD7C9f779e7C0F3ff5610fa3B61f61F"
+	LABXDecimals = 18
+
+	OHDAI         = "ohdai"
+	OHDAIContract = "0x64a03cE1E52B4e579f0A1cf44cF95C0D7898B5A3"
+	OHDAIDecimals = 18
+
+	RIGO         = "rigo"
+	RIGOContract = "0x4FbB350052Bca5417566f188eB2EBCE5b19BC964"
+	RIGODecimals = 18
+
 	STORJ         = "storj"
-	STORJContrace = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
+	STORJContract = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
 	STORJDecimals = 8
+
+	USDC         = "usdc"
+	USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+	USDCDecimals = 6
 )
 
 var (
@@ -39,8 +75,17 @@ type tokenInfo struct {
 
 func init() {
 	tokenRepo = map[string]tokenInfo{
+		WETH:  {common.HexToAddress(WETHContract), WETHDecimals},
+		CUSD:  {common.HexToAddress(CUSDContract), CUSDDecimals},
+		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
 		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
-		STORJ: {common.HexToAddress(STORJContrace), STORJDecimals},
+		FOAM:  {common.HexToAddress(FOAMContract), FOAMDecimals},
+		GWIT:  {common.HexToAddress(GWITContract), GWITDecimals},
+		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
+		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
+		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
+		STORJ: {common.HexToAddress(STORJContract), STORJDecimals},
+		USDC:  {common.HexToAddress(USDCContract), USDCDecimals},
 	}
 }
 
@@ -52,6 +97,15 @@ func Tokens() []string {
 		i++
 	}
 	return ret
+}
+
+func TokenByAddress(address common.Address) (string, int, bool) {
+	for n, t := range tokenRepo {
+		if t.contract.Hex() == address.Hex() {
+			return n, t.decimals, true
+		}
+	}
+	return "", 0, false
 }
 
 type Client struct {
