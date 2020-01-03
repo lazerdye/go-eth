@@ -39,9 +39,17 @@ const (
 	FOAMContract = "0x4946Fcea7C692606e8908002e55A582af44AC121"
 	FOAMDecimals = 18
 
+	GNO         = "gno"
+	GNOContract = "0x6810e776880c02933d47db1b9fc05908e5386b96"
+	GNODecimals = 18
+
 	GWIT         = "gwit"
 	GWITContract = "0x55D0Bb8D7e7fBf5B863C7923c4645FF83c3D0033"
 	GWITDecimals = 18
+
+	KNC         = "knc"
+	KNCContract = "0xdd974d5c2e2928dea5f71b9825b8b646686bd200"
+	KNCDecimals = 18
 
 	LABX         = "labx"
 	LABXContract = "0xF0daeC652dD7C9f779e7C0F3ff5610fa3B61f61F"
@@ -80,7 +88,9 @@ func init() {
 		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
 		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
 		FOAM:  {common.HexToAddress(FOAMContract), FOAMDecimals},
+		GNO:   {common.HexToAddress(GNOContract), GNODecimals},
 		GWIT:  {common.HexToAddress(GWITContract), GWITDecimals},
+		KNC:   {common.HexToAddress(KNCContract), KNCDecimals},
 		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
 		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
 		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
@@ -97,6 +107,14 @@ func Tokens() []string {
 		i++
 	}
 	return ret
+}
+
+func TokenByName(name string) (common.Address, int, bool) {
+	token, ok := tokenRepo[name]
+	if !ok {
+		return common.Address{}, 0, false
+	}
+	return token.contract, token.decimals, true
 }
 
 func TokenByAddress(address common.Address) (string, int, bool) {
