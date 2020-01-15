@@ -23,6 +23,10 @@ const (
 	WETHContract = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 	WETHDecimals = 18
 
+	BAT         = "bat"
+	BATContract = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
+	BATDecimals = 18
+
 	CUSD         = "cusd"
 	CUSDContract = "0x1410d4eC3D276C0eBbf16ccBE88A4383aE734eD0"
 	CUSDDecimals = 18
@@ -55,6 +59,14 @@ const (
 	LABXContract = "0xF0daeC652dD7C9f779e7C0F3ff5610fa3B61f61F"
 	LABXDecimals = 18
 
+	LPT         = "lpt"
+	LPTContract = "0x58b6a8a3302369daec383334672404ee733ab239"
+	LPTDecimals = 18
+
+	MKR         = "mkr"
+	MKRContract = "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2"
+	MKRDecimals = 18
+
 	OHDAI         = "ohdai"
 	OHDAIContract = "0x64a03cE1E52B4e579f0A1cf44cF95C0D7898B5A3"
 	OHDAIDecimals = 18
@@ -63,13 +75,25 @@ const (
 	RIGOContract = "0x4FbB350052Bca5417566f188eB2EBCE5b19BC964"
 	RIGODecimals = 18
 
+	SAI         = "sai"
+	SAIContract = "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359"
+	SAIDecimals = 18
+
 	STORJ         = "storj"
 	STORJContract = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
 	STORJDecimals = 8
 
+	TUSD         = "tusd"
+	TUSDContract = "0x0000000000085d4780B73119b644AE5ecd22b376"
+	TUSDDecimals = 18
+
 	USDC         = "usdc"
 	USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 	USDCDecimals = 6
+
+	ZRX         = "zrx"
+	ZRXContract = "0xE41d2489571d322189246DaFA5ebDe1F4699F498"
+	ZRXDecimals = 18
 )
 
 var (
@@ -84,6 +108,7 @@ type tokenInfo struct {
 func init() {
 	tokenRepo = map[string]tokenInfo{
 		WETH:  {common.HexToAddress(WETHContract), WETHDecimals},
+		BAT:   {common.HexToAddress(BATContract), BATDecimals},
 		CUSD:  {common.HexToAddress(CUSDContract), CUSDDecimals},
 		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
 		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
@@ -92,10 +117,15 @@ func init() {
 		GWIT:  {common.HexToAddress(GWITContract), GWITDecimals},
 		KNC:   {common.HexToAddress(KNCContract), KNCDecimals},
 		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
+		LPT:   {common.HexToAddress(LPTContract), LPTDecimals},
+		MKR:   {common.HexToAddress(MKRContract), MKRDecimals},
 		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
 		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
+		SAI:   {common.HexToAddress(SAIContract), SAIDecimals},
 		STORJ: {common.HexToAddress(STORJContract), STORJDecimals},
+		TUSD:  {common.HexToAddress(TUSDContract), TUSDDecimals},
 		USDC:  {common.HexToAddress(USDCContract), USDCDecimals},
+		ZRX:   {common.HexToAddress(ZRXContract), ZRXDecimals},
 	}
 }
 
