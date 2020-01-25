@@ -18,8 +18,9 @@ var (
 	keystore = kingpin.Flag("keystore", "Location of the wallet keystore").String()
 	password = kingpin.Flag("password", "Password for keystore").Envar("WALLET_PASSWORD").String()
 
-	accountCmd = kingpin.Command("account", "Account operations")
-	list       = accountCmd.Command("list", "List the accounts")
+	accountCmd   = kingpin.Command("account", "Account operations")
+	listAccounts = accountCmd.Command("list", "List the accounts")
+	newAccount   = accountCmd.Command("new", "Create new account")
 
 	clientCmd           = kingpin.Command("client", "Client operations")
 	clientServer        = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
@@ -52,12 +53,28 @@ var (
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
 
-func doAccount(keystore string) error {
+func doAccountList(keystore string) error {
 	w, err := wallet.Open(keystore)
 	if err != nil {
 		return err
 	}
 	err = w.PrintAccounts()
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func doAccountNew(keystore string, password string) error {
+	w, err := wallet.Open(keystore)
+	if err != nil {
+		return err
+	}
+	account, err := w.NewAccount(password)
+	if err != nil {
+		return err
+	}
+	err = w.PrintAccount(account)
 	if err != nil {
 		return err
 	}
@@ -225,7 +242,17 @@ func main() {
 		if *keystore == "" {
 			log.Fatal("Parameter --keystore required")
 		}
-		if err := doAccount(*keystore); err != nil {
+		if err := doAccountList(*keystore); err != nil {
+			log.Fatal(err)
+		}
+	case "account new":
+		if *keystore == "" {
+			log.Fatal("Parameter --keystore required")
+		}
+		if *password == "" {
+			log.Fatal("Parameter --password required")
+		}
+		if err := doAccountNew(*keystore, *password); err != nil {
 			log.Fatal(err)
 		}
 	case "client balance":

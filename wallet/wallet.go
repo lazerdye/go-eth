@@ -33,6 +33,11 @@ func (w *Wallet) PrintAccounts() error {
 	return nil
 }
 
+func (w *Wallet) PrintAccount(account *Account) error {
+	fmt.Printf("Account: %s\n", account.Account.Address.Hex())
+	return nil
+}
+
 func (w *Wallet) Account(address string) (*Account, error) {
 	account, err := w.ks.Find(accounts.Account{common.HexToAddress(address), accounts.URL{}})
 	if err != nil {
@@ -42,8 +47,16 @@ func (w *Wallet) Account(address string) (*Account, error) {
 	return &Account{w.ks, account}, nil
 }
 
-func (a *Account) Unlock(password string) error {
-	return a.ks.Unlock(a.Account, password)
+func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
+	a, err := w.ks.NewAccount(passphrase)
+	if err != nil {
+		return nil, err
+	}
+	return &Account{ks: w.ks, Account: a}, nil
+}
+
+func (a *Account) Unlock(passphrase string) error {
+	return a.ks.Unlock(a.Account, passphrase)
 }
 
 func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transaction, error) {
