@@ -23,6 +23,10 @@ const (
 	WETHContract = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 	WETHDecimals = 18
 
+	ANT         = "ant"
+	ANTContract = "0x960b236A07cf122663c4303350609A66A7B288C0"
+	ANTDecimals = 18
+
 	BAT         = "bat"
 	BATContract = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
 	BATDecimals = 18
@@ -71,6 +75,10 @@ const (
 	OHDAIContract = "0x64a03cE1E52B4e579f0A1cf44cF95C0D7898B5A3"
 	OHDAIDecimals = 18
 
+	REP         = "rep"
+	REPContract = "0x1985365e9f78359a9B6AD760e32412f4a445E862"
+	REPDecimals = 18
+
 	RIGO         = "rigo"
 	RIGOContract = "0x4FbB350052Bca5417566f188eB2EBCE5b19BC964"
 	RIGODecimals = 18
@@ -108,6 +116,7 @@ type tokenInfo struct {
 func init() {
 	tokenRepo = map[string]tokenInfo{
 		WETH:  {common.HexToAddress(WETHContract), WETHDecimals},
+		ANT:   {common.HexToAddress(ANTContract), ANTDecimals},
 		BAT:   {common.HexToAddress(BATContract), BATDecimals},
 		CUSD:  {common.HexToAddress(CUSDContract), CUSDDecimals},
 		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
@@ -120,6 +129,7 @@ func init() {
 		LPT:   {common.HexToAddress(LPTContract), LPTDecimals},
 		MKR:   {common.HexToAddress(MKRContract), MKRDecimals},
 		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
+		REP:   {common.HexToAddress(REPContract), REPDecimals},
 		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
 		SAI:   {common.HexToAddress(SAIContract), SAIDecimals},
 		STORJ: {common.HexToAddress(STORJContract), STORJDecimals},
