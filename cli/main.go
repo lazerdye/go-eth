@@ -56,6 +56,7 @@ var (
 	etherscanApikey = kingpin.Flag("etherscan-apikey", "Key for etherscan api").Envar("ETHERSCAN_APIKEY").String()
 	etherscanCmd    = kingpin.Command("etherscan", "Etherscan operations")
 	etherscanList   = etherscanCmd.Command("list", "List transactions for account")
+	etherscanSort   = etherscanList.Arg("sort", "Sort").Default("asc").String()
 	etherscanPage   = etherscanList.Arg("page", "Page number").Default("1").Int()
 	etherscanOffset = etherscanList.Arg("offset", "Page offset").Default("20").Int()
 )
@@ -245,16 +246,18 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	return nil
 }
 
-func doEtherscanList(apikey string, address string, page, offset int) error {
+func doEtherscanList(apikey string, address string, page, offset int, sort string) error {
 	ctx := context.Background()
 
 	c := etherscan.NewClient(apikey)
-	t, err := c.NormalTransactionsByAddress(ctx, address, page, offset)
+	transactions, err := c.NormalTransactionsByAddress(ctx, address, page, offset, sort)
 	if err != nil {
 		return err
 	}
 
-	log.Infof("Transactions: %+v", t)
+	for _, t := range transactions {
+		fmt.Printf("%s\t%s\t%s\t%s\t%s\n", t.Hash, t.BlockNumber, t.From, t.To, t.Value)
+	}
 
 	return nil
 }
@@ -346,7 +349,7 @@ func main() {
 		if *address == "" {
 			log.Fatal("--address required")
 		}
-		if err := doEtherscanList(*etherscanApikey, *address, *etherscanPage, *etherscanOffset); err != nil {
+		if err := doEtherscanList(*etherscanApikey, *address, *etherscanPage, *etherscanOffset, *etherscanSort); err != nil {
 			log.Fatal(err)
 		}
 	}

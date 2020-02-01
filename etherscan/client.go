@@ -25,7 +25,24 @@ func NewClient(apikey string) *Client {
 }
 
 type transaction struct {
-	BlockNumber string `json:"blockNumber"`
+	BlockNumber       string `json:"blockNumber"`
+	Timestamp         string `json:"timeStamp"`
+	Hash              string `json:"hash"`
+	Nonce             string `json:"nonce"`
+	BlockHash         string `json:"blockHash"`
+	TransactionIndex  string `json:"transactionIndex"`
+	From              string `json:"from"`
+	To                string `json:"to"`
+	Value             string `json:"value"`
+	Gas               string `json:"gas"`
+	GasPrice          string `json:"gasPrice"`
+	IsError           string `json:"isError"`
+	TxReceiptStatus   string `json:"txreceipt_status"`
+	Input             string `json:"input"`
+	ContractAddress   string `json:"contractAddress"`
+	CumulativeGasUsed string `json:"cumulativeGasUsed"`
+	GasUsed           string `json:"gasUsed"`
+	Confirmations     string `json:"confirmations"`
 }
 
 type transactionResult struct {
@@ -34,7 +51,7 @@ type transactionResult struct {
 	Result  []transaction `json:"result"`
 }
 
-func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int) ([]transaction, error) {
+func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int, sort string) ([]transaction, error) {
 	var transactionResult transactionResult
 
 	params := url.Values{}
@@ -43,6 +60,7 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	params.Set("address", address)
 	params.Set("page", strconv.Itoa(page))
 	params.Set("offset", strconv.Itoa(offset))
+	params.Set("sort", sort)
 	params.Set("apikey", c.apikey)
 
 	if err := c.httpClient.Get(ctx, etherscanApi, params, &transactionResult); err != nil {
