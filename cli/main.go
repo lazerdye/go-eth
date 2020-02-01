@@ -24,14 +24,12 @@ var (
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
-	clientCmd           = kingpin.Command("client", "Client operations")
-	clientServer        = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
-	balanceCmd          = clientCmd.Command("balance", "Get the balance of an account")
-	balanceAccount      = balanceCmd.Arg("account", "Account to get balance of").Required().String()
-	tokenCmd            = clientCmd.Command("token", "Token operations")
-	tokenBalanceCmd     = tokenCmd.Command("balance", "Get the balance of the token")
-	tokenName           = tokenBalanceCmd.Arg("name", "Name of the token").Required().String()
-	tokenBalanceAccount = tokenBalanceCmd.Arg("account", "Account to get token balance of").Required().String()
+	clientCmd       = kingpin.Command("client", "Client operations")
+	clientServer    = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
+	balanceCmd      = clientCmd.Command("balance", "Get the balance of an account")
+	tokenCmd        = clientCmd.Command("token", "Token operations")
+	tokenBalanceCmd = tokenCmd.Command("balance", "Get the balance of the token")
+	tokenName       = tokenBalanceCmd.Arg("name", "Name of the token").Required().String()
 
 	tokenTransferCmd           = tokenCmd.Command("transfer", "Transfer a token")
 	tokenTransferName          = tokenTransferCmd.Arg("name", "Name of the token to transfer").Required().String()
@@ -276,11 +274,17 @@ func main() {
 			log.Fatal(err)
 		}
 	case "client balance":
-		if err := doClientBalance(*clientServer, *balanceAccount); err != nil {
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		if err := doClientBalance(*clientServer, *address); err != nil {
 			log.Fatal(err)
 		}
 	case "client token balance":
-		if err := doClientTokenBalance(*clientServer, *tokenName, *tokenBalanceAccount); err != nil {
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		if err := doClientTokenBalance(*clientServer, *tokenName, *address); err != nil {
 			log.Fatal(err)
 		}
 	case "client token transfer":
