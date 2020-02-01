@@ -15,12 +15,14 @@ import (
 )
 
 var (
-	keystore = kingpin.Flag("keystore", "Location of the wallet keystore").String()
-	password = kingpin.Flag("password", "Password for keystore").Envar("WALLET_PASSWORD").String()
+	keystore   = kingpin.Flag("keystore", "Location of the wallet keystore").String()
+	passphrase = kingpin.Flag("passphrase", "Passphrase for keystore").Envar("WALLET_PASSPHRASE").String()
+	address    = kingpin.Flag("address", "Address for account operations").String()
 
-	accountCmd   = kingpin.Command("account", "Account operations")
-	listAccounts = accountCmd.Command("list", "List the accounts")
-	newAccount   = accountCmd.Command("new", "Create new account")
+	accountCmd       = kingpin.Command("account", "Account operations")
+	listAccounts     = accountCmd.Command("list", "List the accounts")
+	newAccount       = accountCmd.Command("new", "Create new account")
+	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
 	clientCmd           = kingpin.Command("client", "Client operations")
 	clientServer        = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
@@ -65,12 +67,12 @@ func doAccountList(keystore string) error {
 	return nil
 }
 
-func doAccountNew(keystore string, password string) error {
+func doAccountNew(keystore string, passphrase string) error {
 	w, err := wallet.Open(keystore)
 	if err != nil {
 		return err
 	}
-	account, err := w.NewAccount(password)
+	account, err := w.NewAccount(passphrase)
 	if err != nil {
 		return err
 	}
@@ -81,7 +83,7 @@ func doAccountNew(keystore string, password string) error {
 	return nil
 }
 
-func unlockAccount(keystore, password, address string) (*wallet.Account, error) {
+func unlockAccount(keystore, passphrase, address string) (*wallet.Account, error) {
 	w, err := wallet.Open(keystore)
 	if err != nil {
 		return nil, err
@@ -90,7 +92,12 @@ func unlockAccount(keystore, password, address string) (*wallet.Account, error) 
 	if err != nil {
 		return nil, err
 	}
-	return account, account.Unlock(password)
+	return account, account.Unlock(passphrase)
+}
+
+func doAccountUnlock(keystore string, passphrase string, address string) error {
+	_, err := unlockAccount(keystore, passphrase, address)
+	return err
 }
 
 func doClientBalance(server, addressStr string) error {
@@ -249,10 +256,23 @@ func main() {
 		if *keystore == "" {
 			log.Fatal("Parameter --keystore required")
 		}
-		if *password == "" {
-			log.Fatal("Parameter --password required")
+		if *passphrase == "" {
+			log.Fatal("Parameter --passphrase required")
 		}
-		if err := doAccountNew(*keystore, *password); err != nil {
+		if err := doAccountNew(*keystore, *passphrase); err != nil {
+			log.Fatal(err)
+		}
+	case "account unlock":
+		if *keystore == "" {
+			log.Fatal("Parameter --keystore required")
+		}
+		if *passphrase == "" {
+			log.Fatal("Parameter --passphrase required")
+		}
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		if err := doAccountUnlock(*keystore, *passphrase, *address); err != nil {
 			log.Fatal(err)
 		}
 	case "client balance":
@@ -264,11 +284,10 @@ func main() {
 			log.Fatal(err)
 		}
 	case "client token transfer":
-		fmt.Printf("XXX %s %s\n", *keystore, password)
-		if *keystore == "" || *password == "" {
-			log.Fatal("Parameter --keystore and --password required")
+		if *keystore == "" || *passphrase == "" {
+			log.Fatal("Parameter --keystore and --passphrase required")
 		}
-		account, err := unlockAccount(*keystore, *password, *tokenTransferSourceAccount)
+		account, err := unlockAccount(*keystore, *passphrase, *tokenTransferSourceAccount)
 		if err != nil {
 			log.Fatal(err)
 		}
