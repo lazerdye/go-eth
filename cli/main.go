@@ -11,6 +11,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/etherscan"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -51,6 +52,10 @@ var (
 	tokenKyberDest         = tokenKyberCmd.Flag("dest", "Dest exchange").String()
 	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Float64()
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
+
+	etherscanApikey = kingpin.Flag("etherscan-apikey", "Key for etherscan api").Envar("ETHERSCAN_APIKEY").String()
+	etherscanCmd    = kingpin.Command("etherscan", "Etherscan operations")
+	etherscanList   = etherscanCmd.Command("list", "List transactions for account")
 )
 
 func doAccountList(keystore string) error {
@@ -238,6 +243,20 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	return nil
 }
 
+func doEtherscanList(apikey string, address string) error {
+	ctx := context.Background()
+
+	c := etherscan.NewClient(apikey)
+	t, err := c.NormalTransactionsByAddress(ctx, address, 0, 0)
+	if err != nil {
+		return err
+	}
+
+	log.Infof("Transactions: %+v", t)
+
+	return nil
+}
+
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -316,6 +335,16 @@ func main() {
 			log.Fatal("Both --source and --dest flags required")
 		}
 		if err := doClientTokenKyberExpectedRate(*clientServer, *tokenKyberSource, *tokenKyberDest, *tokenKyberQuantity); err != nil {
+			log.Fatal(err)
+		}
+	case "etherscan list":
+		if *etherscanApikey == "" {
+			log.Fatal("--etherscan-api-key required")
+		}
+		if *address == "" {
+			log.Fatal("--address required")
+		}
+		if err := doEtherscanList(*etherscanApikey, *address); err != nil {
 			log.Fatal(err)
 		}
 	}

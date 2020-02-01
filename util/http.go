@@ -1,0 +1,47 @@
+package util
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+	"net/url"
+
+	log "github.com/sirupsen/logrus"
+)
+
+type HttpClient struct {
+	client http.Client
+}
+
+func NewHttpClient() *HttpClient {
+	return &HttpClient{}
+}
+
+func (h *HttpClient) Get(ctx context.Context, reqUrl string, params url.Values, data interface{}) error {
+	base, err := url.Parse(reqUrl)
+	if err != nil {
+		return err
+	}
+	if params != nil {
+		base.RawQuery = params.Encode()
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", base.String(), nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := h.client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	log.Infof("Resp: %+v", resp)
+
+	dec := json.NewDecoder(resp.Body)
+	if err := dec.Decode(data); err != nil {
+		return err
+	}
+
+	return nil
+}
