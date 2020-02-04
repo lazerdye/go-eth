@@ -225,7 +225,7 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 	//if err != nil {
 	//	return err
 	//}
-	gasLimit := uint64(200000)
+	gasLimit := uint64(200000) // TODO: Gas limit.
 	log.Infof("Gas limit: %d", gasLimit)
 
 	gasPrice, err := c.client.SuggestGasPrice(context.Background())
