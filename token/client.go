@@ -67,6 +67,10 @@ const (
 	LPTContract = "0x58b6a8a3302369daec383334672404ee733ab239"
 	LPTDecimals = 18
 
+	MLN         = "mln"
+	MLNContract = "0xec67005c4e498ec7f55e092bd1d35cbc47c91892"
+	MLNDecimals = 18
+
 	MKR         = "mkr"
 	MKRContract = "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2"
 	MKRDecimals = 18
@@ -128,6 +132,7 @@ func init() {
 		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
 		LPT:   {common.HexToAddress(LPTContract), LPTDecimals},
 		MKR:   {common.HexToAddress(MKRContract), MKRDecimals},
+		MLN:   {common.HexToAddress(MLNContract), MLNDecimals},
 		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
 		REP:   {common.HexToAddress(REPContract), REPDecimals},
 		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
