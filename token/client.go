@@ -189,6 +189,10 @@ func NewClient(tokenName string, client *ethclient.Client) (*Client, error) {
 	return &Client{client, instance, token}, nil
 }
 
+func (c *Client) ContractAddress() common.Address {
+	return c.info.contract
+}
+
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
 	balance, err := c.instance.BalanceOf(&bind.CallOpts{}, address)
 	if err != nil {
