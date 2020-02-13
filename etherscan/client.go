@@ -24,7 +24,7 @@ func NewClient(apikey string) *Client {
 	return &Client{apikey: apikey, httpClient: util.NewHttpClient()}
 }
 
-type transaction struct {
+type Transaction struct {
 	BlockNumber       string `json:"blockNumber"`
 	Timestamp         string `json:"timeStamp"`
 	Hash              string `json:"hash"`
@@ -48,16 +48,40 @@ type transaction struct {
 type transactionResult struct {
 	Status  string        `json:"status"`
 	Message string        `json:"message"`
-	Result  []transaction `json:"result"`
+	Result  []Transaction `json:"result"`
 }
 
-func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int, sort string) ([]transaction, error) {
+func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int, sort string) ([]Transaction, error) {
 	var transactionResult transactionResult
 
 	params := url.Values{}
 	params.Set("module", "account")
 	params.Set("action", "txlist")
 	params.Set("address", address)
+	params.Set("page", strconv.Itoa(page))
+	params.Set("offset", strconv.Itoa(offset))
+	params.Set("sort", sort)
+	params.Set("apikey", c.apikey)
+
+	if err := c.httpClient.Get(ctx, etherscanApi, params, &transactionResult); err != nil {
+		return nil, err
+	}
+
+	if transactionResult.Status != "1" {
+		return nil, errors.Errorf("Error with transaction list: %+v", transactionResult)
+	}
+
+	return transactionResult.Result, nil
+}
+
+func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, page, offset int, sort string) ([]Transaction, error) {
+	var transactionResult transactionResult
+
+	params := url.Values{}
+	params.Set("module", "account")
+	params.Set("action", "tokentx")
+	params.Set("address", address)
+	params.Set("contractaddress", contractaddress)
 	params.Set("page", strconv.Itoa(page))
 	params.Set("offset", strconv.Itoa(offset))
 	params.Set("sort", sort)
