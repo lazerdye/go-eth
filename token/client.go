@@ -43,6 +43,10 @@ const (
 	DGDContract = "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
 	DGDDecimals = 9
 
+	EXMR         = "exmr"
+	EXMRContract = "0x331fA6C97c64e47475164b9fC8143b533c5eF529"
+	EXMRDecimals = 18
+
 	FOAM         = "foam"
 	FOAMContract = "0x4946Fcea7C692606e8908002e55A582af44AC121"
 	FOAMDecimals = 18
@@ -62,6 +66,10 @@ const (
 	LABX         = "labx"
 	LABXContract = "0xF0daeC652dD7C9f779e7C0F3ff5610fa3B61f61F"
 	LABXDecimals = 18
+
+	LINK         = "link"
+	LINKContract = "0x514910771AF9Ca656af840dff83E8264EcF986CA"
+	LINKDecimals = 18
 
 	LPT         = "lpt"
 	LPTContract = "0x58b6a8a3302369daec383334672404ee733ab239"
@@ -90,6 +98,10 @@ const (
 	SAI         = "sai"
 	SAIContract = "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359"
 	SAIDecimals = 18
+
+	SPANK         = "spank"
+	SPANKContract = "0x42d6622deCe394b54999Fbd73D108123806f6a18"
+	SPANKDecimals = 18
 
 	STORJ         = "storj"
 	STORJContract = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
@@ -125,11 +137,13 @@ func init() {
 		CUSD:  {common.HexToAddress(CUSDContract), CUSDDecimals},
 		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
 		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
+		EXMR:  {common.HexToAddress(EXMRContract), EXMRDecimals},
 		FOAM:  {common.HexToAddress(FOAMContract), FOAMDecimals},
 		GNO:   {common.HexToAddress(GNOContract), GNODecimals},
 		GWIT:  {common.HexToAddress(GWITContract), GWITDecimals},
 		KNC:   {common.HexToAddress(KNCContract), KNCDecimals},
 		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
+		LINK:  {common.HexToAddress(LINKContract), LINKDecimals},
 		LPT:   {common.HexToAddress(LPTContract), LPTDecimals},
 		MKR:   {common.HexToAddress(MKRContract), MKRDecimals},
 		MLN:   {common.HexToAddress(MLNContract), MLNDecimals},
@@ -137,6 +151,7 @@ func init() {
 		REP:   {common.HexToAddress(REPContract), REPDecimals},
 		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
 		SAI:   {common.HexToAddress(SAIContract), SAIDecimals},
+		SPANK: {common.HexToAddress(SPANKContract), SPANKDecimals},
 		STORJ: {common.HexToAddress(STORJContract), STORJDecimals},
 		TUSD:  {common.HexToAddress(TUSDContract), TUSDDecimals},
 		USDC:  {common.HexToAddress(USDCContract), USDCDecimals},
