@@ -276,6 +276,7 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 
 	fmt.Printf("Transaction: %s\n", txSigned.Hash().Hex())
 
+	// TODO: Let the sender do it.
 	if transmit {
 		err = c.client.SendTransaction(context.Background(), txSigned)
 		if err != nil {
@@ -284,4 +285,15 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 	}
 
 	return nil
+}
+
+func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract string, value *big.Float) (*types.Transaction, error) {
+	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
+	iAmount, _ := fAmount.Int(nil)
+	opts, err := from.NewTransactor()
+	if err != nil {
+		return nil, err
+	}
+	opts.Context = ctx
+	return c.instance.Approve(opts, common.HexToAddress(contract), iAmount)
 }

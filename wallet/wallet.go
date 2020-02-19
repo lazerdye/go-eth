@@ -7,6 +7,7 @@ import (
 
 	//log "github.com/sirupsen/logrus"
 	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
@@ -61,4 +62,8 @@ func (a *Account) Unlock(passphrase string) error {
 
 func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transaction, error) {
 	return a.ks.SignTx(a.Account, tx, chainID)
+}
+
+func (a *Account) NewTransactor() (*bind.TransactOpts, error) {
+	return bind.NewKeyStoreTransactor(a.ks, a.Account)
 }
