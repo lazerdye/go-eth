@@ -97,3 +97,34 @@ func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contra
 
 	return transactionResult.Result, nil
 }
+
+type contractExecutionStatus struct {
+	IsError        string `json:"isError"`
+	ErrDescription string `json:"errDescription"`
+}
+
+type contractExecutionResult struct {
+	Status  string                  `json:"status"`
+	Message string                  `json:"message"`
+	Result  contractExecutionStatus `json:"result"`
+}
+
+func (c *Client) ContractExecutionStatus(ctx context.Context, transaction string) (bool, string, error) {
+	var contractExecutionResult contractExecutionResult
+
+	params := url.Values{}
+	params.Set("module", "transaction")
+	params.Set("action", "getstatus")
+	params.Set("txhash", transaction)
+	params.Set("apikey", c.apikey)
+
+	if err := c.httpClient.Get(ctx, etherscanApi, params, &contractExecutionResult); err != nil {
+		return false, "", err
+	}
+
+	if contractExecutionResult.Status != "1" {
+		return false, "", errors.Errorf("Error with transaction list: %+v", contractExecutionResult)
+	}
+
+	return contractExecutionResult.Result.IsError != "0", contractExecutionResult.Result.ErrDescription, nil
+}
