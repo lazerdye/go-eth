@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	keystore       = kingpin.Flag("keystore", "Location of the wallet keystore").String()
+	keystore       = kingpin.Flag("keystore", "Location of the wallet keystore").Envar("WALLET_KEYSTORE").String()
 	passphrase     = kingpin.Flag("passphrase", "Passphrase for keystore").Envar("WALLET_PASSPHRASE").String()
 	address        = kingpin.Flag("address", "Address for account operations").String()
 	destAddress    = kingpin.Flag("dest-address", "Destination address for transfer").String()
@@ -153,7 +153,7 @@ func doClientTokenBalance(server, tokenName, addressStr string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Balance of %s in %s: %g\n", address, tokenName, bal)
+	fmt.Printf("Balance of %s in %s: %g\n", address.String(), tokenName, bal)
 	return nil
 }
 
