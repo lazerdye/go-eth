@@ -121,6 +121,9 @@ const (
 )
 
 var (
+	gasLimit *big.Int
+	gasPrice uint64
+
 	tokenRepo map[string]tokenInfo
 )
 
@@ -130,6 +133,8 @@ type tokenInfo struct {
 }
 
 func init() {
+	gasLimit = big.NewInt(5000000000)
+	gasPrice = 780000
 	tokenRepo = map[string]tokenInfo{
 		WETH:  {common.HexToAddress(WETHContract), WETHDecimals},
 		ANT:   {common.HexToAddress(ANTContract), ANTDecimals},
@@ -219,6 +224,7 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Fl
 }
 
 func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amount float64, transmit bool) error {
+	// TODO: Why did I do this?
 	nonce, err := c.client.PendingNonceAt(context.Background(), sourceAccount.Account.Address)
 	if err != nil {
 		return err
@@ -287,13 +293,18 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 	return nil
 }
 
-func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract string, value *big.Float) (*types.Transaction, error) {
+func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
 	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := from.NewTransactor()
+	opts, err := from.NewTransactor(gasLimit, gasPrice)
 	if err != nil {
 		return nil, err
 	}
 	opts.Context = ctx
-	return c.instance.Approve(opts, common.HexToAddress(contract), iAmount)
+	return c.instance.Approve(opts, contract, iAmount)
+}
+
+func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (*big.Int, error) {
+	opts := bind.CallOpts{Context: ctx}
+	return c.instance.Allowance(&opts, address, contract)
 }

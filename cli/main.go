@@ -21,20 +21,28 @@ var (
 	address        = kingpin.Flag("address", "Address for account operations").String()
 	destAddress    = kingpin.Flag("dest-address", "Destination address for transfer").String()
 	transferAmount = kingpin.Flag("amount", "Transfer amount").Float64()
+	contract       = kingpin.Flag("contract", "Contract for approval/allowance").String()
 
 	accountCmd       = kingpin.Command("account", "Account operations")
 	listAccounts     = accountCmd.Command("list", "List the accounts")
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
-	clientCmd        = kingpin.Command("client", "Client operations")
-	clientServer     = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
-	balanceCmd       = clientCmd.Command("balance", "Get the balance of an account")
-	transferCmd      = clientCmd.Command("transfer", "Transfer ethereum")
-	transferTransmit = transferCmd.Flag("transmit", "Transmit transaction").Bool()
-	tokenCmd         = clientCmd.Command("token", "Token operations")
-	tokenBalanceCmd  = tokenCmd.Command("balance", "Get the balance of the token")
-	tokenName        = tokenBalanceCmd.Arg("name", "Name of the token").Required().String()
+	clientCmd              = kingpin.Command("client", "Client operations")
+	clientServer           = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
+	balanceCmd             = clientCmd.Command("balance", "Get the balance of an account")
+	transferCmd            = clientCmd.Command("transfer", "Transfer ethereum")
+	transferTransmit       = transferCmd.Flag("transmit", "Transmit transaction").Bool()
+	tokenCmd               = clientCmd.Command("token", "Token operations")
+	tokenBalanceCmd        = tokenCmd.Command("balance", "Get the balance of the token")
+	tokenBalanceName       = tokenBalanceCmd.Arg("name", "Name of the token").Required().String()
+	tokenApproveCmd        = tokenCmd.Command("approve", "Approve a contract to act on the accounts behalf")
+	tokenApproveName       = tokenApproveCmd.Arg("name", "Name of the token").Required().String()
+	tokenApproveContract   = tokenApproveCmd.Arg("contract", "Contract to approve").Required().String()
+	tokenApproveAmount     = tokenApproveCmd.Arg("amount", "Amount (float) to approve").Required().String()
+	tokenAllowanceCmd      = tokenCmd.Command("allowance", "Get the allowance for the given contract")
+	tokenAllowanceName     = tokenAllowanceCmd.Arg("name", "Name of token to allow access to contract").Required().String()
+	tokenAllowanceContract = tokenAllowanceCmd.Arg("contract", "Contract to check allowance of").Required().String()
 
 	tokenTransferCmd           = tokenCmd.Command("transfer", "Transfer a token")
 	tokenTransferName          = tokenTransferCmd.Arg("name", "Name of the token to transfer").Required().String()
@@ -157,6 +165,26 @@ func doClientTokenBalance(server, tokenName, addressStr string) error {
 	return nil
 }
 
+func doClientTokenAllowance(server, tokenName, contractStr, addressStr string) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	token, err := c.Token(tokenName)
+	if err != nil {
+		return err
+	}
+	contract := common.HexToAddress(contractStr)
+	address := common.HexToAddress(addressStr)
+	fmt.Printf("%s %s\n", contract.String(), address.String())
+	allowance, err := token.Allowance(context.Background(), address, contract)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s allowance for contract %s on %s is: %s\n", tokenName, contract.String(), address.String(), allowance.String())
+	return nil
+}
+
 func doClientTokenTransfer(server string, account *wallet.Account, tokenName, sourceAccount, destAccount string,
 	amount float64, transmit bool) error {
 	c, err := client.Dial(server)
@@ -170,6 +198,28 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	if err := token.Transfer(account, destAccount, amount, transmit); err != nil {
 		return err
 	}
+	return nil
+}
+
+func doClientTokenApprove(server string, account *wallet.Account, tokenName, contractStr, amountStr string) error {
+	c, err := client.Dial(server)
+	if err != nil {
+		return err
+	}
+	token, err := c.Token(tokenName)
+	if err != nil {
+		return err
+	}
+	contract := common.HexToAddress(contractStr)
+	amount, _, err := new(big.Float).Parse(amountStr, 10)
+	if err != nil {
+		return err
+	}
+	tx, err := token.Approve(context.Background(), account, contract, amount)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Transaction: %s\n", tx.Hash().String())
 	return nil
 }
 
@@ -337,7 +387,28 @@ func main() {
 		if *address == "" {
 			log.Fatal("Parameter --address required")
 		}
-		if err := doClientTokenBalance(*clientServer, *tokenName, *address); err != nil {
+		if err := doClientTokenBalance(*clientServer, *tokenBalanceName, *address); err != nil {
+			log.Fatal(err)
+		}
+	case "client token allowance":
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		if err := doClientTokenAllowance(*clientServer, *tokenAllowanceName, *tokenAllowanceContract, *address); err != nil {
+			log.Fatal(err)
+		}
+	case "client token approve":
+		if *keystore == "" || *passphrase == "" {
+			log.Fatal("Parameter --keystore and --passphrase required")
+		}
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		account, err := unlockAccount(*keystore, *passphrase, *address)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := doClientTokenApprove(*clientServer, account, *tokenApproveName, *tokenApproveContract, *tokenApproveAmount); err != nil {
 			log.Fatal(err)
 		}
 	case "client token transfer":

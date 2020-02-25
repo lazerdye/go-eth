@@ -42,7 +42,6 @@ func (w *Wallet) PrintAccount(account *Account) error {
 func (w *Wallet) Account(address string) (*Account, error) {
 	account, err := w.ks.Find(accounts.Account{common.HexToAddress(address), accounts.URL{}})
 	if err != nil {
-		fmt.Printf("XXX %s\n", address)
 		return nil, err
 	}
 	return &Account{w.ks, account}, nil
@@ -64,6 +63,13 @@ func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transa
 	return a.ks.SignTx(a.Account, tx, chainID)
 }
 
-func (a *Account) NewTransactor() (*bind.TransactOpts, error) {
-	return bind.NewKeyStoreTransactor(a.ks, a.Account)
+func (a *Account) NewTransactor(gasPrice *big.Int, gasLimit uint64) (*bind.TransactOpts, error) {
+	t, err := bind.NewKeyStoreTransactor(a.ks, a.Account)
+	if err != nil {
+		return nil, err
+	}
+	t.From = a.Account.Address
+	t.GasPrice = gasPrice
+	t.GasLimit = gasLimit
+	return t, err
 }
