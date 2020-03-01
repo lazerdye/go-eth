@@ -18,7 +18,7 @@ import (
 )
 
 type Client struct {
-	c *ethclient.Client
+	*ethclient.Client
 }
 
 const (
@@ -30,23 +30,23 @@ func Dial(url string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client}, nil
+	return &Client{Client: client}, nil
 }
 
 func (c *Client) Token(tokenName string) (*token.Client, error) {
-	return token.NewClient(tokenName, c.c)
+	return token.NewClient(tokenName, c.Client)
 }
 
 func (c *Client) Dutchx() (*dutchx.Client, error) {
-	return dutchx.NewClient(c.c)
+	return dutchx.NewClient(c.Client)
 }
 
 func (c *Client) Kyber() (*kyber.Client, error) {
-	return kyber.NewClient(c.c)
+	return kyber.NewClient(c.Client)
 }
 
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
-	balance, err := c.c.BalanceAt(ctx, address, nil)
+	balance, err := c.Client.BalanceAt(ctx, address, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,8 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Fl
 }
 
 func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, dest string, amount *big.Float, transmit bool) (*types.Transaction, error) {
-	nonce, err := c.c.PendingNonceAt(ctx, sourceAccount.Account.Address)
+	// TODO: Just use the erc20 contract.
+	nonce, err := c.Client.PendingNonceAt(ctx, sourceAccount.Account.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +67,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	value := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18)))
 	valueInt, _ := value.Int(nil)
 
-	gasLimit, err := c.c.EstimateGas(ctx, ethereum.CallMsg{
+	gasLimit, err := c.Client.EstimateGas(ctx, ethereum.CallMsg{
 		To: &destAddress,
 	})
 	if err != nil {
@@ -74,7 +75,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	log.Infof("Gas limit: %d", gasLimit)
 
-	gasPrice, err := c.c.SuggestGasPrice(ctx)
+	gasPrice, err := c.Client.SuggestGasPrice(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +83,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 
 	tx := types.NewTransaction(nonce, destAddress, valueInt, gasLimit, gasPrice, nil)
 
-	chainID, err := c.c.NetworkID(ctx)
+	chainID, err := c.Client.NetworkID(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +95,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 
 	if transmit {
-		err = c.c.SendTransaction(ctx, txSigned)
+		err = c.Client.SendTransaction(ctx, txSigned)
 		if err != nil {
 			return nil, err
 		}
