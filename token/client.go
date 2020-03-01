@@ -296,7 +296,7 @@ func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amo
 func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
 	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := from.NewTransactor(gasLimit, gasPrice)
+	opts, err := from.NewTransactor(ctx, nil, gasLimit, gasPrice)
 	if err != nil {
 		return nil, err
 	}
