@@ -29,7 +29,7 @@ var (
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
 	clientCmd              = kingpin.Command("client", "Client operations")
-	clientServer           = clientCmd.Flag("server", "URL of the server to connect to").Required().String()
+	clientServer           = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
 	balanceCmd             = clientCmd.Command("balance", "Get the balance of an account")
 	transferCmd            = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit       = transferCmd.Flag("transmit", "Transmit transaction").Bool()
@@ -305,7 +305,7 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 		return err
 	}
 	quantityInt, _ := new(big.Float).Mul(new(big.Float).SetFloat64(quantityFloat), big.NewFloat(math.Pow10(18))).Int(nil)
-	expectedRate, slippageRate, err := k.GetExpectedRate(common.HexToAddress(source), common.HexToAddress(dest), quantityInt)
+	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), common.HexToAddress(source), common.HexToAddress(dest), quantityInt)
 	if err != nil {
 		return err
 	}
