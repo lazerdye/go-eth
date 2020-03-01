@@ -1,8 +1,8 @@
 package wallet
 
 import (
+	"context"
 	"fmt"
-	//"io/ioutil"
 	"math/big"
 
 	//log "github.com/sirupsen/logrus"
@@ -63,11 +63,13 @@ func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transa
 	return a.ks.SignTx(a.Account, tx, chainID)
 }
 
-func (a *Account) NewTransactor(gasPrice *big.Int, gasLimit uint64) (*bind.TransactOpts, error) {
+func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice *big.Int, gasLimit uint64) (*bind.TransactOpts, error) {
 	t, err := bind.NewKeyStoreTransactor(a.ks, a.Account)
 	if err != nil {
 		return nil, err
 	}
+	t.Context = ctx
+	t.Value = value
 	t.From = a.Account.Address
 	t.GasPrice = gasPrice
 	t.GasLimit = gasLimit
