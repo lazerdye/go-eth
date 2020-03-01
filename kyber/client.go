@@ -1,11 +1,13 @@
 package kyber
 
 import (
+	"context"
 	"fmt"
 	"math"
 	"math/big"
 
 	"github.com/lazerdye/go-eth/wallet"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -44,8 +46,8 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) GetExpectedRate(source, dest common.Address, quantity *big.Int) (*big.Float, *big.Float, error) {
-	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{}, source, dest, quantity)
+func (c *Client) GetExpectedRate(ctx context.Context, source, dest common.Address, quantity *big.Int) (*big.Float, *big.Float, error) {
+	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source, dest, quantity)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -56,8 +58,9 @@ func (c *Client) GetExpectedRate(source, dest common.Address, quantity *big.Int)
 	return expectedRate, slippageRate, nil
 }
 
-func (c *Client) SwapEtherToToken(account *wallet.Account, token common.Address, minRate *big.Float) (*types.Transaction, error) {
-	transactOpts, err := account.NewTransactor(gasLimit, gasPrice)
+func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, minRate *big.Float) (*types.Transaction, error) {
+	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
+	transactOpts, err := account.NewTransactor(ctx, amountInt, gasLimit, gasPrice)
 	if err != nil {
 		return nil, err
 	}
@@ -69,8 +72,8 @@ func (c *Client) SwapEtherToToken(account *wallet.Account, token common.Address,
 	return transaction, err
 }
 
-func (c *Client) SwapTokenToEther(account *wallet.Account, token common.Address, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
-	transactOpts, err := account.NewTransactor(gasLimit, gasPrice)
+func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
+	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasLimit, gasPrice)
 	if err != nil {
 		return nil, err
 	}
@@ -82,4 +85,28 @@ func (c *Client) SwapTokenToEther(account *wallet.Account, token common.Address,
 		return nil, err
 	}
 	return transaction, err
+}
+
+func (c *Client) GetTradeEvents(ctx context.Context, addresses []common.Address, startBlock uint64, endBlock *uint64) ([]KyberExecuteTrade, error) {
+	filterOpts := &bind.FilterOpts{
+		Context: ctx,
+		Start:   startBlock,
+		End:     endBlock,
+	}
+	fit, err := c.instance.FilterExecuteTrade(filterOpts, addresses)
+	if err != nil {
+		return nil, err
+	}
+
+	var trades []KyberExecuteTrade
+	for {
+		if !fit.Next() {
+			break
+		}
+		log.Infof("Trade: %+v", fit.Event)
+		trades = append(trades, *fit.Event)
+	}
+
+	return trades, nil
+
 }
