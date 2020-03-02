@@ -6,7 +6,9 @@ import (
 	"math"
 	"math/big"
 
+	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -17,18 +19,16 @@ import (
 
 const (
 	KyberNetworkProxy = "0x818E6FECD516Ecc3849DAf6845e3EC868087B755"
+	EthereumAddress   = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	EthereumDecimals  = 18
 )
 
 var (
-	gasLimit *big.Int
-	gasPrice uint64
+	gasLimit              = big.NewInt(5000000000)
+	gasPrice              = uint64(7800000)
+	EthereumCommonAddress = common.HexToAddress(EthereumAddress)
+	ethAmounts            = []float64{0.2, 0.5, 1.0, 10.0}
 )
-
-func init() {
-	// TODO: Make this configurable.
-	gasLimit = big.NewInt(5000000000)
-	gasPrice = 780000
-}
 
 type Client struct {
 	c        *ethclient.Client
@@ -46,15 +46,36 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) GetExpectedRate(ctx context.Context, source, dest common.Address, quantity *big.Int) (*big.Float, *big.Float, error) {
-	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source, dest, quantity)
+func (c *Client) GetExpectedRate(ctx context.Context, source, dest common.Address, quantity *big.Float) (*big.Float, *big.Float, error) {
+	var sourceDecimals int
+	var destDecimals int
+	var ok bool
+	if source.Hex() == EthereumCommonAddress.Hex() {
+		sourceDecimals = EthereumDecimals
+	} else {
+		_, sourceDecimals, ok = token.TokenByAddress(source)
+		if !ok {
+			return nil, nil, errors.Errorf("Error looking up token: %s", source.String())
+		}
+	}
+	if dest.Hex() == EthereumCommonAddress.Hex() {
+		destDecimals = EthereumDecimals
+	} else {
+		_, destDecimals, ok = token.TokenByAddress(dest)
+		if !ok {
+			return nil, nil, errors.Errorf("Error looking up token: %s", dest.String())
+		}
+	}
+
+	quantityInt, _ := new(big.Float).Mul(quantity, big.NewFloat(math.Pow10(sourceDecimals))).Int(nil)
+	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source, dest, quantityInt)
 	if err != nil {
 		return nil, nil, err
 	}
 	fmt.Println("Raw: %+v", rate)
 
-	expectedRate := new(big.Float).Quo(new(big.Float).SetInt(rate.ExpectedRate), big.NewFloat(math.Pow10(18)))
-	slippageRate := new(big.Float).Quo(new(big.Float).SetInt(rate.SlippageRate), big.NewFloat(math.Pow10(18)))
+	expectedRate := new(big.Float).Quo(new(big.Float).SetInt(rate.ExpectedRate), big.NewFloat(math.Pow10(destDecimals)))
+	slippageRate := new(big.Float).Quo(new(big.Float).SetInt(rate.SlippageRate), big.NewFloat(math.Pow10(destDecimals)))
 	return expectedRate, slippageRate, nil
 }
 
