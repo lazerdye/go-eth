@@ -3,22 +3,23 @@ package main
 import (
 	"context"
 	"fmt"
-	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/etherscan"
 	"github.com/lazerdye/go-eth/wallet"
+	"github.com/lazerdye/go-eth/zeroex"
 )
 
 var (
 	keystore       = kingpin.Flag("keystore", "Location of the wallet keystore").Envar("WALLET_KEYSTORE").String()
 	passphrase     = kingpin.Flag("passphrase", "Passphrase for keystore").Envar("WALLET_PASSPHRASE").String()
-	address        = kingpin.Flag("address", "Address for account operations").String()
+	address        = kingpin.Flag("address", "Address for account operations").Envar("ETHEREUM_ADDRESS").String()
 	destAddress    = kingpin.Flag("dest-address", "Destination address for transfer").String()
 	transferAmount = kingpin.Flag("amount", "Transfer amount").Float64()
 	contract       = kingpin.Flag("contract", "Contract for approval/allowance").String()
@@ -99,23 +100,6 @@ func doAccountNew(keystore string, passphrase string) error {
 		return err
 	}
 	return nil
-}
-
-func unlockAccount(keystore, passphrase, address string) (*wallet.Account, error) {
-	w, err := wallet.Open(keystore)
-	if err != nil {
-		return nil, err
-	}
-	account, err := w.Account(address)
-	if err != nil {
-		return nil, err
-	}
-	return account, account.Unlock(passphrase)
-}
-
-func doAccountUnlock(keystore string, passphrase string, address string) error {
-	_, err := unlockAccount(keystore, passphrase, address)
-	return err
 }
 
 func doClientBalance(server, addressStr string) error {
@@ -295,7 +279,7 @@ func doClientTokenDutchxGetFeeRatio(server string, address string) error {
 	return nil
 }
 
-func doClientTokenKyberExpectedRate(server string, source, dest string, quantityFloat float64) error {
+func doClientTokenKyberExpectedRate(server string, source, dest string, quantity float64) error {
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -304,8 +288,8 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	if err != nil {
 		return err
 	}
-	quantityInt, _ := new(big.Float).Mul(new(big.Float).SetFloat64(quantityFloat), big.NewFloat(math.Pow10(18))).Int(nil)
-	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), common.HexToAddress(source), common.HexToAddress(dest), quantityInt)
+	quantityFloat := big.NewFloat(quantity)
+	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), common.HexToAddress(source), common.HexToAddress(dest), quantityFloat)
 	if err != nil {
 		return err
 	}
@@ -328,6 +312,46 @@ func doEtherscanList(apikey string, address string, page, offset int, sort strin
 	}
 
 	return nil
+}
+
+func newClient() (*client.Client, error) {
+	if *clientServer == "" {
+		return nil, errors.New("clientServer parameter required")
+	}
+	return client.Dial(*clientServer)
+}
+
+func newZeroexClient() (*zeroex.Client, error) {
+	client, err := newClient()
+	if err != nil {
+		return nil, err
+	}
+	return zeroex.NewClient(client)
+}
+
+func getAccount() (*wallet.Account, bool, error) {
+	if *address == "" {
+		return nil, false, errors.New("address parameter required")
+	}
+	if *keystore == "" {
+		return nil, false, errors.New("keystore parameter required")
+	}
+	w, err := wallet.Open(*keystore)
+	if err != nil {
+		return nil, false, err
+	}
+	account, err := w.Account(*address)
+	if err != nil {
+		return nil, false, err
+	}
+	if *passphrase != "" {
+		if err := account.Unlock(*passphrase); err != nil {
+			return nil, false, err
+		}
+		return account, true, nil
+	} else {
+		return account, false, nil
+	}
 }
 
 func main() {
@@ -353,18 +377,14 @@ func main() {
 			log.Fatal(err)
 		}
 	case "account unlock":
-		if *keystore == "" {
-			log.Fatal("Parameter --keystore required")
-		}
-		if *passphrase == "" {
-			log.Fatal("Parameter --passphrase required")
-		}
-		if *address == "" {
-			log.Fatal("Parameter --address required")
-		}
-		if err := doAccountUnlock(*keystore, *passphrase, *address); err != nil {
+		_, unlocked, err := getAccount()
+		if err != nil {
 			log.Fatal(err)
 		}
+		if !unlocked {
+			log.Fatal("Passphrase required")
+		}
+		fmt.Printf("Unlocked %s", *address)
 	case "client balance":
 		if *address == "" {
 			log.Fatal("Parameter --address required")
@@ -373,12 +393,12 @@ func main() {
 			log.Fatal(err)
 		}
 	case "client transfer":
-		if *keystore == "" || *passphrase == "" {
-			log.Fatal("Parameter --keystore and --passphrase required")
-		}
-		account, err := unlockAccount(*keystore, *passphrase, *tokenTransferSourceAccount)
+		account, unlocked, err := getAccount()
 		if err != nil {
 			log.Fatal(err)
+		}
+		if !unlocked {
+			log.Fatal("Passphrase required")
 		}
 		if err := doClientTransfer(*clientServer, account, *destAddress, *transferAmount); err != nil {
 			log.Fatal(err)
@@ -404,9 +424,12 @@ func main() {
 		if *address == "" {
 			log.Fatal("Parameter --address required")
 		}
-		account, err := unlockAccount(*keystore, *passphrase, *address)
+		account, unlocked, err := getAccount()
 		if err != nil {
 			log.Fatal(err)
+		}
+		if !unlocked {
+			log.Fatal("Passphrase required")
 		}
 		if err := doClientTokenApprove(*clientServer, account, *tokenApproveName, *tokenApproveContract, *tokenApproveAmount); err != nil {
 			log.Fatal(err)
@@ -415,9 +438,12 @@ func main() {
 		if *keystore == "" || *passphrase == "" {
 			log.Fatal("Parameter --keystore and --passphrase required")
 		}
-		account, err := unlockAccount(*keystore, *passphrase, *tokenTransferSourceAccount)
+		account, unlocked, err := getAccount()
 		if err != nil {
 			log.Fatal(err)
+		}
+		if !unlocked {
+			log.Fatal("Passphrase required")
 		}
 		if err := doClientTokenTransfer(*clientServer, account, *tokenTransferName, *tokenTransferSourceAccount,
 			*tokenTransferDestAccount, *tokenTransferAmount, *tokenTransferTransmitFlag); err != nil {
@@ -450,6 +476,33 @@ func main() {
 			log.Fatal("--address required")
 		}
 		if err := doEtherscanList(*etherscanApikey, *address, *etherscanPage, *etherscanOffset, *etherscanSort); err != nil {
+			log.Fatal(err)
+		}
+	case "client zeroex deposit":
+		zClient, err := newZeroexClient()
+		if err != nil {
+			log.Fatal(err)
+		}
+		account, unlocked, err := getAccount()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !unlocked {
+			log.Fatal("Passphrase required")
+		}
+		if err := zeroexDepositCommand(zClient, account); err != nil {
+			log.Fatal(err)
+		}
+	case "client zeroex balanceof":
+		zClient, err := newZeroexClient()
+		if err != nil {
+			log.Fatal(err)
+		}
+		account, _, err := getAccount()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
 			log.Fatal(err)
 		}
 	}

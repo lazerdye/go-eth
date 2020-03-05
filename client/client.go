@@ -25,6 +25,11 @@ const (
 	ethDigits = 18
 )
 
+var (
+	GasLimit = big.NewInt(5000000000)
+	GasPrice = uint64(7800000)
+)
+
 func Dial(url string) (*Client, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {

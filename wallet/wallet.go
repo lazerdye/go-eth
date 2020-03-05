@@ -55,6 +55,10 @@ func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
 	return &Account{ks: w.ks, Account: a}, nil
 }
 
+func (a *Account) Address() common.Address {
+	return a.Account.Address
+}
+
 func (a *Account) Unlock(passphrase string) error {
 	return a.ks.Unlock(a.Account, passphrase)
 }
