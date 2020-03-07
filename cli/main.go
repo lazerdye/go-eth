@@ -12,6 +12,7 @@ import (
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/etherscan"
+	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
 )
@@ -289,7 +290,15 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 		return err
 	}
 	quantityFloat := big.NewFloat(quantity)
-	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), common.HexToAddress(source), common.HexToAddress(dest), quantityFloat)
+	sourceToken, ok := token.DefaultRegistry.ByName(source)
+	if !ok {
+		return errors.Errorf("Unknown Token: %s", source)
+	}
+	destToken, ok := token.DefaultRegistry.ByName(dest)
+	if !ok {
+		return errors.Errorf("Unknown Token: %s", dest)
+	}
+	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), sourceToken, destToken, quantityFloat)
 	if err != nil {
 		return err
 	}

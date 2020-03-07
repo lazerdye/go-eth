@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"sync"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -15,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/sha3"
 
+	"github.com/lazerdye/go-eth/token/erc20"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -124,85 +126,130 @@ var (
 	gasLimit *big.Int
 	gasPrice uint64
 
-	tokenRepo map[string]tokenInfo
+	DefaultRegistry = NewRegistry()
 )
-
-type tokenInfo struct {
-	contract common.Address
-	decimals int
-}
 
 func init() {
 	gasLimit = big.NewInt(5000000000)
 	gasPrice = 780000
-	tokenRepo = map[string]tokenInfo{
-		WETH:  {common.HexToAddress(WETHContract), WETHDecimals},
-		ANT:   {common.HexToAddress(ANTContract), ANTDecimals},
-		BAT:   {common.HexToAddress(BATContract), BATDecimals},
-		CUSD:  {common.HexToAddress(CUSDContract), CUSDDecimals},
-		DAI:   {common.HexToAddress(DAIContract), DAIDecimals},
-		DGD:   {common.HexToAddress(DGDContract), DGDDecimals},
-		EXMR:  {common.HexToAddress(EXMRContract), EXMRDecimals},
-		FOAM:  {common.HexToAddress(FOAMContract), FOAMDecimals},
-		GNO:   {common.HexToAddress(GNOContract), GNODecimals},
-		GWIT:  {common.HexToAddress(GWITContract), GWITDecimals},
-		KNC:   {common.HexToAddress(KNCContract), KNCDecimals},
-		LABX:  {common.HexToAddress(LABXContract), LABXDecimals},
-		LINK:  {common.HexToAddress(LINKContract), LINKDecimals},
-		LPT:   {common.HexToAddress(LPTContract), LPTDecimals},
-		MKR:   {common.HexToAddress(MKRContract), MKRDecimals},
-		MLN:   {common.HexToAddress(MLNContract), MLNDecimals},
-		OHDAI: {common.HexToAddress(OHDAIContract), OHDAIDecimals},
-		REP:   {common.HexToAddress(REPContract), REPDecimals},
-		RIGO:  {common.HexToAddress(RIGOContract), RIGODecimals},
-		SAI:   {common.HexToAddress(SAIContract), SAIDecimals},
-		SPANK: {common.HexToAddress(SPANKContract), SPANKDecimals},
-		STORJ: {common.HexToAddress(STORJContract), STORJDecimals},
-		TUSD:  {common.HexToAddress(TUSDContract), TUSDDecimals},
-		USDC:  {common.HexToAddress(USDCContract), USDCDecimals},
-		ZRX:   {common.HexToAddress(ZRXContract), ZRXDecimals},
+	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
+	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
+	DefaultRegistry.Register(BAT, BATContract, BATDecimals)
+	DefaultRegistry.Register(CUSD, CUSDContract, CUSDDecimals)
+	DefaultRegistry.Register(DAI, DAIContract, DAIDecimals)
+	DefaultRegistry.Register(DGD, DGDContract, DGDDecimals)
+	DefaultRegistry.Register(EXMR, EXMRContract, EXMRDecimals)
+	DefaultRegistry.Register(FOAM, FOAMContract, FOAMDecimals)
+	DefaultRegistry.Register(GNO, GNOContract, GNODecimals)
+	DefaultRegistry.Register(GWIT, GWITContract, GWITDecimals)
+	DefaultRegistry.Register(KNC, KNCContract, KNCDecimals)
+	DefaultRegistry.Register(LABX, LABXContract, LABXDecimals)
+	DefaultRegistry.Register(LINK, LINKContract, LINKDecimals)
+	DefaultRegistry.Register(LPT, LPTContract, LPTDecimals)
+	DefaultRegistry.Register(MKR, MKRContract, MKRDecimals)
+	DefaultRegistry.Register(MLN, MLNContract, MLNDecimals)
+	DefaultRegistry.Register(OHDAI, OHDAIContract, OHDAIDecimals)
+	DefaultRegistry.Register(REP, REPContract, REPDecimals)
+	DefaultRegistry.Register(RIGO, RIGOContract, RIGODecimals)
+	DefaultRegistry.Register(SAI, SAIContract, SAIDecimals)
+	DefaultRegistry.Register(SPANK, SPANKContract, SPANKDecimals)
+	DefaultRegistry.Register(STORJ, STORJContract, STORJDecimals)
+	DefaultRegistry.Register(TUSD, TUSDContract, TUSDDecimals)
+	DefaultRegistry.Register(USDC, USDCContract, USDCDecimals)
+	DefaultRegistry.Register(ZRX, ZRXContract, ZRXDecimals)
+}
+
+type Token struct {
+	name     string
+	contract common.Address
+	decimals int
+}
+
+func (t Token) FromGwei(i *big.Int) *big.Float {
+	return new(big.Float).Quo(new(big.Float).SetInt(i), big.NewFloat(math.Pow10(t.decimals)))
+}
+
+func (t Token) ToGwei(f *big.Float) *big.Int {
+	i, _ := new(big.Float).Mul(f, big.NewFloat(math.Pow10(t.decimals))).Int(nil)
+	return i
+}
+
+func (t Token) Contract() common.Address {
+	return t.contract
+}
+
+func (t Token) Name() string {
+	return t.name
+}
+
+type Registry struct {
+	data  map[string]Token
+	mutex sync.RWMutex
+}
+
+func NewRegistry() *Registry {
+	return &Registry{
+		data: make(map[string]Token),
 	}
 }
 
-func Tokens() []string {
-	ret := make([]string, len(tokenRepo))
+func (r *Registry) Register(name, contract string, decimals int) error {
+	r.mutex.Lock()
+	defer r.mutex.Unlock()
+
+	if _, ok := r.data[name]; ok {
+		// Name already exists.
+		return errors.Errorf("Token with name %s already exists", name)
+	}
+	r.data[name] = Token{
+		name:     name,
+		contract: common.HexToAddress(contract),
+		decimals: decimals,
+	}
+	return nil
+}
+
+func (r *Registry) ByName(name string) (*Token, bool) {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
+
+	t, ok := r.data[name]
+	return &t, ok
+}
+
+func (r *Registry) ByAddress(address common.Address) (*Token, bool) {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
+
+	for _, t := range r.data {
+		if t.contract.Hex() == address.Hex() {
+			return &t, true
+		}
+	}
+	return nil, false
+}
+
+func (r *Registry) Names() []string {
+	r.mutex.RLock()
+	defer r.mutex.RUnlock()
+
+	ret := make([]string, len(r.data))
 	i := 0
-	for n, _ := range tokenRepo {
+	for n, _ := range r.data {
 		ret[i] = n
 		i++
 	}
 	return ret
 }
 
-func TokenByName(name string) (common.Address, int, bool) {
-	token, ok := tokenRepo[name]
-	if !ok {
-		return common.Address{}, 0, false
-	}
-	return token.contract, token.decimals, true
-}
-
-func TokenByAddress(address common.Address) (string, int, bool) {
-	for n, t := range tokenRepo {
-		if t.contract.Hex() == address.Hex() {
-			return n, t.decimals, true
-		}
-	}
-	return "", 0, false
-}
-
 type Client struct {
 	client   *ethclient.Client
-	instance *Token
-	info     tokenInfo
+	instance *erc20.Erc20
+	info     *Token
 }
 
-func NewClient(tokenName string, client *ethclient.Client) (*Client, error) {
-	token, ok := tokenRepo[tokenName]
-	if !ok {
-		return nil, errors.Errorf("Token not registered: %s", tokenName)
-	}
-	instance, err := NewToken(token.contract, client)
+func NewClient(token *Token, client *ethclient.Client) (*Client, error) {
+	instance, err := erc20.NewErc20(token.contract, client)
 	if err != nil {
 		return nil, err
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/dutchx"
@@ -39,7 +40,11 @@ func Dial(url string) (*Client, error) {
 }
 
 func (c *Client) Token(tokenName string) (*token.Client, error) {
-	return token.NewClient(tokenName, c.Client)
+	t, ok := token.DefaultRegistry.ByName(tokenName)
+	if !ok {
+		return nil, errors.Errorf("Unknown token: %s", tokenName)
+	}
+	return token.NewClient(t, c.Client)
 }
 
 func (c *Client) Dutchx() (*dutchx.Client, error) {
