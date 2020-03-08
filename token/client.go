@@ -21,6 +21,10 @@ import (
 )
 
 const (
+	KyberETH         = "eth"
+	KyberETHContract = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+	KyberETHDecimals = 18
+
 	WETH         = "weth"
 	WETHContract = "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2"
 	WETHDecimals = 18
@@ -132,6 +136,7 @@ var (
 func init() {
 	gasLimit = big.NewInt(5000000000)
 	gasPrice = 780000
+	DefaultRegistry.Register(KyberETH, KyberETHContract, KyberETHDecimals)
 	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
 	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
 	DefaultRegistry.Register(BAT, BATContract, BATDecimals)

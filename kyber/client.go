@@ -22,8 +22,8 @@ const (
 )
 
 var (
-	gasLimit                 = big.NewInt(5000000000)
-	gasPrice                 = uint64(7800000)
+	gasPrice                 = big.NewInt(5000000000)
+	gasLimit                 = uint64(7800000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
@@ -47,6 +47,7 @@ func NewClient(client *ethclient.Client) (*Client, error) {
 
 func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token, quantity *big.Float) (*big.Float, *big.Float, error) {
 	quantityInt := source.ToGwei(quantity)
+	log.Infof("GetExpectedRate input %s %s %s", source.Contract().String(), dest.Contract().String(), quantityInt.String())
 	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source.Contract(), dest.Contract(), quantityInt)
 	if err != nil {
 		return nil, nil, err
@@ -56,8 +57,15 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token,
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, minRate *big.Float) (*types.Transaction, error) {
+	suggestedGasPrice, err := c.c.SuggestGasPrice(ctx)
+	if err != nil {
+		return nil, err
+	}
+	log.Infof("Suggested gas price: %s", suggestedGasPrice)
+
 	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
-	transactOpts, err := account.NewTransactor(ctx, amountInt, gasLimit, gasPrice)
+	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -70,7 +78,12 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 }
 
 func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
-	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasLimit, gasPrice)
+	suggestedGasPrice, err := c.c.SuggestGasPrice(ctx)
+	if err != nil {
+		return nil, err
+	}
+	log.Infof("Suggested gas price: %s", suggestedGasPrice)
+	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -105,5 +118,4 @@ func (c *Client) GetTradeEvents(ctx context.Context, addresses []common.Address,
 	}
 
 	return trades, nil
-
 }
