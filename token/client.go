@@ -182,6 +182,10 @@ func (t Token) Name() string {
 	return t.name
 }
 
+func (t Token) Decimals() int {
+	return t.decimals
+}
+
 type Registry struct {
 	data  map[string]Token
 	mutex sync.RWMutex
