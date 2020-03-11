@@ -172,6 +172,9 @@ func doClientTokenAllowance(server, tokenName, contractStr, addressStr string) e
 
 func doClientTokenTransfer(server string, account *wallet.Account, tokenName, sourceAccount, destAccount string,
 	amount float64, transmit bool) error {
+	if !transmit {
+		return errors.New("Sending without transmitting is currently not supported")
+	}
 	c, err := client.Dial(server)
 	if err != nil {
 		return err
@@ -180,9 +183,11 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	if err != nil {
 		return err
 	}
-	if err := token.Transfer(account, destAccount, amount, transmit); err != nil {
+	tx, err := token.Transfer(context.Background(), account, common.HexToAddress(destAccount), big.NewFloat(amount))
+	if err != nil {
 		return err
 	}
+	fmt.Printf("Transfer transaction: %s\n", tx.Hash().Hex())
 	return nil
 }
 

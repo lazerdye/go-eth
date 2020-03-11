@@ -279,74 +279,15 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Fl
 	return balanceFloat, nil
 }
 
-func (c *Client) Transfer(sourceAccount *wallet.Account, destAccount string, amount float64, transmit bool) error {
-	// TODO: Why did I do this?
-	nonce, err := c.client.PendingNonceAt(context.Background(), sourceAccount.Account.Address)
-	if err != nil {
-		return err
-	}
-	toAddress := common.HexToAddress(destAccount)
-	transferFnSignature := []byte("transfer(address,uint256)")
-
-	hash := sha3.NewLegacyKeccak256()
-	hash.Write(transferFnSignature)
-	methodID := hash.Sum(nil)[:4]
-	log.Infof("Hash: %s", hexutil.Encode(methodID))
-	paddedAddress := common.LeftPadBytes(toAddress.Bytes(), 32)
-	log.Infof("Padded hash: %s", hexutil.Encode(paddedAddress))
-
-	fAmount := new(big.Float).Mul(big.NewFloat(amount), big.NewFloat(math.Pow10(c.info.decimals)))
+func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount *big.Float) (*types.Transaction, error) {
+	fAmount := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	paddedAmount := common.LeftPadBytes(iAmount.Bytes(), 32)
-	log.Infof("Padded amount: %s", hexutil.Encode(paddedAmount))
-	var data []byte
-	data = append(data, methodID...)
-	data = append(data, paddedAddress...)
-	data = append(data, paddedAmount...)
-
-	//gasLimit, err := c.client.EstimateGas(context.Background(), ethereum.CallMsg{
-	//	To:   &toAddress,
-	//	Data: data,
-	//})
-	//if err != nil {
-	//	return err
-	//}
-	gasLimit := uint64(200000) // TODO: Gas limit.
-	log.Infof("Gas limit: %d", gasLimit)
-
-	gasPrice, err := c.client.SuggestGasPrice(context.Background())
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasLimit, gasPrice)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	log.Infof("Gas price: %d", gasPrice)
-
-	value := big.NewInt(0) // no ethereum transferred
-	tx := types.NewTransaction(nonce, c.info.contract, value, gasLimit, gasPrice, data)
-	log.Infof("Transaction: %+v", tx)
-
-	chainID, err := c.client.NetworkID(context.Background())
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Infof("ChainID: %+v", chainID)
-
-	txSigned, err := sourceAccount.SignTx(tx, chainID)
-	if err != nil {
-		return err
-	}
-	log.Infof("Signed transaction: %+v", txSigned)
-
-	fmt.Printf("Transaction: %s\n", txSigned.Hash().Hex())
-
-	// TODO: Let the sender do it.
-	if transmit {
-		err = c.client.SendTransaction(context.Background(), txSigned)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
+	opts.Context = ctx
+	return c.instance.Transfer(opts, destAccount, iAmount)
 }
 
 func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
