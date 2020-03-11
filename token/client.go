@@ -2,19 +2,15 @@ package token
 
 import (
 	"context"
-	"fmt"
 	"math"
 	"math/big"
 	"sync"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/pkg/errors"
-	log "github.com/sirupsen/logrus"
-	"golang.org/x/crypto/sha3"
 
 	"github.com/lazerdye/go-eth/token/erc20"
 	"github.com/lazerdye/go-eth/wallet"
