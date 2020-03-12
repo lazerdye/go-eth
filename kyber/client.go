@@ -23,7 +23,7 @@ const (
 )
 
 var (
-	gasLimit                 = uint64(7800000)
+	tradeGasLimit            = uint64(300000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
@@ -67,11 +67,12 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 	log.Infof("Gas price: %f - wait time: %fs", gasPrice, waitTime)
 
 	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
-	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, gasLimit)
-	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, gasLimit)
+	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
+	transactOpts.Nonce = big.NewInt(60)
 	log.Infof("Transact Opts: %+v", transactOpts)
 	minRateInt, _ := new(big.Float).Mul(minRate, big.NewFloat(math.Pow10(18))).Int(nil)
 	transaction, err := c.instance.SwapEtherToToken(transactOpts, token, minRateInt)
@@ -86,7 +87,7 @@ func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
