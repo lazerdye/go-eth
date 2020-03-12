@@ -9,9 +9,10 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 	"github.com/pkg/errors"
 
+	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/token/erc20"
 	"github.com/lazerdye/go-eth/wallet"
 )
@@ -120,18 +121,15 @@ const (
 	ZRX         = "zrx"
 	ZRXContract = "0xE41d2489571d322189246DaFA5ebDe1F4699F498"
 	ZRXDecimals = 18
+
+	averageGasSpeed = gasstation.Average
 )
 
 var (
-	gasLimit *big.Int
-	gasPrice uint64
-
 	DefaultRegistry = NewRegistry()
 )
 
 func init() {
-	gasLimit = big.NewInt(5000000000)
-	gasPrice = 780000
 	DefaultRegistry.Register(KyberETH, KyberETHContract, KyberETHDecimals)
 	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
 	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
@@ -248,17 +246,26 @@ func (r *Registry) Names() []string {
 }
 
 type Client struct {
-	client   *ethclient.Client
+	*client.Client
+
 	instance *erc20.Erc20
 	info     *Token
 }
 
-func NewClient(token *Token, client *ethclient.Client) (*Client, error) {
+func NewClient(client *client.Client, token *Token) (*Client, error) {
 	instance, err := erc20.NewErc20(token.contract, client)
 	if err != nil {
 		return nil, err
 	}
 	return &Client{client, instance, token}, nil
+}
+
+func ByName(client *client.Client, name string) (*Client, error) {
+	token, ok := DefaultRegistry.ByName(name)
+	if !ok {
+		return nil, errors.Errorf("Unknown token: %s", name)
+	}
+	return NewClient(client, token)
 }
 
 func (c *Client) ContractAddress() common.Address {
@@ -276,9 +283,13 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Fl
 }
 
 func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount *big.Float) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	if err != nil {
+		return nil, err
+	}
 	fAmount := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := sourceAccount.NewTransactor(ctx, nil, gasLimit, gasPrice)
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, client.GasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -287,9 +298,13 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 }
 
 func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	if err != nil {
+		return nil, err
+	}
 	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := from.NewTransactor(ctx, nil, gasLimit, gasPrice)
+	opts, err := from.NewTransactor(ctx, nil, gasPrice, client.GasLimit)
 	if err != nil {
 		return nil, err
 	}

@@ -5,6 +5,8 @@ import (
 	"math"
 	"math/big"
 
+	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
 	log "github.com/sirupsen/logrus"
@@ -12,7 +14,6 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethclient"
 )
 
 const (
@@ -22,25 +23,27 @@ const (
 )
 
 var (
-	gasPrice                 = big.NewInt(5000000000)
 	gasLimit                 = uint64(7800000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
+
+	tradeGasSpeed = gasstation.Fast
 )
 
 type Client struct {
-	c        *ethclient.Client
+	*client.Client
+
 	instance *Kyber
 }
 
-func NewClient(client *ethclient.Client) (*Client, error) {
+func NewClient(client *client.Client) (*Client, error) {
 	instance, err := NewKyber(KyberNetworkProxyAddress, client)
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
-		c:        client,
+		Client:   client,
 		instance: instance,
 	}, nil
 }
@@ -57,11 +60,11 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token,
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, minRate *big.Float) (*types.Transaction, error) {
-	suggestedGasPrice, err := c.c.SuggestGasPrice(ctx)
+	gasPrice, waitTime, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Suggested gas price: %s", suggestedGasPrice)
+	log.Infof("Gas price: %f - wait time: %fs", gasPrice, waitTime)
 
 	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
 	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, gasLimit)
@@ -69,6 +72,8 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
+	transactOpts.Nonce = big.NewInt(40)
+	log.Infof("Transact Opts: %+v", transactOpts)
 	minRateInt, _ := new(big.Float).Mul(minRate, big.NewFloat(math.Pow10(18))).Int(nil)
 	transaction, err := c.instance.SwapEtherToToken(transactOpts, token, minRateInt)
 	if err != nil {
@@ -78,11 +83,10 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 }
 
 func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
-	suggestedGasPrice, err := c.c.SuggestGasPrice(ctx)
+	gasPrice, _, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Suggested gas price: %s", suggestedGasPrice)
 	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, gasLimit)
 	if err != nil {
 		return nil, err

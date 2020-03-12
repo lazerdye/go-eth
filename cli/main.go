@@ -12,6 +12,8 @@ import (
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/etherscan"
+	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
@@ -105,7 +107,7 @@ func doAccountNew(keystore string, passphrase string) error {
 
 func doClientBalance(server, addressStr string) error {
 	address := common.HexToAddress(addressStr)
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
@@ -120,7 +122,7 @@ func doClientBalance(server, addressStr string) error {
 
 func doClientTransfer(server string, account *wallet.Account, destAddress string, amount float64) error {
 	ctx := context.Background()
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
@@ -133,11 +135,11 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 }
 
 func doClientTokenBalance(server, tokenName, addressStr string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
-	token, err := c.Token(tokenName)
+	token, err := token.ByName(c, tokenName)
 	if err != nil {
 		return err
 	}
@@ -151,11 +153,11 @@ func doClientTokenBalance(server, tokenName, addressStr string) error {
 }
 
 func doClientTokenAllowance(server, tokenName, contractStr, addressStr string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
-	token, err := c.Token(tokenName)
+	token, err := token.ByName(c, tokenName)
 	if err != nil {
 		return err
 	}
@@ -175,11 +177,11 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 	if !transmit {
 		return errors.New("Sending without transmitting is currently not supported")
 	}
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
-	token, err := c.Token(tokenName)
+	token, err := token.ByName(c, tokenName)
 	if err != nil {
 		return err
 	}
@@ -192,11 +194,11 @@ func doClientTokenTransfer(server string, account *wallet.Account, tokenName, so
 }
 
 func doClientTokenApprove(server string, account *wallet.Account, tokenName, contractStr, amountStr string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
-	token, err := c.Token(tokenName)
+	token, err := token.ByName(c, tokenName)
 	if err != nil {
 		return err
 	}
@@ -214,7 +216,7 @@ func doClientTokenApprove(server string, account *wallet.Account, tokenName, con
 }
 
 func doClientTokenDutchxGetAuctionInfo(server, address1Str, address2Str string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
@@ -253,7 +255,7 @@ func doClientTokenDutchxGetAuctionInfo(server, address1Str, address2Str string) 
 }
 
 func doClientTokenDutchxListen(server string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
@@ -269,7 +271,7 @@ func doClientTokenDutchxListen(server string) error {
 }
 
 func doClientTokenDutchxGetFeeRatio(server string, address string) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
@@ -286,11 +288,11 @@ func doClientTokenDutchxGetFeeRatio(server string, address string) error {
 }
 
 func doClientTokenKyberExpectedRate(server string, source, dest string, quantity float64) error {
-	c, err := client.Dial(server)
+	c, err := client.Dial(server, gasstation.NewClient())
 	if err != nil {
 		return err
 	}
-	k, err := c.Kyber()
+	k, err := kyber.NewClient(c)
 	if err != nil {
 		return err
 	}
@@ -332,7 +334,7 @@ func newClient() (*client.Client, error) {
 	if *clientServer == "" {
 		return nil, errors.New("clientServer parameter required")
 	}
-	return client.Dial(*clientServer)
+	return client.Dial(*clientServer, gasstation.NewClient())
 }
 
 func newZeroexClient() (*zeroex.Client, error) {
@@ -517,6 +519,11 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
+			log.Fatal(err)
+		}
+	case "gasstation":
+		client := gasstation.NewClient()
+		if err := gasstationCommand(context.Background(), client); err != nil {
 			log.Fatal(err)
 		}
 	}

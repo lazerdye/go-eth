@@ -9,50 +9,40 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/dutchx"
-	"github.com/lazerdye/go-eth/kyber"
-	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
 type Client struct {
 	*ethclient.Client
+
+	gasstation *gasstation.Client
 }
 
 const (
 	ethDigits = 18
+
+	GasLimit         = uint64(7800000)
+	TransferGasSpeed = gasstation.SafeLow
 )
 
-var (
-	GasLimit = big.NewInt(5000000000)
-	GasPrice = uint64(7800000)
-)
-
-func Dial(url string) (*Client, error) {
+func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{Client: client}, nil
-}
-
-func (c *Client) Token(tokenName string) (*token.Client, error) {
-	t, ok := token.DefaultRegistry.ByName(tokenName)
-	if !ok {
-		return nil, errors.Errorf("Unknown token: %s", tokenName)
-	}
-	return token.NewClient(t, c.Client)
+	return &Client{client, gasstation}, nil
 }
 
 func (c *Client) Dutchx() (*dutchx.Client, error) {
 	return dutchx.NewClient(c.Client)
 }
 
-func (c *Client) Kyber() (*kyber.Client, error) {
-	return kyber.NewClient(c.Client)
+func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (*big.Float, float64, error) {
+	return c.gasstation.GasPrice(ctx, speed)
 }
 
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
