@@ -72,7 +72,6 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
-	transactOpts.Nonce = big.NewInt(40)
 	log.Infof("Transact Opts: %+v", transactOpts)
 	minRateInt, _ := new(big.Float).Mul(minRate, big.NewFloat(math.Pow10(18))).Int(nil)
 	transaction, err := c.instance.SwapEtherToToken(transactOpts, token, minRateInt)
