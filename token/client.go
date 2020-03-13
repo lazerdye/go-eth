@@ -293,7 +293,6 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	if err != nil {
 		return nil, err
 	}
-	opts.Context = ctx
 	return c.instance.Transfer(opts, destAccount, iAmount)
 }
 
@@ -308,7 +307,7 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	if err != nil {
 		return nil, err
 	}
-	opts.Context = ctx
+
 	return c.instance.Approve(opts, contract, iAmount)
 }
 

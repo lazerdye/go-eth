@@ -26,7 +26,7 @@ const (
 	ethDigits = 18
 
 	GasLimit         = uint64(7800000)
-	TransferGasSpeed = gasstation.SafeLow
+	TransferGasSpeed = gasstation.Average
 )
 
 func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
