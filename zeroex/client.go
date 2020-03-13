@@ -9,6 +9,7 @@ import (
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex/ether_token"
 	"github.com/lazerdye/go-eth/zeroex/exchange"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -19,8 +20,7 @@ var (
 	EtherTokenAddress = common.HexToAddress("0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2")
 	ExchangeAddress   = common.HexToAddress("0x61935cbdd02287b511119ddb11aeb42f1593b7ef")
 
-	gasPrice = big.NewInt(5000000000)
-	gasLimit = uint64(7800000)
+	gasLimit = uint64(300000)
 )
 
 type Client struct {
@@ -70,9 +70,33 @@ func (c *Client) EtherTokenBalanceOf(ctx context.Context, account *wallet.Accoun
 	return value, nil
 }
 
+func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	if err != nil {
+		return nil, err
+	}
+	log.Infof("Order: %+v amount: %f signature: %x", order, amount, signature)
+	return c.exchangeInstance.FillOrder(transactOpts, order, amount, signature)
+}
+
+func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	if err != nil {
+		return nil, err
+	}
+	return c.exchangeInstance.BatchFillOrders(transactOpts, orders, amounts, signatures)
+}
+
 func (c *Client) BatchFillOrKillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
-	// TODO: Handle buys too
-	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}

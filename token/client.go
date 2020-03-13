@@ -123,6 +123,7 @@ const (
 	ZRXDecimals = 18
 
 	averageGasSpeed = gasstation.Average
+	lowGasLimit     = uint64(100000)
 )
 
 var (
@@ -289,7 +290,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	fAmount := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, client.GasLimit)
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, lowGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -303,7 +304,7 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	}
 	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := from.NewTransactor(ctx, nil, gasPrice, client.GasLimit)
+	opts, err := from.NewTransactor(ctx, nil, gasPrice, lowGasLimit)
 	if err != nil {
 		return nil, err
 	}

@@ -27,6 +27,8 @@ const (
 
 	GasLimit         = uint64(7800000)
 	TransferGasSpeed = gasstation.Average
+	BuyGasSpeed      = gasstation.Average
+	SellGasSpeed     = gasstation.Fast
 )
 
 func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
