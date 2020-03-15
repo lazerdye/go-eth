@@ -106,3 +106,27 @@ func (c *Client) BatchFillOrKillOrders(ctx context.Context, account *wallet.Acco
 	}
 	return c.exchangeInstance.BatchFillOrKillOrders(transactOpts, orders, amounts, signatures)
 }
+
+func (c *Client) GetFillEvents(ctx context.Context, hashes [][32]byte, startBlock uint64, endBlock *uint64) ([]exchange.ExchangeFill, error) {
+	filterOpts := &bind.FilterOpts{
+		Context: ctx,
+		Start:   startBlock,
+		End:     endBlock,
+	}
+	fit, err := c.exchangeInstance.FilterFill(filterOpts, nil, nil, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer fit.Close()
+
+	var trades []exchange.ExchangeFill
+	for {
+		if !fit.Next() {
+			break
+		}
+		log.Infof("Trade: %+v", fit.Event)
+		trades = append(trades, *fit.Event)
+	}
+
+	return trades, nil
+}
