@@ -110,6 +110,7 @@ func (c *Client) GetTradeEvents(ctx context.Context, addresses []common.Address,
 	if err != nil {
 		return nil, err
 	}
+	defer fit.Close()
 
 	var trades []KyberExecuteTrade
 	for {
