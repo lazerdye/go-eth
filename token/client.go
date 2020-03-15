@@ -269,8 +269,20 @@ func ByName(client *client.Client, name string) (*Client, error) {
 	return NewClient(client, token)
 }
 
+func (c Client) FromGwei(i *big.Int) *big.Float {
+	return c.info.FromGwei(i)
+}
+
+func (c Client) ToGwei(f *big.Float) *big.Int {
+	return c.info.ToGwei(f)
+}
+
 func (c *Client) ContractAddress() common.Address {
 	return c.info.contract
+}
+
+func (c *Client) Name() string {
+	return c.info.Name()
 }
 
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
