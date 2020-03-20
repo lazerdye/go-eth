@@ -123,7 +123,7 @@ const (
 	ZRXDecimals = 18
 
 	averageGasSpeed = gasstation.Average
-	lowGasLimit     = uint64(100000)
+	lowGasLimit     = uint64(200000)
 )
 
 var (
