@@ -68,7 +68,9 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	}
 
 	if transactionResult.Status != "1" {
-		return nil, errors.Errorf("Error with transaction list: %+v", transactionResult)
+		if transactionResult.Message != "No transactions found" {
+			return nil, errors.Errorf("Error with TransactionsByAddress: %+v", transactionResult)
+		}
 	}
 
 	return transactionResult.Result, nil
@@ -92,7 +94,9 @@ func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contra
 	}
 
 	if transactionResult.Status != "1" {
-		return nil, errors.Errorf("Error with transaction list: %+v", transactionResult)
+		if transactionResult.Message != "No transactions found" {
+			return nil, errors.Errorf("Error with TokenTransactionsByAddress: %+v", transactionResult)
+		}
 	}
 
 	return transactionResult.Result, nil
