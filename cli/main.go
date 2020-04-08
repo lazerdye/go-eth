@@ -538,6 +538,38 @@ func main() {
 		if err := uniswapGetExchange(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
+	case "client uniswap eth-to-token-input":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGetEthToTokenInputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswap eth-to-token-output":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGetEthToTokenOutputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswap token-to-eth-input":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGetTokenToEthInputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswap token-to-eth-output":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
 	case "gasstation":
 		client := gasstation.NewClient()
 		if err := gasstationCommand(context.Background(), client); err != nil {

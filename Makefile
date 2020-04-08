@@ -21,6 +21,9 @@ zeroex/exchange/exchange.go: zeroex/exchange/exchange.abi
 uniswapv1/factory.go: uniswapv1/factory.abi
 	abigen --abi=uniswapv1/factory.abi --pkg=uniswapv1 --type=Factory --out=uniswapv1/factory.go
 
+uniswapv1/exchange.go: uniswapv1/exchange.abi
+	abigen --abi=uniswapv1/exchange.abi --pkg=uniswapv1 --type=Exchange --out=uniswapv1/exchange.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
