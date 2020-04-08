@@ -11,26 +11,26 @@ import (
 )
 
 var (
-	UniswapV1ExchangeContract = common.HexToAddress("0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
+	UniswapV1FactoryContract = common.HexToAddress("0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
 )
 
 type Client struct {
 	*client.Client
 
-	exchange *Exchange
+	factory *Factory
 }
 
 func NewClient(client *client.Client) (*Client, error) {
-	exchangeInstance, err := NewExchange(UniswapV1ExchangeContract, client)
+	factoryInstance, err := NewFactory(UniswapV1FactoryContract, client)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, exchangeInstance}, nil
+	return &Client{client, factoryInstance}, nil
 }
 
 func (c *Client) GetExchange(ctx context.Context, tok *token.Client) (common.Address, error) {
 	opts := &bind.CallOpts{Context: ctx}
-	address, err := c.exchange.GetExchange(opts, tok.ContractAddress())
+	address, err := c.factory.GetExchange(opts, tok.ContractAddress())
 	if err != nil {
 		return common.Address{}, err
 	}
