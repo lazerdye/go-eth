@@ -15,6 +15,7 @@ import (
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/uniswapv1"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
 )
@@ -370,6 +371,14 @@ func getAccount() (*wallet.Account, bool, error) {
 	}
 }
 
+func newUniswapV1Client() (*uniswapv1.Client, error) {
+	client, err := newClient()
+	if err != nil {
+		return nil, err
+	}
+	return uniswapv1.NewClient(client)
+}
+
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -519,6 +528,14 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswap get-exchange":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGetExchange(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
 	case "gasstation":
