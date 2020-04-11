@@ -165,11 +165,11 @@ type Token struct {
 	decimals int
 }
 
-func (t Token) FromGwei(i *big.Int) *big.Float {
+func (t Token) FromWei(i *big.Int) *big.Float {
 	return new(big.Float).Quo(new(big.Float).SetInt(i), big.NewFloat(math.Pow10(t.decimals)))
 }
 
-func (t Token) ToGwei(f *big.Float) *big.Int {
+func (t Token) ToWei(f *big.Float) *big.Int {
 	i, _ := new(big.Float).Mul(f, big.NewFloat(math.Pow10(t.decimals))).Int(nil)
 	return i
 }
@@ -269,12 +269,12 @@ func ByName(client *client.Client, name string) (*Client, error) {
 	return NewClient(client, token)
 }
 
-func (c Client) FromGwei(i *big.Int) *big.Float {
-	return c.info.FromGwei(i)
+func (c Client) FromWei(i *big.Int) *big.Float {
+	return c.info.FromWei(i)
 }
 
-func (c Client) ToGwei(f *big.Float) *big.Int {
-	return c.info.ToGwei(f)
+func (c Client) ToWei(f *big.Float) *big.Int {
+	return c.info.ToWei(f)
 }
 
 func (c *Client) ContractAddress() common.Address {
@@ -323,7 +323,7 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 		return nil, err
 	}
 
-	iAmount := c.ToGwei(value)
+	iAmount := c.ToWei(value)
 	return c.instance.Approve(opts, contract, iAmount)
 }
 
@@ -333,5 +333,5 @@ func (c *Client) Allowance(ctx context.Context, address, contract common.Address
 	if err != nil {
 		return nil, err
 	}
-	return c.FromGwei(iAmount), nil
+	return c.FromWei(iAmount), nil
 }

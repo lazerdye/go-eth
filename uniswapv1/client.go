@@ -2,15 +2,16 @@ package uniswapv1
 
 import (
 	"context"
-	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/lazerdye/go-eth/gasstation"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
@@ -59,52 +60,61 @@ func (e *ExchangeClient) ContractAddress() common.Address {
 }
 
 func (e *ExchangeClient) GetEthToTokenInputPrice(ctx context.Context, ethSold *big.Float) (*big.Float, error) {
-	// Convert ethSold to int.
-	intValue, _ := new(big.Float).Mul(ethSold, big.NewFloat(math.Pow10(18))).Int(nil)
-
 	opts := &bind.CallOpts{Context: ctx}
-	tokenBought, err := e.exchange.GetEthToTokenInputPrice(opts, intValue)
+	tokenBought, err := e.exchange.GetEthToTokenInputPrice(opts, client.EthToWei(ethSold))
 	if err != nil {
 		return nil, err
 	}
 
-	return e.FromGwei(tokenBought), nil
+	return e.FromWei(tokenBought), nil
 }
 
 func (e *ExchangeClient) GetEthToTokenOutputPrice(ctx context.Context, tokensBought *big.Float) (*big.Float, error) {
 	// Convert tokensBought to int.
 
 	opts := &bind.CallOpts{Context: ctx}
-	ethSold, err := e.exchange.GetEthToTokenOutputPrice(opts, e.ToGwei(tokensBought))
+	ethSold, err := e.exchange.GetEthToTokenOutputPrice(opts, e.ToWei(tokensBought))
 	if err != nil {
 		return nil, err
 	}
 
-	value := new(big.Float).Quo(new(big.Float).SetInt(ethSold), big.NewFloat(math.Pow10(18)))
-
-	return value, nil
+	return client.EthFromWei(ethSold), nil
 }
 
 func (e *ExchangeClient) GetTokenToEthInputPrice(ctx context.Context, tokensSold *big.Float) (*big.Float, error) {
 	opts := &bind.CallOpts{Context: ctx}
-	ethBought, err := e.exchange.GetTokenToEthInputPrice(opts, e.ToGwei(tokensSold))
+	ethBought, err := e.exchange.GetTokenToEthInputPrice(opts, e.ToWei(tokensSold))
 	if err != nil {
 		return nil, err
 	}
 
-	value := new(big.Float).Quo(new(big.Float).SetInt(ethBought), big.NewFloat(math.Pow10(18)))
-
-	return value, nil
+	return client.EthFromWei(ethBought), nil
 }
 
 func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought *big.Float) (*big.Float, error) {
-	intValue, _ := new(big.Float).Mul(ethBought, big.NewFloat(math.Pow10(18))).Int(nil)
-
 	opts := &bind.CallOpts{Context: ctx}
-	tokenSold, err := e.exchange.GetTokenToEthOutputPrice(opts, intValue)
+	tokenSold, err := e.exchange.GetTokenToEthOutputPrice(opts, client.EthToWei(ethBought))
 	if err != nil {
 		return nil, err
 	}
 
-	return e.FromGwei(tokenSold), nil
+	return e.FromWei(tokenSold), nil
+}
+
+func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold *big.Float, tokensBought *big.Float, deadline int) (*types.Transaction, error) {
+	gasPrice, _, err := e.GasPrice(ctx, client.TransferGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, client.EthToWei(maxEthSold), gasPrice, tradeGasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	tx, err := e.exchange.EthToTokenSwapOutput(opts, e.ToWei(tokensBought), big.NewInt(int64(deadline)))
+	if err != nil {
+		return nil, err
+	}
+
+	return tx, nil
 }

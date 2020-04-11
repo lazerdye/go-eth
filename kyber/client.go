@@ -49,7 +49,7 @@ func NewClient(client *client.Client) (*Client, error) {
 }
 
 func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token, quantity *big.Float) (*big.Float, *big.Float, error) {
-	quantityInt := source.ToGwei(quantity)
+	quantityInt := source.ToWei(quantity)
 	log.Infof("GetExpectedRate input %s %s %s", source.Contract().String(), dest.Contract().String(), quantityInt.String())
 	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source.Contract(), dest.Contract(), quantityInt)
 	if err != nil {

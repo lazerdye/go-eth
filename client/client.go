@@ -104,3 +104,13 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	return txSigned, nil
 }
+
+func EthToWei(fValue *big.Float) *big.Int {
+	intValue, _ := new(big.Float).Mul(fValue, big.NewFloat(math.Pow10(ethDigits))).Int(nil)
+
+	return intValue
+}
+
+func EthFromWei(iValue *big.Int) *big.Float {
+	return new(big.Float).Quo(new(big.Float).SetInt(iValue), big.NewFloat(math.Pow10(18)))
+}
