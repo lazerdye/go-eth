@@ -7,12 +7,10 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/lazerdye/go-eth/gasstation"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token"
-	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
@@ -109,17 +107,4 @@ func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought
 	}
 
 	return e.FromGwei(tokenSold), nil
-}
-
-func (e *ExchangeClient) Approve(ctx context.Context, account *wallet.Account, tokenAmount *big.Float) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, tradeGasSpeed)
-	if err != nil {
-		return nil, err
-	}
-	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, tradeGasLimit)
-	if err != nil {
-		return nil, err
-	}
-	intAmount := e.ToGwei(tokenAmount)
-	return e.exchange.Approve(transactOpts, account.Address(), intAmount)
 }

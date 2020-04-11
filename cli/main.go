@@ -570,21 +570,6 @@ func main() {
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap approve":
-		uClient, err := newUniswapV1Client()
-		if err != nil {
-			log.Fatal(err)
-		}
-		account, unlocked, err := getAccount()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if !unlocked {
-			log.Fatal("Unlocked wallet required")
-		}
-		if err := uniswapApprove(context.Background(), uClient, account); err != nil {
-			log.Fatal(err)
-		}
 	case "gasstation":
 		client := gasstation.NewClient()
 		if err := gasstationCommand(context.Background(), client); err != nil {

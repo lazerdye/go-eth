@@ -318,17 +318,20 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	if err != nil {
 		return nil, err
 	}
-	fAmount := new(big.Float).Mul(value, big.NewFloat(math.Pow10(c.info.decimals)))
-	iAmount, _ := fAmount.Int(nil)
 	opts, err := from.NewTransactor(ctx, nil, gasPrice, lowGasLimit)
 	if err != nil {
 		return nil, err
 	}
 
+	iAmount := c.ToGwei(value)
 	return c.instance.Approve(opts, contract, iAmount)
 }
 
-func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (*big.Int, error) {
+func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (*big.Float, error) {
 	opts := bind.CallOpts{Context: ctx}
-	return c.instance.Allowance(&opts, address, contract)
+	iAmount, err := c.instance.Allowance(&opts, address, contract)
+	if err != nil {
+		return nil, err
+	}
+	return c.FromGwei(iAmount), nil
 }
