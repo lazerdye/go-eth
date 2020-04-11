@@ -409,7 +409,7 @@ func main() {
 		if !unlocked {
 			log.Fatal("Passphrase required")
 		}
-		fmt.Printf("Unlocked %s", *address)
+		fmt.Printf("Unlocked %s\n", *address)
 	case "client balance":
 		if *address == "" {
 			log.Fatal("Parameter --address required")
@@ -568,6 +568,21 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswap approve":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		account, unlocked, err := getAccount()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if !unlocked {
+			log.Fatal("Unlocked wallet required")
+		}
+		if err := uniswapApprove(context.Background(), uClient, account); err != nil {
 			log.Fatal(err)
 		}
 	case "gasstation":

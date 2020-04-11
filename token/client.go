@@ -281,6 +281,10 @@ func (c *Client) ContractAddress() common.Address {
 	return c.info.contract
 }
 
+func (c *Client) Decimals() int {
+	return c.info.decimals
+}
+
 func (c *Client) Name() string {
 	return c.info.Name()
 }

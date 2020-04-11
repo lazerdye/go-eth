@@ -7,6 +7,7 @@ import (
 
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/uniswapv1"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
@@ -21,6 +22,8 @@ var (
 	clientUniswapGetTokenToEthInputPriceEthBought     = clientUniswapGetTokenToEthInputPrice.Arg("eth-bought", "Ethereum bought").Required().Float64()
 	clientUniswapGetTokenToEthOutputPrice             = clientUniswapCommand.Command("token-to-eth-output", "Get token to eth output price")
 	clientUniswapGetTokenToEthOutputPriceTokensSold   = clientUniswapGetTokenToEthOutputPrice.Arg("tokens-sold", "Tokens sold").Required().Float64()
+	clientUniswapApprove                              = clientUniswapCommand.Command("approve", "Approve exchange")
+	clientUniswapApproveAmount                        = clientUniswapApprove.Arg("amount", "Amount to approve").Required().Float64()
 )
 
 func getExchange(ctx context.Context, client *uniswapv1.Client) (*uniswapv1.ExchangeClient, error) {
@@ -107,6 +110,23 @@ func uniswapGetTokenToEthOutputPrice(ctx context.Context, client *uniswapv1.Clie
 	}
 
 	fmt.Printf("Token sold: %.18f\n", ethBought)
+
+	return nil
+}
+
+func uniswapApprove(ctx context.Context, client *uniswapv1.Client, account *wallet.Account) error {
+	ex, err := getExchange(ctx, client)
+	if err != nil {
+		return err
+	}
+
+	amountToApprove := big.NewFloat(*clientUniswapApproveAmount)
+	tx, err := ex.Approve(ctx, account, amountToApprove)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Transaction: %+v\n", tx)
 
 	return nil
 }
