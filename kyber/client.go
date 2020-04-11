@@ -56,7 +56,9 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token,
 		return nil, nil, err
 	}
 
-	return dest.FromGwei(rate.ExpectedRate), dest.FromGwei(rate.SlippageRate), nil
+	expectedRate := new(big.Float).Quo(new(big.Float).SetInt(rate.ExpectedRate), big.NewFloat(math.Pow10(18)))
+	slippageRate := new(big.Float).Quo(new(big.Float).SetInt(rate.SlippageRate), big.NewFloat(math.Pow10(18)))
+	return expectedRate, slippageRate, nil
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, minRate *big.Float) (*types.Transaction, error) {
