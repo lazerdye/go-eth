@@ -2,6 +2,7 @@ package etherscan
 
 import (
 	"context"
+	"math/big"
 	"net/url"
 	"strconv"
 
@@ -131,4 +132,10 @@ func (c *Client) ContractExecutionStatus(ctx context.Context, transaction string
 	}
 
 	return contractExecutionResult.Result.IsError != "0", contractExecutionResult.Result.ErrDescription, nil
+}
+
+func CalculateFee(t *Transaction) *big.Int {
+	gasPriceInt, _ := new(big.Int).SetString(t.GasPrice, 10)
+	gasUsedInt, _ := new(big.Int).SetString(t.GasUsed, 10)
+	return new(big.Int).Mul(gasPriceInt, gasUsedInt)
 }

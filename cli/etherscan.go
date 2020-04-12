@@ -44,7 +44,9 @@ func doEtherscanList(ctx context.Context, address string) error {
 	}
 
 	for _, t := range transactions {
+		feeInt := etherscan.CalculateFee(&t)
 		value := t.Value
+		feeValue := feeInt.String()
 		if *etherscanDecimals != 0 {
 			iValue, ok := new(big.Int).SetString(value, 10)
 			if !ok {
@@ -52,6 +54,9 @@ func doEtherscanList(ctx context.Context, address string) error {
 			}
 			fValue := new(big.Float).Quo(new(big.Float).SetInt(iValue), big.NewFloat(math.Pow10(*etherscanDecimals)))
 			value = fmt.Sprintf(fmt.Sprintf("%%.%df", *etherscanDecimals), fValue)
+
+			feeFloat := new(big.Float).Quo(new(big.Float).SetInt(feeInt), big.NewFloat(math.Pow10(18)))
+			feeValue = fmt.Sprintf("%.18f", feeFloat)
 		}
 		if strings.EqualFold(address, t.From) {
 			fmt.Printf("%s\tOUT -> %s\n", t.Hash, t.To)
@@ -60,7 +65,11 @@ func doEtherscanList(ctx context.Context, address string) error {
 		} else {
 			return errors.New("Cannot find from/to")
 		}
-		fmt.Printf("\t%s (%s)\t%s\n", t.BlockNumber, t.Timestamp, value)
+		fmt.Printf("\t%s (%s)\t%s - %s", t.BlockNumber, t.Timestamp, value, feeValue)
+		if t.IsError != "0" && t.IsError != "" {
+			fmt.Printf("\tFAILED")
+		}
+		fmt.Println()
 	}
 
 	return nil
