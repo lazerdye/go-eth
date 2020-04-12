@@ -11,7 +11,6 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/etherscan"
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
@@ -69,13 +68,6 @@ var (
 	tokenKyberDest         = tokenKyberCmd.Flag("dest", "Dest exchange").String()
 	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Float64()
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
-
-	etherscanApikey = kingpin.Flag("etherscan-apikey", "Key for etherscan api").Envar("ETHERSCAN_APIKEY").String()
-	etherscanCmd    = kingpin.Command("etherscan", "Etherscan operations")
-	etherscanList   = etherscanCmd.Command("list", "List transactions for account")
-	etherscanSort   = etherscanList.Arg("sort", "Sort").Default("asc").String()
-	etherscanPage   = etherscanList.Arg("page", "Page number").Default("1").Int()
-	etherscanOffset = etherscanList.Arg("offset", "Page offset").Default("20").Int()
 )
 
 func doAccountList(keystore string) error {
@@ -315,22 +307,6 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	return nil
 }
 
-func doEtherscanList(apikey string, address string, page, offset int, sort string) error {
-	ctx := context.Background()
-
-	c := etherscan.NewClient(apikey)
-	transactions, err := c.NormalTransactionsByAddress(ctx, address, page, offset, sort)
-	if err != nil {
-		return err
-	}
-
-	for _, t := range transactions {
-		fmt.Printf("%s\t%s\t%s\t%s\t%s\n", t.Hash, t.BlockNumber, t.From, t.To, t.Value)
-	}
-
-	return nil
-}
-
 func newClient() (*client.Client, error) {
 	if *clientServer == "" {
 		return nil, errors.New("clientServer parameter required")
@@ -494,13 +470,10 @@ func main() {
 			log.Fatal(err)
 		}
 	case "etherscan list":
-		if *etherscanApikey == "" {
-			log.Fatal("--etherscan-api-key required")
-		}
 		if *address == "" {
 			log.Fatal("--address required")
 		}
-		if err := doEtherscanList(*etherscanApikey, *address, *etherscanPage, *etherscanOffset, *etherscanSort); err != nil {
+		if err := doEtherscanList(context.Background(), *address); err != nil {
 			log.Fatal(err)
 		}
 	case "client zeroex deposit":
