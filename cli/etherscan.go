@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math"
 	"math/big"
+	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -52,7 +53,13 @@ func doEtherscanList(ctx context.Context, address string) error {
 			fValue := new(big.Float).Quo(new(big.Float).SetInt(iValue), big.NewFloat(math.Pow10(*etherscanDecimals)))
 			value = fmt.Sprintf(fmt.Sprintf("%%.%df", *etherscanDecimals), fValue)
 		}
-		fmt.Printf("%s\t%s -> %s\n", t.Hash, t.From, t.To)
+		if strings.EqualFold(address, t.From) {
+			fmt.Printf("%s\tOUT -> %s\n", t.Hash, t.To)
+		} else if strings.EqualFold(address, t.To) {
+			fmt.Printf("%s\t IN <- %s\n", t.Hash, t.From)
+		} else {
+			return errors.New("Cannot find from/to")
+		}
 		fmt.Printf("\t%s (%s)\t%s\n", t.BlockNumber, t.Timestamp, value)
 	}
 
