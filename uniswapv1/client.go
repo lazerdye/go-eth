@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/lazerdye/go-eth/gasstation"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token"
@@ -117,4 +118,8 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 	}
 
 	return tx, nil
+}
+
+func (e *ExchangeClient) ParseTokenPurchase(log types.Log) (*ExchangeTokenPurchase, error) {
+	return e.exchange.ParseTokenPurchase(log)
 }
