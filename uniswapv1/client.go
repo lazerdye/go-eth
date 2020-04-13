@@ -102,7 +102,7 @@ func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought
 }
 
 func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold *big.Float, tokensBought *big.Float, deadline int) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, client.TransferGasSpeed)
+	gasPrice, _, err := e.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -119,6 +119,28 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 	return tx, nil
 }
 
+func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold *big.Float, minEth *big.Float, deadline int) (*types.Transaction, error) {
+	gasPrice, _, err := e.GasPrice(ctx, client.BuyGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, tradeGasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	tx, err := e.exchange.TokenToEthSwapInput(opts, e.ToWei(tokensSold), client.EthToWei(minEth), big.NewInt(int64(deadline)))
+	if err != nil {
+		return nil, err
+	}
+
+	return tx, nil
+}
+
 func (e *ExchangeClient) ParseTokenPurchase(log types.Log) (*ExchangeTokenPurchase, error) {
 	return e.exchange.ParseTokenPurchase(log)
+}
+
+func (e *ExchangeClient) ParseEthPurchase(log types.Log) (*ExchangeEthPurchase, error) {
+	return e.exchange.ParseEthPurchase(log)
 }
