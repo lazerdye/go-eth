@@ -95,6 +95,19 @@ func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, o
 	return c.exchangeInstance.BatchFillOrders(transactOpts, orders, amounts, signatures)
 }
 
+func (c *Client) FillOrKillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	if err != nil {
+		return nil, err
+	}
+	log.Infof("Order: %+v amount: %f signature: %x", order, amount, signature)
+	return c.exchangeInstance.FillOrKillOrder(transactOpts, order, amount, signature)
+}
+
 func (c *Client) BatchFillOrKillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
