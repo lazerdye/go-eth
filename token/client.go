@@ -261,6 +261,24 @@ func NewClient(client *client.Client, token *Token) (*Client, error) {
 	return &Client{client, instance, token}, nil
 }
 
+func ByAddress(ctx context.Context, client *client.Client, name string, address common.Address) (*Client, error) {
+	instance, err := erc20.NewErc20(address, client)
+	if err != nil {
+		return nil, err
+	}
+	opts := bind.CallOpts{Context: ctx}
+	decimal, err := instance.Decimals(&opts)
+	if err != nil {
+		return nil, err
+	}
+	token := Token{
+		name:     name,
+		contract: address,
+		decimals: int(decimal),
+	}
+	return &Client{client, instance, &token}, nil
+}
+
 func ByName(client *client.Client, name string) (*Client, error) {
 	token, ok := DefaultRegistry.ByName(name)
 	if !ok {
