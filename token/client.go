@@ -74,6 +74,10 @@ const (
 	LABXContract = "0xF0daeC652dD7C9f779e7C0F3ff5610fa3B61f61F"
 	LABXDecimals = 18
 
+	LEND         = "lend"
+	LENDContract = "0x80fB784B7eD66730e8b1DBd9820aFD29931aab03"
+	LENDDecimals = 18
+
 	LINK         = "link"
 	LINKContract = "0x514910771AF9Ca656af840dff83E8264EcF986CA"
 	LINKDecimals = 18
@@ -153,6 +157,7 @@ func init() {
 	DefaultRegistry.Register(HOT, HOTContract, HOTDecimals)
 	DefaultRegistry.Register(KNC, KNCContract, KNCDecimals)
 	DefaultRegistry.Register(LABX, LABXContract, LABXDecimals)
+	DefaultRegistry.Register(LEND, LENDContract, LENDDecimals)
 	DefaultRegistry.Register(LINK, LINKContract, LINKDecimals)
 	DefaultRegistry.Register(LPT, LPTContract, LPTDecimals)
 	DefaultRegistry.Register(MKR, MKRContract, MKRDecimals)
