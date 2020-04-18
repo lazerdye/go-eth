@@ -90,6 +90,10 @@ const (
 	LPTContract = "0x58b6a8a3302369daec383334672404ee733ab239"
 	LPTDecimals = 18
 
+	LRC         = "lrc"
+	LRCContract = "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD"
+	LRCDecimals = 18
+
 	MLN         = "mln"
 	MLNContract = "0xec67005c4e498ec7f55e092bd1d35cbc47c91892"
 	MLNDecimals = 18
@@ -101,6 +105,14 @@ const (
 	OHDAI         = "ohdai"
 	OHDAIContract = "0x64a03cE1E52B4e579f0A1cf44cF95C0D7898B5A3"
 	OHDAIDecimals = 18
+
+	RCN         = "rcn"
+	RCNContract = "0xF970b8E36e23F7fC3FD752EeA86f8Be8D83375A6"
+	RCNDecimals = 18
+
+	RDN         = "rdn"
+	RDNContract = "0x255Aa6DF07540Cb5d3d297f0D0D4D84cb52bc8e6"
+	RDNDecimals = 18
 
 	REP         = "rep"
 	REPContract = "0x1985365e9f78359a9B6AD760e32412f4a445E862"
@@ -165,9 +177,12 @@ func init() {
 	DefaultRegistry.Register(LEND, LENDContract, LENDDecimals)
 	DefaultRegistry.Register(LINK, LINKContract, LINKDecimals)
 	DefaultRegistry.Register(LPT, LPTContract, LPTDecimals)
+	DefaultRegistry.Register(LRC, LRCContract, LRCDecimals)
 	DefaultRegistry.Register(MKR, MKRContract, MKRDecimals)
 	DefaultRegistry.Register(MLN, MLNContract, MLNDecimals)
 	DefaultRegistry.Register(OHDAI, OHDAIContract, OHDAIDecimals)
+	DefaultRegistry.Register(RCN, RCNContract, RCNDecimals)
+	DefaultRegistry.Register(RDN, RDNContract, RDNDecimals)
 	DefaultRegistry.Register(REP, REPContract, REPDecimals)
 	DefaultRegistry.Register(RIGO, RIGOContract, RIGODecimals)
 	DefaultRegistry.Register(SAI, SAIContract, SAIDecimals)
