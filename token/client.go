@@ -42,6 +42,10 @@ const (
 	DAIContract = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
 	DAIDecimals = 18
 
+	DATA         = "data"
+	DATAContract = "0x0Cf0Ee63788A0849fE5297F3407f701E122cC023"
+	DATADecimals = 18
+
 	DGD         = "dgd"
 	DGDContract = "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
 	DGDDecimals = 9
@@ -149,6 +153,7 @@ func init() {
 	DefaultRegistry.Register(BAT, BATContract, BATDecimals)
 	DefaultRegistry.Register(CUSD, CUSDContract, CUSDDecimals)
 	DefaultRegistry.Register(DAI, DAIContract, DAIDecimals)
+	DefaultRegistry.Register(DATA, DATAContract, DATADecimals)
 	DefaultRegistry.Register(DGD, DGDContract, DGDDecimals)
 	DefaultRegistry.Register(EXMR, EXMRContract, EXMRDecimals)
 	DefaultRegistry.Register(FOAM, FOAMContract, FOAMDecimals)
