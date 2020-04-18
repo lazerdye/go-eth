@@ -62,6 +62,10 @@ const (
 	GWITContract = "0x55D0Bb8D7e7fBf5B863C7923c4645FF83c3D0033"
 	GWITDecimals = 18
 
+	HOT         = "hot"
+	HOTContract = "0x6c6ee5e31d828de241282b9606c8e98ea48526e2"
+	HOTDecimals = 18
+
 	KNC         = "knc"
 	KNCContract = "0xdd974d5c2e2928dea5f71b9825b8b646686bd200"
 	KNCDecimals = 18
@@ -110,9 +114,9 @@ const (
 	STORJContract = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
 	STORJDecimals = 8
 
-    TNT         = "tnt"
-    TNTContract = "0x08f5a9235B08173b7569F83645d2c7fB55e8cCD8"
-    TNTDecimals = 8
+	TNT         = "tnt"
+	TNTContract = "0x08f5a9235B08173b7569F83645d2c7fB55e8cCD8"
+	TNTDecimals = 8
 
 	TUSD         = "tusd"
 	TUSDContract = "0x0000000000085d4780B73119b644AE5ecd22b376"
@@ -146,6 +150,7 @@ func init() {
 	DefaultRegistry.Register(FOAM, FOAMContract, FOAMDecimals)
 	DefaultRegistry.Register(GNO, GNOContract, GNODecimals)
 	DefaultRegistry.Register(GWIT, GWITContract, GWITDecimals)
+	DefaultRegistry.Register(HOT, HOTContract, HOTDecimals)
 	DefaultRegistry.Register(KNC, KNCContract, KNCDecimals)
 	DefaultRegistry.Register(LABX, LABXContract, LABXDecimals)
 	DefaultRegistry.Register(LINK, LINKContract, LINKDecimals)
