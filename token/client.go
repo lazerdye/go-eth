@@ -110,6 +110,10 @@ const (
 	STORJContract = "0xb64ef51c888972c908cfacf59b47c1afbc0ab8ac"
 	STORJDecimals = 8
 
+    TNT         = "tnt"
+    TNTContract = "0x08f5a9235B08173b7569F83645d2c7fB55e8cCD8"
+    TNTDecimals = 8
+
 	TUSD         = "tusd"
 	TUSDContract = "0x0000000000085d4780B73119b644AE5ecd22b376"
 	TUSDDecimals = 18
@@ -154,6 +158,7 @@ func init() {
 	DefaultRegistry.Register(SAI, SAIContract, SAIDecimals)
 	DefaultRegistry.Register(SPANK, SPANKContract, SPANKDecimals)
 	DefaultRegistry.Register(STORJ, STORJContract, STORJDecimals)
+	DefaultRegistry.Register(TNT, TNTContract, TNTDecimals)
 	DefaultRegistry.Register(TUSD, TUSDContract, TUSDDecimals)
 	DefaultRegistry.Register(USDC, USDCContract, USDCDecimals)
 	DefaultRegistry.Register(ZRX, ZRXContract, ZRXDecimals)
