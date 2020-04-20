@@ -102,7 +102,7 @@ func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought
 }
 
 func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold *big.Float, tokensBought *big.Float, deadline int) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, client.SellGasSpeed)
+	gasPrice, _, err := e.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +120,7 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 }
 
 func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold *big.Float, minEth *big.Float, deadline int) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, client.BuyGasSpeed)
+	gasPrice, _, err := e.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
