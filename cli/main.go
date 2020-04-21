@@ -11,6 +11,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/compound"
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
@@ -322,6 +323,14 @@ func newZeroexClient() (*zeroex.Client, error) {
 	return zeroex.NewClient(client)
 }
 
+func newCompoundClient() (*compound.Client, error) {
+	client, err := newClient()
+	if err != nil {
+		return nil, err
+	}
+	return compound.NewClient(client)
+}
+
 func getAccount() (*wallet.Account, bool, error) {
 	if *address == "" {
 		return nil, false, errors.New("address parameter required")
@@ -541,6 +550,18 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client compound mint":
+		cClient, err := newCompoundClient()
+		if err != nil {
+			log.Fatal(err)
+		}
+		account, _, err := getAccount()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := compoundMint(context.Background(), cClient, account); err != nil {
 			log.Fatal(err)
 		}
 	case "gasstation":

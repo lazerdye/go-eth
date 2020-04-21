@@ -24,6 +24,9 @@ uniswapv1/factory.go: uniswapv1/factory.abi
 uniswapv1/exchange.go: uniswapv1/exchange.abi
 	abigen --abi=uniswapv1/exchange.abi --pkg=uniswapv1 --type=Exchange --out=uniswapv1/exchange.go
 
+compound/compound.go: compound/compound.abi
+	abigen --abi=compound/compound.abi --pkg=compound --type=Compound --out=compound/compound.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
