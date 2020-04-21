@@ -34,6 +34,11 @@ const (
 	BATContract = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
 	BATDecimals = 18
 
+	// Compound eth
+	CETH         = "ceth"
+	CETHContract = "0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5"
+	CETHDecimals = 8
+
 	CUSD         = "cusd"
 	CUSDContract = "0x1410d4eC3D276C0eBbf16ccBE88A4383aE734eD0"
 	CUSDDecimals = 18
@@ -167,6 +172,7 @@ func init() {
 	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
 	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
 	DefaultRegistry.Register(BAT, BATContract, BATDecimals)
+	DefaultRegistry.Register(CETH, CETHContract, CETHDecimals)
 	DefaultRegistry.Register(CUSD, CUSDContract, CUSDDecimals)
 	DefaultRegistry.Register(DAI, DAIContract, DAIDecimals)
 	DefaultRegistry.Register(DATA, DATAContract, DATADecimals)
