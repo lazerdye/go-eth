@@ -58,6 +58,10 @@ const (
 	FOAMContract = "0x4946Fcea7C692606e8908002e55A582af44AC121"
 	FOAMDecimals = 18
 
+	FUN         = "fun"
+	FUNContract = "0x419D0d8BdD9aF5e606Ae2232ed285Aff190E711b"
+	FUNDecimals = 9
+
 	GNO         = "gno"
 	GNOContract = "0x6810e776880c02933d47db1b9fc05908e5386b96"
 	GNODecimals = 18
@@ -169,6 +173,7 @@ func init() {
 	DefaultRegistry.Register(DGD, DGDContract, DGDDecimals)
 	DefaultRegistry.Register(EXMR, EXMRContract, EXMRDecimals)
 	DefaultRegistry.Register(FOAM, FOAMContract, FOAMDecimals)
+	DefaultRegistry.Register(FUN, FUNContract, FUNDecimals)
 	DefaultRegistry.Register(GNO, GNOContract, GNODecimals)
 	DefaultRegistry.Register(GWIT, GWITContract, GWITDecimals)
 	DefaultRegistry.Register(HOT, HOTContract, HOTDecimals)
