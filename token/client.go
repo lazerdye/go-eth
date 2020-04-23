@@ -84,6 +84,10 @@ const (
 	HOTContract = "0x6c6ee5e31d828de241282b9606c8e98ea48526e2"
 	HOTDecimals = 18
 
+	KEY         = "key"
+	KEYContract = "0x4cc19356f2d37338b9802aa8e8fc58b0373296e7"
+	KEYDecimals = 18
+
 	KNC         = "knc"
 	KNCContract = "0xdd974d5c2e2928dea5f71b9825b8b646686bd200"
 	KNCDecimals = 18
@@ -189,6 +193,7 @@ func init() {
 	DefaultRegistry.Register(GNO, GNOContract, GNODecimals)
 	DefaultRegistry.Register(GWIT, GWITContract, GWITDecimals)
 	DefaultRegistry.Register(HOT, HOTContract, HOTDecimals)
+	DefaultRegistry.Register(KEY, KEYContract, KEYDecimals)
 	DefaultRegistry.Register(KNC, KNCContract, KNCDecimals)
 	DefaultRegistry.Register(LABX, LABXContract, LABXDecimals)
 	DefaultRegistry.Register(LEND, LENDContract, LENDDecimals)
