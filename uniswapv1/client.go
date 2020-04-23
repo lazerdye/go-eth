@@ -18,7 +18,7 @@ var (
 	UniswapV1FactoryContract = common.HexToAddress("0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
 
 	tradeGasSpeed = gasstation.Fast
-	tradeGasLimit = uint64(400000)
+	tradeGasLimit = uint64(100000)
 )
 
 type Client struct {
