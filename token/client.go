@@ -34,6 +34,10 @@ const (
 	BATContract = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
 	BATDecimals = 18
 
+	BNT         = "bnt"
+	BNTContract = "0x1f573d6fb3f13d689ff844b4ce37794d79a7ff1c"
+	BNTDecimals = 18
+
 	// Compound dai
 	CDAI         = "cdai"
 	CDAIContract = "0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643"
@@ -181,6 +185,7 @@ func init() {
 	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
 	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
 	DefaultRegistry.Register(BAT, BATContract, BATDecimals)
+	DefaultRegistry.Register(BNT, BNTContract, BNTDecimals)
 	DefaultRegistry.Register(CDAI, CDAIContract, CDAIDecimals)
 	DefaultRegistry.Register(CETH, CETHContract, CETHDecimals)
 	DefaultRegistry.Register(CUSD, CUSDContract, CUSDDecimals)
