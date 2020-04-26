@@ -34,8 +34,9 @@ func (h *HttpClient) GetWithHeader(ctx context.Context, reqUrl string, params ur
 	if err != nil {
 		return err
 	}
-	req.Header = *header
-
+	if header != nil {
+		req.Header = *header
+	}
 	resp, err := h.client.Do(req)
 	if err != nil {
 		return err
