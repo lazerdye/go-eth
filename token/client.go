@@ -74,7 +74,7 @@ const (
 
 	FUN         = "fun"
 	FUNContract = "0x419D0d8BdD9aF5e606Ae2232ed285Aff190E711b"
-	FUNDecimals = 9
+	FUNDecimals = 8
 
 	GNO         = "gno"
 	GNOContract = "0x6810e776880c02933d47db1b9fc05908e5386b96"
