@@ -64,6 +64,10 @@ const (
 	DGDContract = "0xe0b7927c4af23765cb51314a0e0521a9645f0e2a"
 	DGDDecimals = 9
 
+	DGX         = "dgx"
+	DGXContract = "0x4f3afec4e5a3f2a6a1a411def7d7dfe50ee057bf"
+	DGXDecimals = 9
+
 	EXMR         = "exmr"
 	EXMRContract = "0x331fA6C97c64e47475164b9fC8143b533c5eF529"
 	EXMRDecimals = 18
@@ -192,6 +196,7 @@ func init() {
 	DefaultRegistry.Register(DAI, DAIContract, DAIDecimals)
 	DefaultRegistry.Register(DATA, DATAContract, DATADecimals)
 	DefaultRegistry.Register(DGD, DGDContract, DGDDecimals)
+	DefaultRegistry.Register(DGX, DGXContract, DGXDecimals)
 	DefaultRegistry.Register(EXMR, EXMRContract, EXMRDecimals)
 	DefaultRegistry.Register(FOAM, FOAMContract, FOAMDecimals)
 	DefaultRegistry.Register(FUN, FUNContract, FUNDecimals)
