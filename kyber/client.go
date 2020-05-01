@@ -9,7 +9,6 @@ import (
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
