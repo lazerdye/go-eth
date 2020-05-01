@@ -9,6 +9,7 @@ import (
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/wallet"
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -83,7 +84,7 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 	return transaction, err
 }
 
-func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
+func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token.Client, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
@@ -92,10 +93,14 @@ func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
-	// TODO: What about when decimals != 18?
-	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
+	amountInt, err := tok.ToWeiCapped(amount, account.Address())
+	if err != nil {
+		return nil, err
+	}
+
+	// TODO: Is 18 right for rate?
 	maxRateInt, _ := new(big.Float).Mul(maxRate, big.NewFloat(math.Pow10(18))).Int(nil)
-	transaction, err := c.instance.SwapTokenToEther(transactOpts, token, amountInt, maxRateInt)
+	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.ContractAddress(), amountInt, maxRateInt)
 	if err != nil {
 		return nil, err
 	}

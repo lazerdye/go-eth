@@ -129,7 +129,11 @@ func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *walle
 		return nil, err
 	}
 
-	tx, err := e.exchange.TokenToEthSwapInput(opts, e.ToWei(tokensSold), client.EthToWei(minEth), big.NewInt(int64(deadline)))
+	tokensCapped, err := e.ToWeiCapped(tokensSold, account.Address())
+	if err != nil {
+		return nil, err
+	}
+	tx, err := e.exchange.TokenToEthSwapInput(opts, tokensCapped, client.EthToWei(minEth), big.NewInt(int64(deadline)))
 	if err != nil {
 		return nil, err
 	}

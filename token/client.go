@@ -10,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasstation"
@@ -182,6 +183,8 @@ const (
 
 var (
 	DefaultRegistry = NewRegistry()
+
+	maxIntForCap = big.NewInt(1e12)
 )
 
 func init() {
@@ -362,6 +365,23 @@ func (c Client) ToWei(f *big.Float) *big.Int {
 	return c.info.ToWei(f)
 }
 
+func (c Client) ToWeiCapped(f *big.Float, address common.Address) (*big.Int, error) {
+	balance, err := c.instance.BalanceOf(&bind.CallOpts{}, address)
+	if err != nil {
+		return nil, err
+	}
+	amount := c.ToWei(f)
+	if amount.Cmp(balance) > 0 {
+		diff := new(big.Int).Sub(amount, balance)
+		log.Infof("XXX bal: %d amount: %d diff: %d", balance, amount, diff)
+		if diff.Cmp(maxIntForCap) > 0 {
+			return nil, errors.Errorf("Not enough balance for cap (%d > %d)", amount, balance)
+		}
+		return balance, nil
+	}
+	return amount, nil
+}
+
 func (c *Client) ContractAddress() common.Address {
 	return c.info.contract
 }
@@ -380,8 +400,7 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Fl
 		return nil, err
 	}
 
-	balanceFloat := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(math.Pow10(c.info.decimals)))
-	return balanceFloat, nil
+	return c.FromWei(balance), nil
 }
 
 func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount *big.Float) (*types.Transaction, error) {
