@@ -23,7 +23,7 @@ const (
 )
 
 var (
-	tradeGasLimit            = uint64(400000)
+	tradeGasLimit            = uint64(700000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
