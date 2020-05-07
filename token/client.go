@@ -129,6 +129,10 @@ const (
 	MKRContract = "0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2"
 	MKRDecimals = 18
 
+	NMR         = "nmr"
+	NMRContract = "0x1776e1f26f98b1a5df9cd347953a26dd3cb46671"
+	NMRDecimals = 18
+
 	OHDAI         = "ohdai"
 	OHDAIContract = "0x64a03cE1E52B4e579f0A1cf44cF95C0D7898B5A3"
 	OHDAIDecimals = 18
@@ -177,8 +181,9 @@ const (
 	ZRXContract = "0xE41d2489571d322189246DaFA5ebDe1F4699F498"
 	ZRXDecimals = 18
 
-	averageGasSpeed = gasstation.Average
-	lowGasLimit     = uint64(200000)
+	averageGasSpeed  = gasstation.Average
+	approveGasLimit  = uint64(200000)
+	transferGasLimit = uint64(500000)
 )
 
 var (
@@ -214,6 +219,7 @@ func init() {
 	DefaultRegistry.Register(LPT, LPTContract, LPTDecimals)
 	DefaultRegistry.Register(LRC, LRCContract, LRCDecimals)
 	DefaultRegistry.Register(MKR, MKRContract, MKRDecimals)
+	DefaultRegistry.Register(NMR, NMRContract, NMRDecimals)
 	DefaultRegistry.Register(MLN, MLNContract, MLNDecimals)
 	DefaultRegistry.Register(OHDAI, OHDAIContract, OHDAIDecimals)
 	DefaultRegistry.Register(RCN, RCNContract, RCNDecimals)
@@ -410,7 +416,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	fAmount := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(c.info.decimals)))
 	iAmount, _ := fAmount.Int(nil)
-	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, lowGasLimit)
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, transferGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -422,7 +428,7 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	if err != nil {
 		return nil, err
 	}
-	opts, err := from.NewTransactor(ctx, nil, gasPrice, lowGasLimit)
+	opts, err := from.NewTransactor(ctx, nil, gasPrice, approveGasLimit)
 	if err != nil {
 		return nil, err
 	}
