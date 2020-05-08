@@ -183,7 +183,7 @@ const (
 
 	averageGasSpeed  = gasstation.Average
 	approveGasLimit  = uint64(200000)
-	transferGasLimit = uint64(500000)
+	transferGasLimit = uint64(300000)
 )
 
 var (
