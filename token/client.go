@@ -121,6 +121,10 @@ const (
 	LRCContract = "0xBBbbCA6A901c926F240b89EacB641d8Aec7AEafD"
 	LRCDecimals = 18
 
+	MANA         = "mana"
+	MANAContract = "0x0F5D2fB29fb7d3CFeE444a200298f468908cC942"
+	MANADecimals = 18
+
 	MLN         = "mln"
 	MLNContract = "0xec67005c4e498ec7f55e092bd1d35cbc47c91892"
 	MLNDecimals = 18
@@ -220,6 +224,7 @@ func init() {
 	DefaultRegistry.Register(LRC, LRCContract, LRCDecimals)
 	DefaultRegistry.Register(MKR, MKRContract, MKRDecimals)
 	DefaultRegistry.Register(NMR, NMRContract, NMRDecimals)
+	DefaultRegistry.Register(MANA, MANAContract, MANADecimals)
 	DefaultRegistry.Register(MLN, MLNContract, MLNDecimals)
 	DefaultRegistry.Register(OHDAI, OHDAIContract, OHDAIDecimals)
 	DefaultRegistry.Register(RCN, RCNContract, RCNDecimals)
