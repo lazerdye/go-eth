@@ -31,6 +31,10 @@ const (
 	ANTContract = "0x960b236A07cf122663c4303350609A66A7B288C0"
 	ANTDecimals = 18
 
+	BAND         = "band"
+	BANDContract = "0xba11d00c5f74255f56a5e366f4f77f5a186d7f55"
+	BANDDecimals = 18
+
 	BAT         = "bat"
 	BATContract = "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
 	BATDecimals = 18
@@ -200,6 +204,7 @@ func init() {
 	DefaultRegistry.Register(KyberETH, KyberETHContract, KyberETHDecimals)
 	DefaultRegistry.Register(WETH, WETHContract, WETHDecimals)
 	DefaultRegistry.Register(ANT, ANTContract, ANTDecimals)
+	DefaultRegistry.Register(BAND, BANDContract, BANDDecimals)
 	DefaultRegistry.Register(BAT, BATContract, BATDecimals)
 	DefaultRegistry.Register(BNT, BNTContract, BNTDecimals)
 	DefaultRegistry.Register(CDAI, CDAIContract, CDAIDecimals)
