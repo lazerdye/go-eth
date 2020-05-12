@@ -28,7 +28,7 @@ var (
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
 
-	tradeGasSpeed = gasstation.Fast
+	tradeGasSpeed = gasstation.Fastest
 )
 
 type Client struct {
