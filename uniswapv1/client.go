@@ -17,7 +17,8 @@ import (
 var (
 	UniswapV1FactoryContract = common.HexToAddress("0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
 
-	tradeGasSpeed = gasstation.Fast
+	buyGasSpeed   = gasstation.Fast
+	sellGasSpeed  = gasstation.Fastest
 	tradeGasLimit = uint64(500000)
 )
 
@@ -102,7 +103,7 @@ func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought
 }
 
 func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold *big.Float, tokensBought *big.Float, deadline int) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, _, err := e.GasPrice(ctx, buyGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -120,7 +121,7 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 }
 
 func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold *big.Float, minEth *big.Float, deadline int) (*types.Transaction, error) {
-	gasPrice, _, err := e.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, _, err := e.GasPrice(ctx, sellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
