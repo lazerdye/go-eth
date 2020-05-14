@@ -26,8 +26,8 @@ const (
 	ethDigits = 18
 
 	GasLimit         = uint64(7800000)
-	TransferGasSpeed = gasstation.Fast // TODO: Make this configurable.
-	BuyGasSpeed      = gasstation.Fast
+	TransferGasSpeed = gasstation.Fastest // TODO: Make this configurable.
+	BuyGasSpeed      = gasstation.Fastest
 	SellGasSpeed     = gasstation.Fast
 )
 

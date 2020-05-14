@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -42,6 +43,10 @@ func (h *HttpClient) GetWithHeader(ctx context.Context, reqUrl string, params ur
 		return err
 	}
 	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		return errors.Errorf("Unexpected status code: %d", resp.StatusCode)
+	}
 
 	log.Infof("Resp: %+v", resp)
 
