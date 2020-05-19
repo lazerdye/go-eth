@@ -19,10 +19,18 @@ func NewHttpClient() *HttpClient {
 }
 
 func (h *HttpClient) Get(ctx context.Context, reqUrl string, params url.Values, data interface{}) error {
-	return h.GetWithHeader(ctx, reqUrl, params, nil, data)
+	return h.Do(ctx, "GET", reqUrl, params, nil, data)
 }
 
 func (h *HttpClient) GetWithHeader(ctx context.Context, reqUrl string, params url.Values, header *http.Header, data interface{}) error {
+	return h.Do(ctx, "GET", reqUrl, params, header, data)
+}
+
+func (h *HttpClient) PostWithHeader(ctx context.Context, reqUrl string, params url.Values, header *http.Header, data interface{}) error {
+	return h.Do(ctx, "POST", reqUrl, params, header, data)
+}
+
+func (h *HttpClient) Do(ctx context.Context, method string, reqUrl string, params url.Values, header *http.Header, data interface{}) error {
 	base, err := url.Parse(reqUrl)
 	if err != nil {
 		return err
@@ -31,7 +39,7 @@ func (h *HttpClient) GetWithHeader(ctx context.Context, reqUrl string, params ur
 		base.RawQuery = params.Encode()
 	}
 
-	req, err := http.NewRequestWithContext(ctx, "GET", base.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, method, base.String(), nil)
 	if err != nil {
 		return err
 	}
