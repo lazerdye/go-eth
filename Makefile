@@ -24,6 +24,15 @@ uniswapv1/factory.go: uniswapv1/factory.abi
 uniswapv1/exchange.go: uniswapv1/exchange.abi
 	abigen --abi=uniswapv1/exchange.abi --pkg=uniswapv1 --type=Exchange --out=uniswapv1/exchange.go
 
+uniswapv2/factory.go: uniswapv2/factory.abi
+	abigen --abi=uniswapv2/factory.abi --pkg=uniswapv2 --type=Factory --out=uniswapv2/factory.go
+
+uniswapv2/pair.go: uniswapv2/pair.abi
+	abigen --abi=uniswapv2/pair.abi --pkg=uniswapv2 --type=Pair --out=uniswapv2/pair.go
+
+uniswapv2/router01.go: uniswapv2/router01.abi
+	abigen --abi=uniswapv2/router01.abi --pkg=uniswapv2 --type=Router01 --out=uniswapv2/router01.go
+
 compound/compound.go: compound/compound.abi
 	abigen --abi=compound/compound.abi --pkg=compound --type=Compound --out=compound/compound.go
 

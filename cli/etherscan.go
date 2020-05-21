@@ -65,7 +65,7 @@ func doEtherscanList(ctx context.Context, address string) error {
 		} else {
 			return errors.New("Cannot find from/to")
 		}
-		fmt.Printf("\t%s (%s)\t%s - %s", t.BlockNumber, t.Timestamp, value, feeValue)
+		fmt.Printf("\t%s (%s)\t%s - %s (%s)", t.BlockNumber, t.Timestamp, value, feeValue, t.GasUsed)
 		if t.IsError != "0" && t.IsError != "" {
 			fmt.Printf("\tFAILED")
 		}

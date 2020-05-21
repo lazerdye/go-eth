@@ -16,6 +16,7 @@ import (
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/uniswapv1"
+	"github.com/lazerdye/go-eth/uniswapv2"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
 )
@@ -364,6 +365,14 @@ func newUniswapV1Client() (*uniswapv1.Client, error) {
 	return uniswapv1.NewClient(client)
 }
 
+func newUniswapV2Client() (*uniswapv2.Client, error) {
+	client, err := newClient()
+	if err != nil {
+		return nil, err
+	}
+	return uniswapv2.NewClient(client)
+}
+
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -512,7 +521,7 @@ func main() {
 		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap get-exchange":
+	case "client uniswapv1 get-exchange":
 		uClient, err := newUniswapV1Client()
 		if err != nil {
 			log.Fatal(err)
@@ -520,7 +529,7 @@ func main() {
 		if err := uniswapGetExchange(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap eth-to-token-input":
+	case "client uniswapv1 eth-to-token-input":
 		uClient, err := newUniswapV1Client()
 		if err != nil {
 			log.Fatal(err)
@@ -528,7 +537,7 @@ func main() {
 		if err := uniswapGetEthToTokenInputPrice(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap eth-to-token-output":
+	case "client uniswapv1 eth-to-token-output":
 		uClient, err := newUniswapV1Client()
 		if err != nil {
 			log.Fatal(err)
@@ -536,7 +545,7 @@ func main() {
 		if err := uniswapGetEthToTokenOutputPrice(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap token-to-eth-input":
+	case "client uniswapv1 token-to-eth-input":
 		uClient, err := newUniswapV1Client()
 		if err != nil {
 			log.Fatal(err)
@@ -544,12 +553,36 @@ func main() {
 		if err := uniswapGetTokenToEthInputPrice(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
-	case "client uniswap token-to-eth-output":
+	case "client uniswapv1 token-to-eth-output":
 		uClient, err := newUniswapV1Client()
 		if err != nil {
 			log.Fatal(err)
 		}
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswapv2 get-pairs":
+		uClient, err := newUniswapV2Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapV2GetPairs(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswapv2 get-amount-out":
+		uClient, err := newUniswapV2Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapV2GetAmountOut(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
+	case "client uniswapv2 get-amount-in":
+		uClient, err := newUniswapV2Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapV2GetAmountIn(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
 	case "client compound mint":
