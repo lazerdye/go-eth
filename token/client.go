@@ -193,6 +193,10 @@ const (
 	TUSDContract = "0x0000000000085d4780B73119b644AE5ecd22b376"
 	TUSDDecimals = 18
 
+	UBT         = "ubt"
+	UBTContract = "0x8400D94A5cb0fa0D041a3788e395285d61c9ee5e"
+	UBTDecimals = 8
+
 	USDC         = "usdc"
 	USDCContract = "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
 	USDCDecimals = 6
@@ -256,6 +260,7 @@ func init() {
 	DefaultRegistry.Register(STORJ, STORJContract, STORJDecimals)
 	DefaultRegistry.Register(TNT, TNTContract, TNTDecimals)
 	DefaultRegistry.Register(TUSD, TUSDContract, TUSDDecimals)
+	DefaultRegistry.Register(UBT, UBTContract, UBTDecimals)
 	DefaultRegistry.Register(USDC, USDCContract, USDCDecimals)
 	DefaultRegistry.Register(ZRX, ZRXContract, ZRXDecimals)
 }
@@ -360,6 +365,29 @@ func NewClient(client *client.Client, token *Token) (*Client, error) {
 		return nil, err
 	}
 	return &Client{client, instance, token}, nil
+}
+
+// TODO: This file needs an overhaul.
+func ByRawAddress(ctx context.Context, client *client.Client, address common.Address) (*Client, error) {
+	opts := bind.CallOpts{Context: ctx}
+	instance, err := erc20.NewErc20(address, client)
+	if err != nil {
+		return nil, err
+	}
+	decimal, err := instance.Decimals(&opts)
+	if err != nil {
+		return nil, err
+	}
+	name, err := instance.Symbol(&opts)
+	if err != nil {
+		return nil, err
+	}
+	token := Token{
+		name:     name,
+		contract: address,
+		decimals: int(decimal),
+	}
+	return &Client{client, instance, &token}, nil
 }
 
 func ByAddress(ctx context.Context, client *client.Client, name string, address common.Address) (*Client, error) {
