@@ -9,7 +9,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/token2"
 )
 
 var (
@@ -81,9 +81,9 @@ func (c *Client) GetPairs(ctx context.Context) ([]*PairClient, error) {
 	return pairs, nil
 }
 
-func (c *Client) GetAmountOut(ctx context.Context, amountIn *big.Float, token0 *token.Client, token1 *token.Client) (*big.Float, error) {
+func (c *Client) GetAmountOut(ctx context.Context, amountIn *big.Float, token0 *token2.Client, token1 *token2.Client) (*big.Float, error) {
 	opts := &bind.CallOpts{Context: ctx}
-	path := []common.Address{token0.ContractAddress(), token1.ContractAddress()}
+	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsOut(opts, token0.ToWei(amountIn), path)
 	if err != nil {
 		return nil, err
@@ -94,9 +94,9 @@ func (c *Client) GetAmountOut(ctx context.Context, amountIn *big.Float, token0 *
 	return token1.FromWei(amounts[1]), nil
 }
 
-func (c *Client) GetAmountIn(ctx context.Context, amountOut *big.Float, token0 *token.Client, token1 *token.Client) (*big.Float, error) {
+func (c *Client) GetAmountIn(ctx context.Context, amountOut *big.Float, token0 *token2.Client, token1 *token2.Client) (*big.Float, error) {
 	opts := &bind.CallOpts{Context: ctx}
-	path := []common.Address{token0.ContractAddress(), token1.ContractAddress()}
+	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsIn(opts, token1.ToWei(amountOut), path)
 	if err != nil {
 		return nil, err

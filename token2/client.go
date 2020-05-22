@@ -3,6 +3,8 @@ package token2
 import (
 	"context"
 	"io/ioutil"
+	"math"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -53,6 +55,15 @@ func ByAddress(ctx context.Context, client *client.Client, address common.Addres
 func (c *Client) Symbol(ctx context.Context) (string, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	return c.instance.Symbol(opts)
+}
+
+func (c *Client) FromWei(i *big.Int) *big.Float {
+	return new(big.Float).Quo(new(big.Float).SetInt(i), big.NewFloat(math.Pow10(int(c.Decimals))))
+}
+
+func (c *Client) ToWei(f *big.Float) *big.Int {
+	i, _ := new(big.Float).Mul(f, big.NewFloat(math.Pow10(int(c.Decimals)))).Int(nil)
+	return i
 }
 
 type Registry struct {
