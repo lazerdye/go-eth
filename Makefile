@@ -9,6 +9,9 @@ token/TokenERC20.abi:
 token/erc20/erc20.go: token/erc20/TokenERC20.abi
 	abigen --abi=token/erc20/TokenERC20.abi --pkg=erc20 --out=token/erc20/erc20.go
 
+token2/erc20.go: token2/erc20.abi
+	abigen --abi=token2/erc20.abi --pkg=token2 --type=Erc20 --out=token2/erc20.go
+
 kyber/kyber.go: kyber/kyber_network_proxy.abi
 	abigen --abi=kyber/kyber_network_proxy.abi --pkg=kyber --out=kyber/kyber.go
 
