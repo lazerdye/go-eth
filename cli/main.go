@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
@@ -16,7 +17,6 @@ import (
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token"
 	"github.com/lazerdye/go-eth/uniswapv1"
-	"github.com/lazerdye/go-eth/uniswapv2"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
 )
@@ -34,8 +34,6 @@ var (
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
-	clientCmd              = kingpin.Command("client", "Client operations")
-	clientServer           = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
 	balanceCmd             = clientCmd.Command("balance", "Get the balance of an account")
 	transferCmd            = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit       = transferCmd.Flag("transmit", "Transmit transaction").Bool()
@@ -309,13 +307,6 @@ func doClientTokenKyberExpectedRate(server string, source, dest string, quantity
 	return nil
 }
 
-func newClient() (*client.Client, error) {
-	if *clientServer == "" {
-		return nil, errors.New("clientServer parameter required")
-	}
-	return client.Dial(*clientServer, gasstation.NewClient())
-}
-
 func newZeroexClient() (*zeroex.Client, error) {
 	client, err := newClient()
 	if err != nil {
@@ -365,18 +356,25 @@ func newUniswapV1Client() (*uniswapv1.Client, error) {
 	return uniswapv1.NewClient(client)
 }
 
-func newUniswapV2Client() (*uniswapv2.Client, error) {
-	client, err := newClient()
-	if err != nil {
-		return nil, err
-	}
-	return uniswapv2.NewClient(client)
-}
-
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
 	kingpin.CommandLine.Help = "Ethereum test client"
 
+	commands := kingpin.Parse()
+	commandsSplit := strings.Split(commands, " ")
+	ctx := context.Background()
+	switch commandsSplit[0] {
+	case "client":
+		done, err := clientCommands(ctx, commandsSplit[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if done {
+			return
+		}
+	}
+
+	// WIP
 	switch kingpin.Parse() {
 	case "account list":
 		if *keystore == "" {
@@ -559,30 +557,6 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
-			log.Fatal(err)
-		}
-	case "client uniswapv2 get-pairs":
-		uClient, err := newUniswapV2Client()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := uniswapV2GetPairs(context.Background(), uClient); err != nil {
-			log.Fatal(err)
-		}
-	case "client uniswapv2 get-amount-out":
-		uClient, err := newUniswapV2Client()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := uniswapV2GetAmountOut(context.Background(), uClient); err != nil {
-			log.Fatal(err)
-		}
-	case "client uniswapv2 get-amount-in":
-		uClient, err := newUniswapV2Client()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := uniswapV2GetAmountIn(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
 	case "client compound mint":

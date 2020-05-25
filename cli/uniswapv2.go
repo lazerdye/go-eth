@@ -7,7 +7,8 @@ import (
 
 	log "github.com/sirupsen/logrus"
 
-	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/uniswapv2"
 )
 
@@ -24,6 +25,26 @@ var (
 	clientUniswapv2GetAmountInAmount  = clientUniswapv2GetAmountIn.Arg("amount", "Token 0").Float64()
 )
 
+func uniswapV2Commands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+	uniswapv2Client, err := uniswapv2.NewClient(client)
+	if err != nil {
+		return false, err
+	}
+	reg, err := newTokenRegistry(ctx, client)
+	if err != nil {
+		return false, err
+	}
+	switch commands[0] {
+	case "get-pairs":
+		return true, uniswapV2GetPairs(ctx, uniswapv2Client)
+	case "get-amount-out":
+		return true, uniswapV2GetAmountOut(ctx, reg, uniswapv2Client)
+	case "get-amount-in":
+		return true, uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
+	}
+	return false, nil
+}
+
 func uniswapV2GetPairs(ctx context.Context, client *uniswapv2.Client) error {
 	pairs, err := client.GetPairs(ctx)
 	if err != nil {
@@ -34,7 +55,7 @@ func uniswapV2GetPairs(ctx context.Context, client *uniswapv2.Client) error {
 		if err != nil {
 			return err
 		}
-		token0Client, err := token.ByRawAddress(ctx, client.Client, token0)
+		token0Client, err := token2.ByAddress(ctx, client.Client, token0)
 		if err != nil {
 			log.Warnf("Token %s could not be initialized: %s", token0.String(), err)
 			continue
@@ -43,22 +64,22 @@ func uniswapV2GetPairs(ctx context.Context, client *uniswapv2.Client) error {
 		if err != nil {
 			return err
 		}
-		token1Client, err := token.ByRawAddress(ctx, client.Client, token1)
+		token1Client, err := token2.ByAddress(ctx, client.Client, token1)
 		if err != nil {
 			log.Warnf("Token %s could not be initialized: %s", token0.String(), err)
 			continue
 		}
-		fmt.Printf("%+v %+v -> %+v\n", pair.Address.String(), token0Client.Name(), token1Client.Name())
+		fmt.Printf("%+v %+v -> %+v\n", pair.Address.String(), token0Client.Address.String(), token1Client.Address.String())
 	}
 	return nil
 }
 
-func uniswapV2GetAmountOut(ctx context.Context, client *uniswapv2.Client) error {
-	token0, err := token.ByName(client.Client, *clientUniswapv2GetAmountOutToken0)
+func uniswapV2GetAmountOut(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	token0, err := registry.ByName(*clientUniswapv2GetAmountOutToken0)
 	if err != nil {
 		return err
 	}
-	token1, err := token.ByName(client.Client, *clientUniswapv2GetAmountOutToken1)
+	token1, err := registry.ByName(*clientUniswapv2GetAmountOutToken1)
 	if err != nil {
 		return err
 	}
@@ -71,12 +92,12 @@ func uniswapV2GetAmountOut(ctx context.Context, client *uniswapv2.Client) error 
 	return nil
 }
 
-func uniswapV2GetAmountIn(ctx context.Context, client *uniswapv2.Client) error {
-	token0, err := token.ByName(client.Client, *clientUniswapv2GetAmountInToken0)
+func uniswapV2GetAmountIn(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	token0, err := registry.ByName(*clientUniswapv2GetAmountInToken0)
 	if err != nil {
 		return err
 	}
-	token1, err := token.ByName(client.Client, *clientUniswapv2GetAmountInToken1)
+	token1, err := registry.ByName(*clientUniswapv2GetAmountInToken1)
 	if err != nil {
 		return err
 	}

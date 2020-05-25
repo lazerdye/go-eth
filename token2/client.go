@@ -8,10 +8,16 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/wallet"
+)
+
+var (
+	approveGasLimit = uint64(200000)
 )
 
 type TokenInfo struct {
@@ -64,6 +70,29 @@ func (c *Client) FromWei(i *big.Int) *big.Float {
 func (c *Client) ToWei(f *big.Float) *big.Int {
 	i, _ := new(big.Float).Mul(f, big.NewFloat(math.Pow10(int(c.Decimals)))).Int(nil)
 	return i
+}
+
+func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (*big.Float, error) {
+	opts := bind.CallOpts{Context: ctx}
+	iAmount, err := c.instance.Allowance(&opts, address, contract)
+	if err != nil {
+		return nil, err
+	}
+	return c.FromWei(iAmount), nil
+}
+
+func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := from.NewTransactor(ctx, nil, gasPrice, approveGasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	iAmount := c.ToWei(value)
+	return c.instance.Approve(opts, contract, iAmount)
 }
 
 type Registry struct {
