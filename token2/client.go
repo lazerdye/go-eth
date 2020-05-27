@@ -3,13 +3,13 @@ package token2
 import (
 	"context"
 	"io/ioutil"
-	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 	"gopkg.in/yaml.v2"
 
 	"github.com/lazerdye/go-eth/client"
@@ -63,25 +63,24 @@ func (c *Client) Symbol(ctx context.Context) (string, error) {
 	return c.instance.Symbol(opts)
 }
 
-func (c *Client) FromWei(i *big.Int) *big.Float {
-	return new(big.Float).Quo(new(big.Float).SetInt(i), big.NewFloat(math.Pow10(int(c.Decimals))))
+func (c *Client) FromWei(i *big.Int) decimal.Decimal {
+	return decimal.NewFromBigInt(i, -int32(c.Decimals))
 }
 
-func (c *Client) ToWei(f *big.Float) *big.Int {
-	i, _ := new(big.Float).Mul(f, big.NewFloat(math.Pow10(int(c.Decimals)))).Int(nil)
-	return i
+func (c *Client) ToWei(f decimal.Decimal) *big.Int {
+	return f.Shift(int32(c.Decimals)).BigInt()
 }
 
-func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (*big.Float, error) {
+func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (decimal.Decimal, error) {
 	opts := bind.CallOpts{Context: ctx}
 	iAmount, err := c.instance.Allowance(&opts, address, contract)
 	if err != nil {
-		return nil, err
+		return decimal.Decimal{}, err
 	}
 	return c.FromWei(iAmount), nil
 }
 
-func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value *big.Float) (*types.Transaction, error) {
+func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err

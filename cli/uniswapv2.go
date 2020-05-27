@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
 
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
@@ -83,7 +83,7 @@ func uniswapV2GetAmountOut(ctx context.Context, registry *token2.Registry, clien
 	if err != nil {
 		return err
 	}
-	amountBig := big.NewFloat(*clientUniswapv2GetAmountOutAmount)
+	amountBig := decimal.NewFromFloat(*clientUniswapv2GetAmountOutAmount)
 	value, err := client.GetAmountOut(ctx, amountBig, token0, token1)
 	if err != nil {
 		return err
@@ -101,7 +101,7 @@ func uniswapV2GetAmountIn(ctx context.Context, registry *token2.Registry, client
 	if err != nil {
 		return err
 	}
-	amountBig := big.NewFloat(*clientUniswapv2GetAmountInAmount)
+	amountBig := decimal.NewFromFloat(*clientUniswapv2GetAmountInAmount)
 	value, err := client.GetAmountIn(ctx, amountBig, token0, token1)
 	if err != nil {
 		return err

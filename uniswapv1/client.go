@@ -18,7 +18,7 @@ var (
 	UniswapV1FactoryContract = common.HexToAddress("0xc0a47dFe034B400B47bDaD5FecDa2621de6c4d95")
 
 	buyGasSpeed   = gasstation.Fastest
-	sellGasSpeed  = gasstation.Fast
+	sellGasSpeed  = gasstation.Fastest
 	tradeGasLimit = uint64(500000)
 )
 

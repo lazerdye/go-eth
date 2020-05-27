@@ -3,10 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token2"
@@ -47,7 +47,7 @@ func doTokenApprove(ctx context.Context, token *token2.Client) error {
 		return errors.New("Wallet locked")
 	}
 	contract := common.HexToAddress(*clientToken2ApproveContract)
-	amount := big.NewFloat(*clientToken2ApproveAmount)
+	amount := decimal.NewFromFloat(*clientToken2ApproveAmount)
 	transaction, err := token.Approve(ctx, account, contract, amount)
 	if err != nil {
 		return err

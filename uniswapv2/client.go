@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasstation"
@@ -20,7 +21,7 @@ var (
 	UniswapV2Router01Contract = common.HexToAddress("0xf164fc0ec4e93095b804a4795bbe1e041497b92a")
 
 	buyGasSpeed  = gasstation.Fastest
-	sellGasSpeed = gasstation.Fast
+	sellGasSpeed = gasstation.Fastest
 
 	swapGasLimit = uint64(500000)
 )
@@ -97,33 +98,33 @@ func (c *Client) PairClient(address common.Address) (*PairClient, error) {
 	return NewPairClient(c.Client, address)
 }
 
-func (c *Client) GetAmountOut(ctx context.Context, amountIn *big.Float, token0 *token2.Client, token1 *token2.Client) (*big.Float, error) {
+func (c *Client) GetAmountOut(ctx context.Context, amountIn decimal.Decimal, token0 *token2.Client, token1 *token2.Client) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsOut(opts, token0.ToWei(amountIn), path)
 	if err != nil {
-		return nil, err
+		return decimal.Decimal{}, err
 	}
 	if len(amounts) != 2 {
-		return nil, errors.Errorf("Expected result of length 1: %+v", amounts)
+		return decimal.Decimal{}, errors.Errorf("Expected result of length 1: %+v", amounts)
 	}
 	return token1.FromWei(amounts[1]), nil
 }
 
-func (c *Client) GetAmountIn(ctx context.Context, amountOut *big.Float, token0 *token2.Client, token1 *token2.Client) (*big.Float, error) {
+func (c *Client) GetAmountIn(ctx context.Context, amountOut decimal.Decimal, token0 *token2.Client, token1 *token2.Client) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsIn(opts, token1.ToWei(amountOut), path)
 	if err != nil {
-		return nil, err
+		return decimal.Decimal{}, err
 	}
 	if len(amounts) != 2 {
-		return nil, errors.Errorf("Expected result of length 1: %+v", amounts)
+		return decimal.Decimal{}, errors.Errorf("Expected result of length 1: %+v", amounts)
 	}
 	return token0.FromWei(amounts[0]), nil
 }
 
-func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Account, amountIn *big.Float, amountOutMin *big.Float, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
 	gasPrice, _, err := c.GasPrice(ctx, sellGasSpeed)
 	if err != nil {
@@ -146,7 +147,7 @@ func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Acco
 	return t, nil
 }
 
-func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Account, maxAmountIn *big.Float, amountOut *big.Float, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Account, maxAmountIn decimal.Decimal, amountOut decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath) - 1] == weth
 	gasPrice, _, err := c.GasPrice(ctx, buyGasSpeed)
 	if err != nil {
