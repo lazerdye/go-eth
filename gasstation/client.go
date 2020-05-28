@@ -63,7 +63,7 @@ func (c *Client) GasPrice(ctx context.Context, speed Speed) (decimal.Decimal, fl
 	if !ok {
 		return dnil, 0, errors.Errorf("Internal error getting wait value")
 	}
-	gasVal := decimal.NewFromFloat(gas).Shift(-10)
+	gasVal := decimal.NewFromFloat(gas).Shift(-1)
 
 	return gasVal, wait, nil
 }

@@ -15,7 +15,7 @@ import (
 var (
 	clientToken2Command           = clientCmd.Command("token2", "Token2 Commands")
 	clientToken2Token             = clientToken2Command.Flag("token", "Token to operate on").Required().String()
-	clientToken2TokenFile         = clientCmd.Flag("token-file", "File for token registry").Envar("TOKEN_FILE").Required().String()
+	clientToken2TokenFile         = clientToken2Command.Flag("token-file", "File for token registry").Envar("TOKEN_FILE").Required().String()
 	clientToken2AllowanceCommand  = clientToken2Command.Command("allowance", "Display token allowance")
 	clientToken2AllowanceContract = clientToken2AllowanceCommand.Arg("contract", "Contract to check allowance of").Required().String()
 	clientToken2ApproveCommand    = clientToken2Command.Command("approve", "Approve token for contract")

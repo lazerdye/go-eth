@@ -11,7 +11,6 @@ import (
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/lazerdye/go-eth/dutchx"
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/wallet"
 )
@@ -41,10 +40,6 @@ func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
 		return nil, err
 	}
 	return &Client{client, gasstation}, nil
-}
-
-func (c *Client) Dutchx() (*dutchx.Client, error) {
-	return dutchx.NewClient(c.Client)
 }
 
 func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (decimal.Decimal, float64, error) {

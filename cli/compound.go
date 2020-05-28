@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
 
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/compound"
 	"github.com/lazerdye/go-eth/wallet"
@@ -24,7 +24,7 @@ func compoundMint(ctx context.Context, client *compound.Client, account *wallet.
 		return errors.New("Currently only eth is supported")
 	}
 
-	amountBig := big.NewFloat(*clientMintAmount)
+	amountBig := decimal.NewFromFloat(*clientMintAmount)
 	tx, err := client.Mint(ctx, account, amountBig)
 	if err != nil {
 		return err

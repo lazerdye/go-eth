@@ -2,13 +2,13 @@ package zeroex
 
 import (
 	"context"
-	"math"
 	"math/big"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex/ether_token"
 	"github.com/lazerdye/go-eth/zeroex/exchange"
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -46,13 +46,12 @@ func NewClient(tokenClient *client.Client) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account, amount *big.Float) (*types.Transaction, error) {
+func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	value, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
-	opts, err := account.NewTransactor(ctx, value, gasPrice, client.GasLimit)
+	opts, err := account.NewTransactor(ctx, client.EthToWei(amount), gasPrice, client.GasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -60,14 +59,13 @@ func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account,
 	return c.etherInstance.Deposit(opts)
 }
 
-func (c *Client) EtherTokenBalanceOf(ctx context.Context, account *wallet.Account) (*big.Float, error) {
+func (c *Client) EtherTokenBalanceOf(ctx context.Context, account *wallet.Account) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	amountInt, err := c.etherInstance.BalanceOf(opts, account.Address())
 	if err != nil {
-		return nil, err
+		return decimal.Zero, err
 	}
-	value := new(big.Float).Quo(new(big.Float).SetInt(amountInt), big.NewFloat(math.Pow10(18)))
-	return value, nil
+	return client.EthFromWei(amountInt), nil
 }
 
 func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {

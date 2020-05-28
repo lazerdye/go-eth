@@ -2,6 +2,7 @@ package uniswapv2
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -140,6 +141,10 @@ func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Acco
 	}
 	amountInBig := tokenPath[0].ToWei(amountIn)
 	amountOutMinBig := tokenPath[len(tokenPath)-1].ToWei(amountOutMin)
+	fmt.Printf("amountInBig: %d - amountOutMinBig: %d - opts: %+v\n", amountInBig, amountOutMinBig, opts)
+	if false {
+		return nil, errors.New("Not Implemented")
+	}
 	t, err := c.router.SwapExactTokensForETH(opts, amountInBig, amountOutMinBig, path, to, big.NewInt(deadline))
 	if err != nil {
 		return nil, err

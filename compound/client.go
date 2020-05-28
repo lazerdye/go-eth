@@ -2,14 +2,14 @@ package compound
 
 import (
 	"context"
-	"math/big"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/wallet"
-
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
 )
 
 const ()
@@ -35,7 +35,7 @@ func NewClient(client *client.Client) (*Client, error) {
 	return &Client{client, instance}, nil
 }
 
-func (c *Client) Mint(ctx context.Context, account *wallet.Account, amount *big.Float) (*types.Transaction, error) {
+func (c *Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err

@@ -3,13 +3,13 @@ package main
 import (
 	"context"
 	"fmt"
-	"math"
 	"math/big"
 	"strings"
 
 	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
 
+	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/etherscan"
 )
 
@@ -52,11 +52,15 @@ func doEtherscanList(ctx context.Context, address string) error {
 			if !ok {
 				return errors.Errorf("Invalid value: %s", value)
 			}
-			fValue := new(big.Float).Quo(new(big.Float).SetInt(iValue), big.NewFloat(math.Pow10(*etherscanDecimals)))
+			dValue := client.EthFromWei(iValue)
+			// NOTE: May be a better way to do this directly on decimal.
+			fValue, _ := dValue.Float64()
 			value = fmt.Sprintf(fmt.Sprintf("%%.%df", *etherscanDecimals), fValue)
 
-			feeFloat := new(big.Float).Quo(new(big.Float).SetInt(feeInt), big.NewFloat(math.Pow10(18)))
-			feeValue = fmt.Sprintf("%.18f", feeFloat)
+			dFee := client.EthFromWei(feeInt)
+			fFee, _ := dFee.Float64()
+
+			feeValue = fmt.Sprintf("%.18f", fFee)
 		}
 		if strings.EqualFold(address, t.From) {
 			fmt.Printf("%s\tOUT -> %s\n", t.Hash, t.To)

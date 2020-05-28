@@ -3,8 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
 
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/wallet"
@@ -19,11 +19,11 @@ var (
 )
 
 func zeroexDepositCommand(client *zeroex.Client, account *wallet.Account) error {
-	amount, _, err := new(big.Float).Parse(*clientZeroexDepositAmount, 10)
+	amount, err := decimal.NewFromString(*clientZeroexDepositAmount)
 	if err != nil {
 		return err
 	}
-	log.Infof("Amount: %s", amount.String())
+	log.Infof("Amount: %s", amount)
 	tx, err := client.EtherTokenDeposit(context.Background(), account, amount)
 	if err != nil {
 		return err

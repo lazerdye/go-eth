@@ -78,5 +78,6 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice de
 	t.From = a.Account.Address
 	t.GasPrice = gasPrice.Shift(9).BigInt()
 	t.GasLimit = gasLimit
+	//t.Nonce = big.NewInt(70)
 	return t, err
 }
