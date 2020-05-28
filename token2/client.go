@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	approveGasLimit = uint64(200000)
+	approveGasLimit  = uint64(200000)
+	transferGasLimit = uint64(200000)
 )
 
 type TokenInfo struct {
@@ -94,6 +95,18 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	return c.instance.Approve(opts, contract, iAmount)
 }
 
+func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount decimal.Decimal) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, transferGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	return c.instance.Transfer(opts, destAccount, c.ToWei(amount))
+}
+
 type Registry struct {
 	tokens map[string]*Client
 }
@@ -127,6 +140,14 @@ func (r *Registry) Register(name string, client *Client) error {
 	}
 	r.tokens[name] = client
 	return nil
+}
+
+func (r *Registry) AllNames() []string {
+	names := make([]string, 0, len(r.tokens))
+	for name, _ := range r.tokens {
+		names = append(names, name)
+	}
+	return names
 }
 
 func (r *Registry) ByName(name string) (*Client, error) {

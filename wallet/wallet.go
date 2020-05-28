@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/shopspring/decimal"
 	//log "github.com/sirupsen/logrus"
 	"github.com/ethereum/go-ethereum/accounts"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -67,7 +68,7 @@ func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transa
 	return a.ks.SignTx(a.Account, tx, chainID)
 }
 
-func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice *big.Float, gasLimit uint64) (*bind.TransactOpts, error) {
+func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice decimal.Decimal, gasLimit uint64) (*bind.TransactOpts, error) {
 	t, err := bind.NewKeyStoreTransactor(a.ks, a.Account)
 	if err != nil {
 		return nil, err
@@ -75,7 +76,7 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice *b
 	t.Context = ctx
 	t.Value = value
 	t.From = a.Account.Address
-	t.GasPrice, _ = new(big.Float).Mul(gasPrice, big.NewFloat(1e9)).Int(nil)
+	t.GasPrice = gasPrice.Shift(9).BigInt()
 	t.GasLimit = gasLimit
 	return t, err
 }

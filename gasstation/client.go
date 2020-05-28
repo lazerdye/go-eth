@@ -2,9 +2,9 @@ package gasstation
 
 import (
 	"context"
-	"math/big"
 
 	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/util"
@@ -23,6 +23,8 @@ const (
 
 var (
 	WaitValues = make(map[Speed]string)
+
+	dnil = decimal.Decimal{}
 )
 
 func init() {
@@ -40,28 +42,28 @@ func NewClient() *Client {
 	return &Client{httpClient: util.NewHttpClient()}
 }
 
-func (c *Client) GasPrice(ctx context.Context, speed Speed) (*big.Float, float64, error) {
+func (c *Client) GasPrice(ctx context.Context, speed Speed) (decimal.Decimal, float64, error) {
 	var response map[string]interface{}
 
 	if err := c.httpClient.Get(ctx, ethgasstationApi, nil, &response); err != nil {
-		return nil, 0, err
+		return dnil, 0, err
 	}
 
 	log.Debugf("Response: %s", response)
 
 	waitValues, ok := WaitValues[speed]
 	if !ok {
-		return nil, 0, errors.Errorf("Unknown speed value: %s", speed)
+		return dnil, 0, errors.Errorf("Unknown speed value: %s", speed)
 	}
 	gas, ok := response[string(speed)].(float64)
 	if !ok {
-		return nil, 0, errors.Errorf("Internal error getting gas value")
+		return dnil, 0, errors.Errorf("Internal error getting gas value")
 	}
 	wait, ok := response[waitValues].(float64)
 	if !ok {
-		return nil, 0, errors.Errorf("Internal error getting wait value")
+		return dnil, 0, errors.Errorf("Internal error getting wait value")
 	}
-	gasVal := new(big.Float).Quo(big.NewFloat(gas), big.NewFloat(10))
+	gasVal := decimal.NewFromFloat(gas).Shift(-10)
 
 	return gasVal, wait, nil
 }

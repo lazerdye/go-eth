@@ -23,7 +23,7 @@ var (
 	buyGasSpeed  = gasstation.Fastest
 	sellGasSpeed = gasstation.Fastest
 
-	swapGasLimit = uint64(500000)
+	swapGasLimit = uint64(700000)
 )
 
 type Client struct {

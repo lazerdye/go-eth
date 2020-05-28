@@ -2,13 +2,13 @@ package client
 
 import (
 	"context"
-	"math"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/dutchx"
@@ -23,12 +23,16 @@ type Client struct {
 }
 
 const (
-	ethDigits = 18
+	ethDecimals = 18
 
 	GasLimit         = uint64(7800000)
 	TransferGasSpeed = gasstation.Fastest // TODO: Make this configurable.
 	BuyGasSpeed      = gasstation.Fastest
 	SellGasSpeed     = gasstation.Fast
+)
+
+var (
+	dnil = decimal.Decimal{}
 )
 
 func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
@@ -43,21 +47,20 @@ func (c *Client) Dutchx() (*dutchx.Client, error) {
 	return dutchx.NewClient(c.Client)
 }
 
-func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (*big.Float, float64, error) {
+func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (decimal.Decimal, float64, error) {
 	return c.gasstation.GasPrice(ctx, speed)
 }
 
-func (c *Client) BalanceOf(ctx context.Context, address common.Address) (*big.Float, error) {
+func (c *Client) BalanceOf(ctx context.Context, address common.Address) (decimal.Decimal, error) {
 	balance, err := c.Client.BalanceAt(ctx, address, nil)
 	if err != nil {
-		return nil, err
+		return dnil, err
 	}
 
-	balanceFloat := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(math.Pow10(ethDigits)))
-	return balanceFloat, nil
+	return EthFromWei(balance), nil
 }
 
-func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, dest string, amount *big.Float, transmit bool) (*types.Transaction, error) {
+func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, dest string, amount decimal.Decimal, transmit bool) (*types.Transaction, error) {
 	// TODO: Just use the erc20 contract.
 	nonce, err := c.Client.PendingNonceAt(ctx, sourceAccount.Account.Address)
 	if err != nil {
@@ -66,8 +69,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 
 	destAddress := common.HexToAddress(dest)
 
-	value := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18)))
-	valueInt, _ := value.Int(nil)
+	valueInt := EthToWei(amount)
 
 	gasLimit, err := c.Client.EstimateGas(ctx, ethereum.CallMsg{
 		To: &destAddress,
@@ -105,12 +107,10 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	return txSigned, nil
 }
 
-func EthToWei(fValue *big.Float) *big.Int {
-	intValue, _ := new(big.Float).Mul(fValue, big.NewFloat(math.Pow10(ethDigits))).Int(nil)
-
-	return intValue
+func EthToWei(amount decimal.Decimal) *big.Int {
+	return amount.Shift(ethDecimals).BigInt()
 }
 
-func EthFromWei(iValue *big.Int) *big.Float {
-	return new(big.Float).Quo(new(big.Float).SetInt(iValue), big.NewFloat(math.Pow10(18)))
+func EthFromWei(iValue *big.Int) decimal.Decimal {
+	return decimal.NewFromBigInt(iValue, -int32(ethDecimals))
 }

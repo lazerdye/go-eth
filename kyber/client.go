@@ -2,13 +2,12 @@ package kyber
 
 import (
 	"context"
-	"math"
-	"math/big"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasstation"
-	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
+	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -29,6 +28,8 @@ var (
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
 
 	tradeGasSpeed = gasstation.Fastest
+
+	dnil = decimal.Decimal{}
 )
 
 type Client struct {
@@ -48,58 +49,58 @@ func NewClient(client *client.Client) (*Client, error) {
 	}, nil
 }
 
-func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token.Token, quantity *big.Float) (*big.Float, *big.Float, error) {
+func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Client, quantity decimal.Decimal) (decimal.Decimal, decimal.Decimal, error) {
 	quantityInt := source.ToWei(quantity)
-	log.Infof("GetExpectedRate input %s %s %s", source.Contract().String(), dest.Contract().String(), quantityInt.String())
-	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source.Contract(), dest.Contract(), quantityInt)
+	log.Infof("GetExpectedRate input %s %s %s", source.Address.String(), dest.Address.String(), quantityInt.String())
+	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source.Address, dest.Address, quantityInt)
 	if err != nil {
-		return nil, nil, err
+		return dnil, dnil, err
 	}
 
-	expectedRate := new(big.Float).Quo(new(big.Float).SetInt(rate.ExpectedRate), big.NewFloat(math.Pow10(18)))
-	slippageRate := new(big.Float).Quo(new(big.Float).SetInt(rate.SlippageRate), big.NewFloat(math.Pow10(18)))
+	expectedRate := dest.FromWei(rate.ExpectedRate)
+	slippageRate := dest.FromWei(rate.SlippageRate)
 	return expectedRate, slippageRate, nil
 }
 
-func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, token common.Address, amount *big.Float, minRate *big.Float) (*types.Transaction, error) {
+func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, minRate decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, waitTime, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
 	log.Infof("Gas price: %f - wait time: %fs", gasPrice, waitTime)
 
-	amountInt, _ := new(big.Float).Mul(amount, big.NewFloat(math.Pow10(18))).Int(nil)
+	amountInt := client.EthToWei(amount)
 	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, tradeGasLimit)
 	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
 	log.Infof("Transact Opts: %+v", transactOpts)
-	minRateInt, _ := new(big.Float).Mul(minRate, big.NewFloat(math.Pow10(18))).Int(nil)
-	transaction, err := c.instance.SwapEtherToToken(transactOpts, token, minRateInt)
+	minRateInt := tok.ToWei(minRate)
+	transaction, err := c.instance.SwapEtherToToken(transactOpts, tok.Address, minRateInt)
 	if err != nil {
 		return nil, err
 	}
 	return transaction, err
 }
 
-func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token.Client, amount *big.Float, maxRate *big.Float) (*types.Transaction, error) {
+func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, maxRate decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, big.NewInt(0), gasPrice, tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
-	amountInt, err := tok.ToWeiCapped(amount, account.Address())
-	if err != nil {
-		return nil, err
-	}
+	// TODO: Balance check
+	//amountInt, err := tok.ToWeiCapped(amount, account.Address())
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	// TODO: Is 18 right for rate?
-	maxRateInt, _ := new(big.Float).Mul(maxRate, big.NewFloat(math.Pow10(18))).Int(nil)
-	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.ContractAddress(), amountInt, maxRateInt)
+	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.Address, tok.ToWei(amount), client.EthToWei(maxRate))
 	if err != nil {
 		return nil, err
 	}

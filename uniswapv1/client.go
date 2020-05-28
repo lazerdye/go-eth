@@ -8,9 +8,10 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/token"
+	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -20,6 +21,8 @@ var (
 	buyGasSpeed   = gasstation.Fastest
 	sellGasSpeed  = gasstation.Fastest
 	tradeGasLimit = uint64(500000)
+
+	dnil = decimal.Decimal{}
 )
 
 type Client struct {
@@ -29,7 +32,7 @@ type Client struct {
 }
 
 type ExchangeClient struct {
-	*token.Client
+	*token2.Client
 
 	address  common.Address
 	exchange *Exchange
@@ -43,9 +46,9 @@ func NewClient(client *client.Client) (*Client, error) {
 	return &Client{client, factoryInstance}, nil
 }
 
-func (c *Client) GetExchange(ctx context.Context, tok *token.Client) (*ExchangeClient, error) {
+func (c *Client) GetExchange(ctx context.Context, tok *token2.Client) (*ExchangeClient, error) {
 	opts := &bind.CallOpts{Context: ctx}
-	address, err := c.factory.GetExchange(opts, tok.ContractAddress())
+	address, err := c.factory.GetExchange(opts, tok.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -60,49 +63,47 @@ func (e *ExchangeClient) ContractAddress() common.Address {
 	return e.address
 }
 
-func (e *ExchangeClient) GetEthToTokenInputPrice(ctx context.Context, ethSold *big.Float) (*big.Float, error) {
+func (e *ExchangeClient) GetEthToTokenInputPrice(ctx context.Context, ethSold decimal.Decimal) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	tokenBought, err := e.exchange.GetEthToTokenInputPrice(opts, client.EthToWei(ethSold))
 	if err != nil {
-		return nil, err
+		return dnil, err
 	}
 
 	return e.FromWei(tokenBought), nil
 }
 
-func (e *ExchangeClient) GetEthToTokenOutputPrice(ctx context.Context, tokensBought *big.Float) (*big.Float, error) {
-	// Convert tokensBought to int.
-
+func (e *ExchangeClient) GetEthToTokenOutputPrice(ctx context.Context, tokensBought decimal.Decimal) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	ethSold, err := e.exchange.GetEthToTokenOutputPrice(opts, e.ToWei(tokensBought))
 	if err != nil {
-		return nil, err
+		return dnil, err
 	}
 
 	return client.EthFromWei(ethSold), nil
 }
 
-func (e *ExchangeClient) GetTokenToEthInputPrice(ctx context.Context, tokensSold *big.Float) (*big.Float, error) {
+func (e *ExchangeClient) GetTokenToEthInputPrice(ctx context.Context, tokensSold decimal.Decimal) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	ethBought, err := e.exchange.GetTokenToEthInputPrice(opts, e.ToWei(tokensSold))
 	if err != nil {
-		return nil, err
+		return dnil, err
 	}
 
 	return client.EthFromWei(ethBought), nil
 }
 
-func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought *big.Float) (*big.Float, error) {
+func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought decimal.Decimal) (decimal.Decimal, error) {
 	opts := &bind.CallOpts{Context: ctx}
 	tokenSold, err := e.exchange.GetTokenToEthOutputPrice(opts, client.EthToWei(ethBought))
 	if err != nil {
-		return nil, err
+		return dnil, err
 	}
 
 	return e.FromWei(tokenSold), nil
 }
 
-func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold *big.Float, tokensBought *big.Float, deadline int) (*types.Transaction, error) {
+func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold decimal.Decimal, tokensBought decimal.Decimal, deadline int) (*types.Transaction, error) {
 	gasPrice, _, err := e.GasPrice(ctx, buyGasSpeed)
 	if err != nil {
 		return nil, err
@@ -120,7 +121,7 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 	return tx, nil
 }
 
-func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold *big.Float, minEth *big.Float, deadline int) (*types.Transaction, error) {
+func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold decimal.Decimal, minEth decimal.Decimal, deadline int) (*types.Transaction, error) {
 	gasPrice, _, err := e.GasPrice(ctx, sellGasSpeed)
 	if err != nil {
 		return nil, err
@@ -130,11 +131,11 @@ func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *walle
 		return nil, err
 	}
 
-	tokensCapped, err := e.ToWeiCapped(tokensSold, account.Address())
-	if err != nil {
-		return nil, err
-	}
-	tx, err := e.exchange.TokenToEthSwapInput(opts, tokensCapped, client.EthToWei(minEth), big.NewInt(int64(deadline)))
+	//tokensCapped, err := e.ToWeiCapped(tokensSold, account.Address())
+	//if err != nil {
+	//	return nil, err
+	//}
+	tx, err := e.exchange.TokenToEthSwapInput(opts, e.ToWei(tokensSold), client.EthToWei(minEth), big.NewInt(int64(deadline)))
 	if err != nil {
 		return nil, err
 	}
