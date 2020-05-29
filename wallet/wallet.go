@@ -19,8 +19,9 @@ type Wallet struct {
 }
 
 type Account struct {
-	ks      *keystore.KeyStore
-	Account accounts.Account
+	ks            *keystore.KeyStore
+	overrideNonce *big.Int
+	Account       accounts.Account
 }
 
 func Open(dir string) (*Wallet, error) {
@@ -45,7 +46,7 @@ func (w *Wallet) Account(address string) (*Account, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Account{w.ks, account}, nil
+	return &Account{w.ks, nil, account}, nil
 }
 
 func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
@@ -54,6 +55,10 @@ func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
 		return nil, err
 	}
 	return &Account{ks: w.ks, Account: a}, nil
+}
+
+func (a *Account) OverrideNonce(nonce *big.Int) {
+	a.overrideNonce = nonce
 }
 
 func (a *Account) Address() common.Address {
@@ -78,6 +83,9 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice de
 	t.From = a.Account.Address
 	t.GasPrice = gasPrice.Shift(9).BigInt()
 	t.GasLimit = gasLimit
-	//t.Nonce = big.NewInt(70)
+	if a.overrideNonce != nil {
+		t.Nonce = a.overrideNonce
+		a.overrideNonce = new(big.Int).Add(a.overrideNonce, big.NewInt(1))
+	}
 	return t, err
 }

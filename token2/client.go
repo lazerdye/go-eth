@@ -95,6 +95,15 @@ func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract com
 	return c.instance.Approve(opts, contract, iAmount)
 }
 
+func (c *Client) BalanceOf(ctx context.Context, account common.Address) (decimal.Decimal, error) {
+	opts := &bind.CallOpts{Context: ctx}
+	balance, err := c.instance.BalanceOf(opts, account)
+	if err != nil {
+		return decimal.Decimal{}, err
+	}
+	return c.FromWei(balance), nil
+}
+
 func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
