@@ -55,14 +55,19 @@ func (c *Client) BalanceOf(ctx context.Context, address common.Address) (decimal
 	return EthFromWei(balance), nil
 }
 
-func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, dest string, amount decimal.Decimal, transmit bool) (*types.Transaction, error) {
-	// TODO: Just use the erc20 contract.
-	nonce, err := c.Client.PendingNonceAt(ctx, sourceAccount.Account.Address)
-	if err != nil {
-		return nil, err
+func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAddress common.Address, amount decimal.Decimal, transmit bool) (*types.Transaction, error) {
+	// TODO: There's got to be a better way.
+	var nonce uint64
+	nonceInt := sourceAccount.NextNonceOverride()
+	if nonceInt != nil {
+		nonce = nonceInt.Uint64()
+	} else {
+		var err error
+		nonce, err = c.Client.PendingNonceAt(ctx, sourceAccount.Account.Address)
+		if err != nil {
+			return nil, err
+		}
 	}
-
-	destAddress := common.HexToAddress(dest)
 
 	valueInt := EthToWei(amount)
 
@@ -74,13 +79,13 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	log.Infof("Gas limit: %d", gasLimit)
 
-	gasPrice, err := c.Client.SuggestGasPrice(ctx)
+	gasPrice, _, err := c.GasPrice(ctx, TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
 	log.Infof("Gas price: %d", gasPrice)
 
-	tx := types.NewTransaction(nonce, destAddress, valueInt, gasLimit, gasPrice, nil)
+	tx := types.NewTransaction(nonce, destAddress, valueInt, gasLimit, gasPrice.Shift(9).BigInt(), nil)
 
 	chainID, err := c.Client.NetworkID(ctx)
 	if err != nil {

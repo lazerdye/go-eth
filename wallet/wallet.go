@@ -61,6 +61,15 @@ func (a *Account) OverrideNonce(nonce *big.Int) {
 	a.overrideNonce = nonce
 }
 
+func (a *Account) NextNonceOverride() *big.Int {
+	var nonce *big.Int
+	if a.overrideNonce != nil {
+		nonce = a.overrideNonce
+		a.overrideNonce = new(big.Int).Add(a.overrideNonce, big.NewInt(1))
+	}
+	return nonce
+}
+
 func (a *Account) Address() common.Address {
 	return a.Account.Address
 }
@@ -83,9 +92,6 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice de
 	t.From = a.Account.Address
 	t.GasPrice = gasPrice.Shift(9).BigInt()
 	t.GasLimit = gasLimit
-	if a.overrideNonce != nil {
-		t.Nonce = a.overrideNonce
-		a.overrideNonce = new(big.Int).Add(a.overrideNonce, big.NewInt(1))
-	}
+	t.Nonce = a.NextNonceOverride() // Will be nil if no nonce override
 	return t, err
 }
