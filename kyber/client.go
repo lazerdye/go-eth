@@ -57,8 +57,9 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Clien
 		return dnil, dnil, err
 	}
 
-	expectedRate := dest.FromWei(rate.ExpectedRate)
-	slippageRate := dest.FromWei(rate.SlippageRate)
+	// It's confusing, but the 'rate' ignores token decimals.
+	expectedRate := client.EthFromWei(rate.ExpectedRate)
+	slippageRate := client.EthFromWei(rate.SlippageRate)
 	return expectedRate, slippageRate, nil
 }
 
