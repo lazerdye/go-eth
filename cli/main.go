@@ -95,7 +95,7 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 	if err != nil {
 		return err
 	}
-	tx, err := c.Transfer(ctx, account, destAddress, decimal.NewFromFloat(amount), false)
+	tx, err := c.Transfer(ctx, account, common.HexToAddress(destAddress), decimal.NewFromFloat(amount), false)
 	if err != nil {
 		return err
 	}

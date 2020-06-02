@@ -70,6 +70,15 @@ func (p *PairClient) Token1(ctx context.Context) (common.Address, error) {
 	return p.pair.Token1(opts)
 }
 
+func (p *PairClient) GetReserves(ctx context.Context) (string, error) {
+	opts := &bind.CallOpts{Context: ctx}
+	info, err := p.pair.GetReserves(opts)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("%+v", info), err
+}
+
 func (p *PairClient) ParseSwap(log types.Log) (*PairSwap, error) {
 	return p.pair.ParseSwap(log)
 }
@@ -93,6 +102,15 @@ func (c *Client) GetPairs(ctx context.Context) ([]*PairClient, error) {
 		}
 	}
 	return pairs, nil
+}
+
+func (c *Client) GetPair(ctx context.Context, token0 *token2.Client, token1 *token2.Client) (*PairClient, error) {
+	opts := &bind.CallOpts{Context: ctx}
+	address, err := c.factory.GetPair(opts, token0.Address, token1.Address)
+	if err != nil {
+		return nil, err
+	}
+	return c.PairClient(address)
 }
 
 func (c *Client) PairClient(address common.Address) (*PairClient, error) {

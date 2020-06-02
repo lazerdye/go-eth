@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	//"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
@@ -13,8 +14,11 @@ import (
 )
 
 var (
-	clientUniswapv2Command            = clientCmd.Command("uniswapv2", "Uniswap V2 operations")
+	clientUniswapv2Command            = clientToken2Command.Command("uniswapv2", "Uniswap V2 operations")
 	clientUniswapv2GetPairs           = clientUniswapv2Command.Command("get-pairs", "Get Pairs")
+	clientUniswapv2GetPair           = clientUniswapv2Command.Command("get-pair", "Get Pairs")
+	clientUniswapv2GetPairToken0 = clientUniswapv2GetPair.Arg("token0", "Token 0").String()
+	clientUniswapv2GetPairToken1 = clientUniswapv2GetPair.Arg("token1", "Token 1").String()
 	clientUniswapv2GetAmountOut       = clientUniswapv2Command.Command("get-amount-out", "Get output amount")
 	clientUniswapv2GetAmountOutToken0 = clientUniswapv2GetAmountOut.Arg("token0", "Token 0").String()
 	clientUniswapv2GetAmountOutToken1 = clientUniswapv2GetAmountOut.Arg("token1", "Token 1").String()
@@ -23,24 +27,27 @@ var (
 	clientUniswapv2GetAmountInToken0  = clientUniswapv2GetAmountIn.Arg("token0", "Token 0").String()
 	clientUniswapv2GetAmountInToken1  = clientUniswapv2GetAmountIn.Arg("token1", "Token 1").String()
 	clientUniswapv2GetAmountInAmount  = clientUniswapv2GetAmountIn.Arg("amount", "Token 0").Float64()
+	clientUniswapv2GetReserves        = clientUniswapv2Command.Command("get-reserves", "Get reserves")
+	clientUniswapv2GetReservesToken0  = clientUniswapv2GetReserves.Arg("token0", "Token 0").String()
+	clientUniswapv2GetReservesToken1  = clientUniswapv2GetReserves.Arg("token1", "Token 1").String()
 )
 
-func uniswapV2Commands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
 	uniswapv2Client, err := uniswapv2.NewClient(client)
-	if err != nil {
-		return false, err
-	}
-	reg, err := newTokenRegistry(ctx, client)
 	if err != nil {
 		return false, err
 	}
 	switch commands[0] {
 	case "get-pairs":
 		return true, uniswapV2GetPairs(ctx, uniswapv2Client)
+	case "get-pair":
+		return true, uniswapV2GetPair(ctx, reg, uniswapv2Client)
 	case "get-amount-out":
 		return true, uniswapV2GetAmountOut(ctx, reg, uniswapv2Client)
 	case "get-amount-in":
 		return true, uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
+	case "get-reserves":
+		return true, uniswapV2GetReserves(ctx, reg, uniswapv2Client)
 	}
 	return false, nil
 }
@@ -71,6 +78,23 @@ func uniswapV2GetPairs(ctx context.Context, client *uniswapv2.Client) error {
 		}
 		fmt.Printf("%+v %+v -> %+v\n", pair.Address.String(), token0Client.Address.String(), token1Client.Address.String())
 	}
+	return nil
+}
+
+func uniswapV2GetPair(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	token0, err := registry.ByName(*clientUniswapv2GetPairToken0)
+	if err != nil {
+		return err
+	}
+	token1, err := registry.ByName(*clientUniswapv2GetPairToken1)
+	if err != nil {
+		return err
+	}
+	pair, err := client.GetPair(ctx, token0, token1)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Pair address: %s\n", pair.Address.String())
 	return nil
 }
 
@@ -107,5 +131,26 @@ func uniswapV2GetAmountIn(ctx context.Context, registry *token2.Registry, client
 		return err
 	}
 	fmt.Printf("AmountIn: %s\n", value.String())
+	return nil
+}
+
+func uniswapV2GetReserves(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	token0, err := registry.ByName(*clientUniswapv2GetReservesToken0)
+	if err != nil {
+		return err
+	}
+	token1, err := registry.ByName(*clientUniswapv2GetReservesToken1)
+	if err != nil {
+		return err
+	}
+	pair, err := client.GetPair(ctx, token0, token1)
+	if err != nil {
+		return err
+	}
+	reserves, err := pair.GetReserves(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Reserves: %s\n", reserves)
 	return nil
 }
