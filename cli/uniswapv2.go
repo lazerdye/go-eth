@@ -16,9 +16,9 @@ import (
 var (
 	clientUniswapv2Command            = clientToken2Command.Command("uniswapv2", "Uniswap V2 operations")
 	clientUniswapv2GetPairs           = clientUniswapv2Command.Command("get-pairs", "Get Pairs")
-	clientUniswapv2GetPair           = clientUniswapv2Command.Command("get-pair", "Get Pairs")
-	clientUniswapv2GetPairToken0 = clientUniswapv2GetPair.Arg("token0", "Token 0").String()
-	clientUniswapv2GetPairToken1 = clientUniswapv2GetPair.Arg("token1", "Token 1").String()
+	clientUniswapv2GetPair            = clientUniswapv2Command.Command("get-pair", "Get Pairs")
+	clientUniswapv2GetPairToken0      = clientUniswapv2GetPair.Arg("token0", "Token 0").String()
+	clientUniswapv2GetPairToken1      = clientUniswapv2GetPair.Arg("token1", "Token 1").String()
 	clientUniswapv2GetAmountOut       = clientUniswapv2Command.Command("get-amount-out", "Get output amount")
 	clientUniswapv2GetAmountOutToken0 = clientUniswapv2GetAmountOut.Arg("token0", "Token 0").String()
 	clientUniswapv2GetAmountOutToken1 = clientUniswapv2GetAmountOut.Arg("token1", "Token 1").String()

@@ -77,8 +77,8 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 		return nil, err
 	}
 	log.Infof("Transact Opts: %+v", transactOpts)
-	minRateInt := tok.ToWei(minRate)
-	transaction, err := c.instance.SwapEtherToToken(transactOpts, tok.Address, minRateInt)
+	// It's confusing, but rate always uses 18 decimals.
+	transaction, err := c.instance.SwapEtherToToken(transactOpts, tok.Address, client.EthToWei(minRate))
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, 
 	//	return nil, err
 	//}
 
-	// TODO: Is 18 right for rate?
+	// We always use 18 for the rate.
 	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.Address, tok.ToWei(amount), client.EthToWei(maxRate))
 	if err != nil {
 		return nil, err
