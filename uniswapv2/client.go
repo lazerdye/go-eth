@@ -157,7 +157,10 @@ func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Acco
 	for i, token := range tokenPath {
 		path[i] = token.Address
 	}
-	amountInBig := tokenPath[0].ToWei(amountIn)
+	amountInBig, err := tokenPath[0].ToWeiCapped(ctx, amountIn)
+	if err != nil {
+		return nil, err
+	}
 	amountOutMinBig := tokenPath[len(tokenPath)-1].ToWei(amountOutMin)
 	fmt.Printf("amountInBig: %d - amountOutMinBig: %d - opts: %+v\n", amountInBig, amountOutMinBig, opts)
 	if false {

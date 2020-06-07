@@ -10,6 +10,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 
 	"github.com/lazerdye/go-eth/client"
@@ -19,6 +20,8 @@ import (
 var (
 	approveGasLimit  = uint64(200000)
 	transferGasLimit = uint64(200000)
+
+	minDiff, _ = decimal.NewFromString("1e-4")
 )
 
 type TokenInfo struct {
@@ -70,6 +73,21 @@ func (c *Client) FromWei(i *big.Int) decimal.Decimal {
 
 func (c *Client) ToWei(f decimal.Decimal) *big.Int {
 	return f.Shift(int32(c.Decimals)).BigInt()
+}
+
+func (c *Client) ToWeiCapped(ctx context.Context, f decimal.Decimal) (*big.Int, error) {
+	balance, err := c.BalanceOf(ctx, c.Address)
+	if err != nil {
+		return nil, err
+	}
+	diff := f.Sub(balance).Abs()
+	if f.Cmp(balance) > 0 && diff.Cmp(minDiff) > 0 {
+		return nil, errors.Errorf("Cannot cap, too much of a difference: %s-%s=%s", f, balance, diff)
+	} else if !diff.IsZero() && diff.Cmp(minDiff) <= 0 {
+		log.Infof("Capping withdraw to %s", balance)
+		return c.ToWei(balance), nil
+	}
+	return c.ToWei(f), nil
 }
 
 func (c *Client) Allowance(ctx context.Context, address, contract common.Address) (decimal.Decimal, error) {
