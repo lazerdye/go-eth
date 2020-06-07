@@ -75,8 +75,8 @@ func (c *Client) ToWei(f decimal.Decimal) *big.Int {
 	return f.Shift(int32(c.Decimals)).BigInt()
 }
 
-func (c *Client) ToWeiCapped(ctx context.Context, f decimal.Decimal) (*big.Int, error) {
-	balance, err := c.BalanceOf(ctx, c.Address)
+func (c *Client) ToWeiCapped(ctx context.Context, f decimal.Decimal, account *wallet.Account) (*big.Int, error) {
+	balance, err := c.BalanceOf(ctx, account.Address())
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +131,11 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	if err != nil {
 		return nil, err
 	}
-	return c.instance.Transfer(opts, destAccount, c.ToWei(amount))
+	amountCapped, err := c.ToWeiCapped(ctx, amount, sourceAccount)
+	if err != nil {
+		return nil, err
+	}
+	return c.instance.Transfer(opts, destAccount, amountCapped)
 }
 
 type Registry struct {

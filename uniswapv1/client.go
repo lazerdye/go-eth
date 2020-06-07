@@ -131,7 +131,7 @@ func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *walle
 		return nil, err
 	}
 
-	tokensCapped, err := e.ToWeiCapped(ctx, tokensSold)
+	tokensCapped, err := e.ToWeiCapped(ctx, tokensSold, account)
 	if err != nil {
 		return nil, err
 	}

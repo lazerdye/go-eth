@@ -94,14 +94,13 @@ func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
-	// TODO: Balance check
-	//amountInt, err := tok.ToWeiCapped(amount, account.Address())
-	//if err != nil {
-	//	return nil, err
-	//}
+	amountInt, err := tok.ToWeiCapped(ctx, amount, account)
+	if err != nil {
+		return nil, err
+	}
 
 	// We always use 18 for the rate.
-	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.Address, tok.ToWei(amount), client.EthToWei(maxRate))
+	transaction, err := c.instance.SwapTokenToEther(transactOpts, tok.Address, amountInt, client.EthToWei(maxRate))
 	if err != nil {
 		return nil, err
 	}
