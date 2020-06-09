@@ -3,12 +3,29 @@ package util
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 
-	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
 )
+
+type HttpError struct {
+	err        string
+	statusCode int
+}
+
+func NewHttpError(err string, statusCode int) error {
+	return &HttpError{err, statusCode}
+}
+
+func (e *HttpError) Error() string {
+	return e.err
+}
+
+func (e *HttpError) StatusCode() int {
+	return e.statusCode
+}
 
 type HttpClient struct {
 	client http.Client
@@ -53,7 +70,7 @@ func (h *HttpClient) Do(ctx context.Context, method string, reqUrl string, param
 	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
-		return errors.Errorf("Unexpected status code: %d", resp.StatusCode)
+		return NewHttpError(fmt.Sprintf("Unexpected status code: %d", resp.StatusCode), resp.StatusCode)
 	}
 
 	log.Infof("Resp: %+v", resp)
