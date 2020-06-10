@@ -12,8 +12,8 @@ token/erc20/erc20.go: token/erc20/TokenERC20.abi
 token2/erc20.go: token2/erc20.abi
 	abigen --abi=token2/erc20.abi --pkg=token2 --type=Erc20 --out=token2/erc20.go
 
-kyber/kyber.go: kyber/kyber_network_proxy.abi
-	abigen --abi=kyber/kyber_network_proxy.abi --pkg=kyber --out=kyber/kyber.go
+kyber/kyber.go: kyber/kyber.abi
+	abigen --abi=kyber/kyber.abi --pkg=kyber --out=kyber/kyber.go
 
 zeroex/ether_token/ether_token.go: zeroex/ether_token/ether_token.abi
 	abigen --abi=zeroex/ether_token/ether_token.abi --pkg=ether_token --out=zeroex/ether_token/ether_token.go
@@ -33,8 +33,8 @@ uniswapv2/factory.go: uniswapv2/factory.abi
 uniswapv2/pair.go: uniswapv2/pair.abi
 	abigen --abi=uniswapv2/pair.abi --pkg=uniswapv2 --type=Pair --out=uniswapv2/pair.go
 
-uniswapv2/router01.go: uniswapv2/router01.abi
-	abigen --abi=uniswapv2/router01.abi --pkg=uniswapv2 --type=Router01 --out=uniswapv2/router01.go
+uniswapv2/router02.go: uniswapv2/router02.abi
+	abigen --abi=uniswapv2/router02.abi --pkg=uniswapv2 --type=Router02 --out=uniswapv2/router02.go
 
 compound/compound.go: compound/compound.abi
 	abigen --abi=compound/compound.abi --pkg=compound --type=Compound --out=compound/compound.go

@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Factory *FactoryTransactorRaw) Transact(opts *bind.TransactOpts, method s
 
 // ExchangeTemplate is a free data retrieval call binding the contract method 0x1c2bbd18.
 //
-// Solidity: function exchangeTemplate() constant returns(address out)
+// Solidity: function exchangeTemplate() returns(address out)
 func (_Factory *FactoryCaller) ExchangeTemplate(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -186,21 +185,21 @@ func (_Factory *FactoryCaller) ExchangeTemplate(opts *bind.CallOpts) (common.Add
 
 // ExchangeTemplate is a free data retrieval call binding the contract method 0x1c2bbd18.
 //
-// Solidity: function exchangeTemplate() constant returns(address out)
+// Solidity: function exchangeTemplate() returns(address out)
 func (_Factory *FactorySession) ExchangeTemplate() (common.Address, error) {
 	return _Factory.Contract.ExchangeTemplate(&_Factory.CallOpts)
 }
 
 // ExchangeTemplate is a free data retrieval call binding the contract method 0x1c2bbd18.
 //
-// Solidity: function exchangeTemplate() constant returns(address out)
+// Solidity: function exchangeTemplate() returns(address out)
 func (_Factory *FactoryCallerSession) ExchangeTemplate() (common.Address, error) {
 	return _Factory.Contract.ExchangeTemplate(&_Factory.CallOpts)
 }
 
 // GetExchange is a free data retrieval call binding the contract method 0x06f2bf62.
 //
-// Solidity: function getExchange(address token) constant returns(address out)
+// Solidity: function getExchange(address token) returns(address out)
 func (_Factory *FactoryCaller) GetExchange(opts *bind.CallOpts, token common.Address) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -212,21 +211,21 @@ func (_Factory *FactoryCaller) GetExchange(opts *bind.CallOpts, token common.Add
 
 // GetExchange is a free data retrieval call binding the contract method 0x06f2bf62.
 //
-// Solidity: function getExchange(address token) constant returns(address out)
+// Solidity: function getExchange(address token) returns(address out)
 func (_Factory *FactorySession) GetExchange(token common.Address) (common.Address, error) {
 	return _Factory.Contract.GetExchange(&_Factory.CallOpts, token)
 }
 
 // GetExchange is a free data retrieval call binding the contract method 0x06f2bf62.
 //
-// Solidity: function getExchange(address token) constant returns(address out)
+// Solidity: function getExchange(address token) returns(address out)
 func (_Factory *FactoryCallerSession) GetExchange(token common.Address) (common.Address, error) {
 	return _Factory.Contract.GetExchange(&_Factory.CallOpts, token)
 }
 
 // GetToken is a free data retrieval call binding the contract method 0x59770438.
 //
-// Solidity: function getToken(address exchange) constant returns(address out)
+// Solidity: function getToken(address exchange) returns(address out)
 func (_Factory *FactoryCaller) GetToken(opts *bind.CallOpts, exchange common.Address) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -238,21 +237,21 @@ func (_Factory *FactoryCaller) GetToken(opts *bind.CallOpts, exchange common.Add
 
 // GetToken is a free data retrieval call binding the contract method 0x59770438.
 //
-// Solidity: function getToken(address exchange) constant returns(address out)
+// Solidity: function getToken(address exchange) returns(address out)
 func (_Factory *FactorySession) GetToken(exchange common.Address) (common.Address, error) {
 	return _Factory.Contract.GetToken(&_Factory.CallOpts, exchange)
 }
 
 // GetToken is a free data retrieval call binding the contract method 0x59770438.
 //
-// Solidity: function getToken(address exchange) constant returns(address out)
+// Solidity: function getToken(address exchange) returns(address out)
 func (_Factory *FactoryCallerSession) GetToken(exchange common.Address) (common.Address, error) {
 	return _Factory.Contract.GetToken(&_Factory.CallOpts, exchange)
 }
 
 // GetTokenWithId is a free data retrieval call binding the contract method 0xaa65a6c0.
 //
-// Solidity: function getTokenWithId(uint256 token_id) constant returns(address out)
+// Solidity: function getTokenWithId(uint256 token_id) returns(address out)
 func (_Factory *FactoryCaller) GetTokenWithId(opts *bind.CallOpts, token_id *big.Int) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -264,21 +263,21 @@ func (_Factory *FactoryCaller) GetTokenWithId(opts *bind.CallOpts, token_id *big
 
 // GetTokenWithId is a free data retrieval call binding the contract method 0xaa65a6c0.
 //
-// Solidity: function getTokenWithId(uint256 token_id) constant returns(address out)
+// Solidity: function getTokenWithId(uint256 token_id) returns(address out)
 func (_Factory *FactorySession) GetTokenWithId(token_id *big.Int) (common.Address, error) {
 	return _Factory.Contract.GetTokenWithId(&_Factory.CallOpts, token_id)
 }
 
 // GetTokenWithId is a free data retrieval call binding the contract method 0xaa65a6c0.
 //
-// Solidity: function getTokenWithId(uint256 token_id) constant returns(address out)
+// Solidity: function getTokenWithId(uint256 token_id) returns(address out)
 func (_Factory *FactoryCallerSession) GetTokenWithId(token_id *big.Int) (common.Address, error) {
 	return _Factory.Contract.GetTokenWithId(&_Factory.CallOpts, token_id)
 }
 
 // TokenCount is a free data retrieval call binding the contract method 0x9f181b5e.
 //
-// Solidity: function tokenCount() constant returns(uint256 out)
+// Solidity: function tokenCount() returns(uint256 out)
 func (_Factory *FactoryCaller) TokenCount(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -290,14 +289,14 @@ func (_Factory *FactoryCaller) TokenCount(opts *bind.CallOpts) (*big.Int, error)
 
 // TokenCount is a free data retrieval call binding the contract method 0x9f181b5e.
 //
-// Solidity: function tokenCount() constant returns(uint256 out)
+// Solidity: function tokenCount() returns(uint256 out)
 func (_Factory *FactorySession) TokenCount() (*big.Int, error) {
 	return _Factory.Contract.TokenCount(&_Factory.CallOpts)
 }
 
 // TokenCount is a free data retrieval call binding the contract method 0x9f181b5e.
 //
-// Solidity: function tokenCount() constant returns(uint256 out)
+// Solidity: function tokenCount() returns(uint256 out)
 func (_Factory *FactoryCallerSession) TokenCount() (*big.Int, error) {
 	return _Factory.Contract.TokenCount(&_Factory.CallOpts)
 }

@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Factory *FactoryTransactorRaw) Transact(opts *bind.TransactOpts, method s
 
 // AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
 //
-// Solidity: function allPairs(uint256 ) constant returns(address)
+// Solidity: function allPairs(uint256 ) view returns(address)
 func (_Factory *FactoryCaller) AllPairs(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -186,21 +185,21 @@ func (_Factory *FactoryCaller) AllPairs(opts *bind.CallOpts, arg0 *big.Int) (com
 
 // AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
 //
-// Solidity: function allPairs(uint256 ) constant returns(address)
+// Solidity: function allPairs(uint256 ) view returns(address)
 func (_Factory *FactorySession) AllPairs(arg0 *big.Int) (common.Address, error) {
 	return _Factory.Contract.AllPairs(&_Factory.CallOpts, arg0)
 }
 
 // AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
 //
-// Solidity: function allPairs(uint256 ) constant returns(address)
+// Solidity: function allPairs(uint256 ) view returns(address)
 func (_Factory *FactoryCallerSession) AllPairs(arg0 *big.Int) (common.Address, error) {
 	return _Factory.Contract.AllPairs(&_Factory.CallOpts, arg0)
 }
 
 // AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
 //
-// Solidity: function allPairsLength() constant returns(uint256)
+// Solidity: function allPairsLength() view returns(uint256)
 func (_Factory *FactoryCaller) AllPairsLength(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -212,21 +211,21 @@ func (_Factory *FactoryCaller) AllPairsLength(opts *bind.CallOpts) (*big.Int, er
 
 // AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
 //
-// Solidity: function allPairsLength() constant returns(uint256)
+// Solidity: function allPairsLength() view returns(uint256)
 func (_Factory *FactorySession) AllPairsLength() (*big.Int, error) {
 	return _Factory.Contract.AllPairsLength(&_Factory.CallOpts)
 }
 
 // AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
 //
-// Solidity: function allPairsLength() constant returns(uint256)
+// Solidity: function allPairsLength() view returns(uint256)
 func (_Factory *FactoryCallerSession) AllPairsLength() (*big.Int, error) {
 	return _Factory.Contract.AllPairsLength(&_Factory.CallOpts)
 }
 
 // FeeTo is a free data retrieval call binding the contract method 0x017e7e58.
 //
-// Solidity: function feeTo() constant returns(address)
+// Solidity: function feeTo() view returns(address)
 func (_Factory *FactoryCaller) FeeTo(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -238,21 +237,21 @@ func (_Factory *FactoryCaller) FeeTo(opts *bind.CallOpts) (common.Address, error
 
 // FeeTo is a free data retrieval call binding the contract method 0x017e7e58.
 //
-// Solidity: function feeTo() constant returns(address)
+// Solidity: function feeTo() view returns(address)
 func (_Factory *FactorySession) FeeTo() (common.Address, error) {
 	return _Factory.Contract.FeeTo(&_Factory.CallOpts)
 }
 
 // FeeTo is a free data retrieval call binding the contract method 0x017e7e58.
 //
-// Solidity: function feeTo() constant returns(address)
+// Solidity: function feeTo() view returns(address)
 func (_Factory *FactoryCallerSession) FeeTo() (common.Address, error) {
 	return _Factory.Contract.FeeTo(&_Factory.CallOpts)
 }
 
 // FeeToSetter is a free data retrieval call binding the contract method 0x094b7415.
 //
-// Solidity: function feeToSetter() constant returns(address)
+// Solidity: function feeToSetter() view returns(address)
 func (_Factory *FactoryCaller) FeeToSetter(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -264,21 +263,21 @@ func (_Factory *FactoryCaller) FeeToSetter(opts *bind.CallOpts) (common.Address,
 
 // FeeToSetter is a free data retrieval call binding the contract method 0x094b7415.
 //
-// Solidity: function feeToSetter() constant returns(address)
+// Solidity: function feeToSetter() view returns(address)
 func (_Factory *FactorySession) FeeToSetter() (common.Address, error) {
 	return _Factory.Contract.FeeToSetter(&_Factory.CallOpts)
 }
 
 // FeeToSetter is a free data retrieval call binding the contract method 0x094b7415.
 //
-// Solidity: function feeToSetter() constant returns(address)
+// Solidity: function feeToSetter() view returns(address)
 func (_Factory *FactoryCallerSession) FeeToSetter() (common.Address, error) {
 	return _Factory.Contract.FeeToSetter(&_Factory.CallOpts)
 }
 
 // GetPair is a free data retrieval call binding the contract method 0xe6a43905.
 //
-// Solidity: function getPair(address , address ) constant returns(address)
+// Solidity: function getPair(address , address ) view returns(address)
 func (_Factory *FactoryCaller) GetPair(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -290,14 +289,14 @@ func (_Factory *FactoryCaller) GetPair(opts *bind.CallOpts, arg0 common.Address,
 
 // GetPair is a free data retrieval call binding the contract method 0xe6a43905.
 //
-// Solidity: function getPair(address , address ) constant returns(address)
+// Solidity: function getPair(address , address ) view returns(address)
 func (_Factory *FactorySession) GetPair(arg0 common.Address, arg1 common.Address) (common.Address, error) {
 	return _Factory.Contract.GetPair(&_Factory.CallOpts, arg0, arg1)
 }
 
 // GetPair is a free data retrieval call binding the contract method 0xe6a43905.
 //
-// Solidity: function getPair(address , address ) constant returns(address)
+// Solidity: function getPair(address , address ) view returns(address)
 func (_Factory *FactoryCallerSession) GetPair(arg0 common.Address, arg1 common.Address) (common.Address, error) {
 	return _Factory.Contract.GetPair(&_Factory.CallOpts, arg0, arg1)
 }
@@ -443,7 +442,7 @@ type FactoryPairCreated struct {
 
 // FilterPairCreated is a free log retrieval operation binding the contract event 0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9.
 //
-// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 )
+// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 arg3)
 func (_Factory *FactoryFilterer) FilterPairCreated(opts *bind.FilterOpts, token0 []common.Address, token1 []common.Address) (*FactoryPairCreatedIterator, error) {
 
 	var token0Rule []interface{}
@@ -464,7 +463,7 @@ func (_Factory *FactoryFilterer) FilterPairCreated(opts *bind.FilterOpts, token0
 
 // WatchPairCreated is a free log subscription operation binding the contract event 0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9.
 //
-// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 )
+// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 arg3)
 func (_Factory *FactoryFilterer) WatchPairCreated(opts *bind.WatchOpts, sink chan<- *FactoryPairCreated, token0 []common.Address, token1 []common.Address) (event.Subscription, error) {
 
 	var token0Rule []interface{}
@@ -510,7 +509,7 @@ func (_Factory *FactoryFilterer) WatchPairCreated(opts *bind.WatchOpts, sink cha
 
 // ParsePairCreated is a log parse operation binding the contract event 0x0d3648bd0f6ba80134a33ba9275ac585d9d315f0ad8355cddefde31afa28d0e9.
 //
-// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 )
+// Solidity: event PairCreated(address indexed token0, address indexed token1, address pair, uint256 arg3)
 func (_Factory *FactoryFilterer) ParsePairCreated(log types.Log) (*FactoryPairCreated, error) {
 	event := new(FactoryPairCreated)
 	if err := _Factory.contract.UnpackLog(event, "PairCreated", log); err != nil {

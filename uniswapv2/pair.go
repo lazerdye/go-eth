@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Pair *PairTransactorRaw) Transact(opts *bind.TransactOpts, method string,
 
 // DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
 //
-// Solidity: function DOMAIN_SEPARATOR() constant returns(bytes32)
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
 func (_Pair *PairCaller) DOMAINSEPARATOR(opts *bind.CallOpts) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -186,21 +185,21 @@ func (_Pair *PairCaller) DOMAINSEPARATOR(opts *bind.CallOpts) ([32]byte, error) 
 
 // DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
 //
-// Solidity: function DOMAIN_SEPARATOR() constant returns(bytes32)
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
 func (_Pair *PairSession) DOMAINSEPARATOR() ([32]byte, error) {
 	return _Pair.Contract.DOMAINSEPARATOR(&_Pair.CallOpts)
 }
 
 // DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
 //
-// Solidity: function DOMAIN_SEPARATOR() constant returns(bytes32)
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
 func (_Pair *PairCallerSession) DOMAINSEPARATOR() ([32]byte, error) {
 	return _Pair.Contract.DOMAINSEPARATOR(&_Pair.CallOpts)
 }
 
 // MINIMUMLIQUIDITY is a free data retrieval call binding the contract method 0xba9a7a56.
 //
-// Solidity: function MINIMUM_LIQUIDITY() constant returns(uint256)
+// Solidity: function MINIMUM_LIQUIDITY() view returns(uint256)
 func (_Pair *PairCaller) MINIMUMLIQUIDITY(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -212,21 +211,21 @@ func (_Pair *PairCaller) MINIMUMLIQUIDITY(opts *bind.CallOpts) (*big.Int, error)
 
 // MINIMUMLIQUIDITY is a free data retrieval call binding the contract method 0xba9a7a56.
 //
-// Solidity: function MINIMUM_LIQUIDITY() constant returns(uint256)
+// Solidity: function MINIMUM_LIQUIDITY() view returns(uint256)
 func (_Pair *PairSession) MINIMUMLIQUIDITY() (*big.Int, error) {
 	return _Pair.Contract.MINIMUMLIQUIDITY(&_Pair.CallOpts)
 }
 
 // MINIMUMLIQUIDITY is a free data retrieval call binding the contract method 0xba9a7a56.
 //
-// Solidity: function MINIMUM_LIQUIDITY() constant returns(uint256)
+// Solidity: function MINIMUM_LIQUIDITY() view returns(uint256)
 func (_Pair *PairCallerSession) MINIMUMLIQUIDITY() (*big.Int, error) {
 	return _Pair.Contract.MINIMUMLIQUIDITY(&_Pair.CallOpts)
 }
 
 // PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
 //
-// Solidity: function PERMIT_TYPEHASH() constant returns(bytes32)
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
 func (_Pair *PairCaller) PERMITTYPEHASH(opts *bind.CallOpts) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -238,21 +237,21 @@ func (_Pair *PairCaller) PERMITTYPEHASH(opts *bind.CallOpts) ([32]byte, error) {
 
 // PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
 //
-// Solidity: function PERMIT_TYPEHASH() constant returns(bytes32)
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
 func (_Pair *PairSession) PERMITTYPEHASH() ([32]byte, error) {
 	return _Pair.Contract.PERMITTYPEHASH(&_Pair.CallOpts)
 }
 
 // PERMITTYPEHASH is a free data retrieval call binding the contract method 0x30adf81f.
 //
-// Solidity: function PERMIT_TYPEHASH() constant returns(bytes32)
+// Solidity: function PERMIT_TYPEHASH() view returns(bytes32)
 func (_Pair *PairCallerSession) PERMITTYPEHASH() ([32]byte, error) {
 	return _Pair.Contract.PERMITTYPEHASH(&_Pair.CallOpts)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_Pair *PairCaller) Allowance(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -264,21 +263,21 @@ func (_Pair *PairCaller) Allowance(opts *bind.CallOpts, arg0 common.Address, arg
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_Pair *PairSession) Allowance(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _Pair.Contract.Allowance(&_Pair.CallOpts, arg0, arg1)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_Pair *PairCallerSession) Allowance(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _Pair.Contract.Allowance(&_Pair.CallOpts, arg0, arg1)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_Pair *PairCaller) BalanceOf(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -290,21 +289,21 @@ func (_Pair *PairCaller) BalanceOf(opts *bind.CallOpts, arg0 common.Address) (*b
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_Pair *PairSession) BalanceOf(arg0 common.Address) (*big.Int, error) {
 	return _Pair.Contract.BalanceOf(&_Pair.CallOpts, arg0)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_Pair *PairCallerSession) BalanceOf(arg0 common.Address) (*big.Int, error) {
 	return _Pair.Contract.BalanceOf(&_Pair.CallOpts, arg0)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_Pair *PairCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
 	var (
 		ret0 = new(uint8)
@@ -316,21 +315,21 @@ func (_Pair *PairCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_Pair *PairSession) Decimals() (uint8, error) {
 	return _Pair.Contract.Decimals(&_Pair.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_Pair *PairCallerSession) Decimals() (uint8, error) {
 	return _Pair.Contract.Decimals(&_Pair.CallOpts)
 }
 
 // Factory is a free data retrieval call binding the contract method 0xc45a0155.
 //
-// Solidity: function factory() constant returns(address)
+// Solidity: function factory() view returns(address)
 func (_Pair *PairCaller) Factory(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -342,21 +341,21 @@ func (_Pair *PairCaller) Factory(opts *bind.CallOpts) (common.Address, error) {
 
 // Factory is a free data retrieval call binding the contract method 0xc45a0155.
 //
-// Solidity: function factory() constant returns(address)
+// Solidity: function factory() view returns(address)
 func (_Pair *PairSession) Factory() (common.Address, error) {
 	return _Pair.Contract.Factory(&_Pair.CallOpts)
 }
 
 // Factory is a free data retrieval call binding the contract method 0xc45a0155.
 //
-// Solidity: function factory() constant returns(address)
+// Solidity: function factory() view returns(address)
 func (_Pair *PairCallerSession) Factory() (common.Address, error) {
 	return _Pair.Contract.Factory(&_Pair.CallOpts)
 }
 
 // GetReserves is a free data retrieval call binding the contract method 0x0902f1ac.
 //
-// Solidity: function getReserves() constant returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
+// Solidity: function getReserves() view returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
 func (_Pair *PairCaller) GetReserves(opts *bind.CallOpts) (struct {
 	Reserve0           *big.Int
 	Reserve1           *big.Int
@@ -374,7 +373,7 @@ func (_Pair *PairCaller) GetReserves(opts *bind.CallOpts) (struct {
 
 // GetReserves is a free data retrieval call binding the contract method 0x0902f1ac.
 //
-// Solidity: function getReserves() constant returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
+// Solidity: function getReserves() view returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
 func (_Pair *PairSession) GetReserves() (struct {
 	Reserve0           *big.Int
 	Reserve1           *big.Int
@@ -385,7 +384,7 @@ func (_Pair *PairSession) GetReserves() (struct {
 
 // GetReserves is a free data retrieval call binding the contract method 0x0902f1ac.
 //
-// Solidity: function getReserves() constant returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
+// Solidity: function getReserves() view returns(uint112 _reserve0, uint112 _reserve1, uint32 _blockTimestampLast)
 func (_Pair *PairCallerSession) GetReserves() (struct {
 	Reserve0           *big.Int
 	Reserve1           *big.Int
@@ -396,7 +395,7 @@ func (_Pair *PairCallerSession) GetReserves() (struct {
 
 // KLast is a free data retrieval call binding the contract method 0x7464fc3d.
 //
-// Solidity: function kLast() constant returns(uint256)
+// Solidity: function kLast() view returns(uint256)
 func (_Pair *PairCaller) KLast(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -408,21 +407,21 @@ func (_Pair *PairCaller) KLast(opts *bind.CallOpts) (*big.Int, error) {
 
 // KLast is a free data retrieval call binding the contract method 0x7464fc3d.
 //
-// Solidity: function kLast() constant returns(uint256)
+// Solidity: function kLast() view returns(uint256)
 func (_Pair *PairSession) KLast() (*big.Int, error) {
 	return _Pair.Contract.KLast(&_Pair.CallOpts)
 }
 
 // KLast is a free data retrieval call binding the contract method 0x7464fc3d.
 //
-// Solidity: function kLast() constant returns(uint256)
+// Solidity: function kLast() view returns(uint256)
 func (_Pair *PairCallerSession) KLast() (*big.Int, error) {
 	return _Pair.Contract.KLast(&_Pair.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Pair *PairCaller) Name(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -434,21 +433,21 @@ func (_Pair *PairCaller) Name(opts *bind.CallOpts) (string, error) {
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Pair *PairSession) Name() (string, error) {
 	return _Pair.Contract.Name(&_Pair.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Pair *PairCallerSession) Name() (string, error) {
 	return _Pair.Contract.Name(&_Pair.CallOpts)
 }
 
 // Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
 //
-// Solidity: function nonces(address ) constant returns(uint256)
+// Solidity: function nonces(address ) view returns(uint256)
 func (_Pair *PairCaller) Nonces(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -460,21 +459,21 @@ func (_Pair *PairCaller) Nonces(opts *bind.CallOpts, arg0 common.Address) (*big.
 
 // Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
 //
-// Solidity: function nonces(address ) constant returns(uint256)
+// Solidity: function nonces(address ) view returns(uint256)
 func (_Pair *PairSession) Nonces(arg0 common.Address) (*big.Int, error) {
 	return _Pair.Contract.Nonces(&_Pair.CallOpts, arg0)
 }
 
 // Nonces is a free data retrieval call binding the contract method 0x7ecebe00.
 //
-// Solidity: function nonces(address ) constant returns(uint256)
+// Solidity: function nonces(address ) view returns(uint256)
 func (_Pair *PairCallerSession) Nonces(arg0 common.Address) (*big.Int, error) {
 	return _Pair.Contract.Nonces(&_Pair.CallOpts, arg0)
 }
 
 // Price0CumulativeLast is a free data retrieval call binding the contract method 0x5909c0d5.
 //
-// Solidity: function price0CumulativeLast() constant returns(uint256)
+// Solidity: function price0CumulativeLast() view returns(uint256)
 func (_Pair *PairCaller) Price0CumulativeLast(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -486,21 +485,21 @@ func (_Pair *PairCaller) Price0CumulativeLast(opts *bind.CallOpts) (*big.Int, er
 
 // Price0CumulativeLast is a free data retrieval call binding the contract method 0x5909c0d5.
 //
-// Solidity: function price0CumulativeLast() constant returns(uint256)
+// Solidity: function price0CumulativeLast() view returns(uint256)
 func (_Pair *PairSession) Price0CumulativeLast() (*big.Int, error) {
 	return _Pair.Contract.Price0CumulativeLast(&_Pair.CallOpts)
 }
 
 // Price0CumulativeLast is a free data retrieval call binding the contract method 0x5909c0d5.
 //
-// Solidity: function price0CumulativeLast() constant returns(uint256)
+// Solidity: function price0CumulativeLast() view returns(uint256)
 func (_Pair *PairCallerSession) Price0CumulativeLast() (*big.Int, error) {
 	return _Pair.Contract.Price0CumulativeLast(&_Pair.CallOpts)
 }
 
 // Price1CumulativeLast is a free data retrieval call binding the contract method 0x5a3d5493.
 //
-// Solidity: function price1CumulativeLast() constant returns(uint256)
+// Solidity: function price1CumulativeLast() view returns(uint256)
 func (_Pair *PairCaller) Price1CumulativeLast(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -512,21 +511,21 @@ func (_Pair *PairCaller) Price1CumulativeLast(opts *bind.CallOpts) (*big.Int, er
 
 // Price1CumulativeLast is a free data retrieval call binding the contract method 0x5a3d5493.
 //
-// Solidity: function price1CumulativeLast() constant returns(uint256)
+// Solidity: function price1CumulativeLast() view returns(uint256)
 func (_Pair *PairSession) Price1CumulativeLast() (*big.Int, error) {
 	return _Pair.Contract.Price1CumulativeLast(&_Pair.CallOpts)
 }
 
 // Price1CumulativeLast is a free data retrieval call binding the contract method 0x5a3d5493.
 //
-// Solidity: function price1CumulativeLast() constant returns(uint256)
+// Solidity: function price1CumulativeLast() view returns(uint256)
 func (_Pair *PairCallerSession) Price1CumulativeLast() (*big.Int, error) {
 	return _Pair.Contract.Price1CumulativeLast(&_Pair.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Pair *PairCaller) Symbol(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -538,21 +537,21 @@ func (_Pair *PairCaller) Symbol(opts *bind.CallOpts) (string, error) {
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Pair *PairSession) Symbol() (string, error) {
 	return _Pair.Contract.Symbol(&_Pair.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Pair *PairCallerSession) Symbol() (string, error) {
 	return _Pair.Contract.Symbol(&_Pair.CallOpts)
 }
 
 // Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
 //
-// Solidity: function token0() constant returns(address)
+// Solidity: function token0() view returns(address)
 func (_Pair *PairCaller) Token0(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -564,21 +563,21 @@ func (_Pair *PairCaller) Token0(opts *bind.CallOpts) (common.Address, error) {
 
 // Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
 //
-// Solidity: function token0() constant returns(address)
+// Solidity: function token0() view returns(address)
 func (_Pair *PairSession) Token0() (common.Address, error) {
 	return _Pair.Contract.Token0(&_Pair.CallOpts)
 }
 
 // Token0 is a free data retrieval call binding the contract method 0x0dfe1681.
 //
-// Solidity: function token0() constant returns(address)
+// Solidity: function token0() view returns(address)
 func (_Pair *PairCallerSession) Token0() (common.Address, error) {
 	return _Pair.Contract.Token0(&_Pair.CallOpts)
 }
 
 // Token1 is a free data retrieval call binding the contract method 0xd21220a7.
 //
-// Solidity: function token1() constant returns(address)
+// Solidity: function token1() view returns(address)
 func (_Pair *PairCaller) Token1(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -590,21 +589,21 @@ func (_Pair *PairCaller) Token1(opts *bind.CallOpts) (common.Address, error) {
 
 // Token1 is a free data retrieval call binding the contract method 0xd21220a7.
 //
-// Solidity: function token1() constant returns(address)
+// Solidity: function token1() view returns(address)
 func (_Pair *PairSession) Token1() (common.Address, error) {
 	return _Pair.Contract.Token1(&_Pair.CallOpts)
 }
 
 // Token1 is a free data retrieval call binding the contract method 0xd21220a7.
 //
-// Solidity: function token1() constant returns(address)
+// Solidity: function token1() view returns(address)
 func (_Pair *PairCallerSession) Token1() (common.Address, error) {
 	return _Pair.Contract.Token1(&_Pair.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Pair *PairCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -616,14 +615,14 @@ func (_Pair *PairCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Pair *PairSession) TotalSupply() (*big.Int, error) {
 	return _Pair.Contract.TotalSupply(&_Pair.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Pair *PairCallerSession) TotalSupply() (*big.Int, error) {
 	return _Pair.Contract.TotalSupply(&_Pair.CallOpts)
 }

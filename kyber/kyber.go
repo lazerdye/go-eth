@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Kyber *KyberTransactorRaw) Transact(opts *bind.TransactOpts, method strin
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Kyber *KyberCaller) Admin(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -186,21 +185,21 @@ func (_Kyber *KyberCaller) Admin(opts *bind.CallOpts) (common.Address, error) {
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Kyber *KyberSession) Admin() (common.Address, error) {
 	return _Kyber.Contract.Admin(&_Kyber.CallOpts)
 }
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Kyber *KyberCallerSession) Admin() (common.Address, error) {
 	return _Kyber.Contract.Admin(&_Kyber.CallOpts)
 }
 
 // Enabled is a free data retrieval call binding the contract method 0x238dafe0.
 //
-// Solidity: function enabled() constant returns(bool)
+// Solidity: function enabled() view returns(bool)
 func (_Kyber *KyberCaller) Enabled(opts *bind.CallOpts) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -212,21 +211,21 @@ func (_Kyber *KyberCaller) Enabled(opts *bind.CallOpts) (bool, error) {
 
 // Enabled is a free data retrieval call binding the contract method 0x238dafe0.
 //
-// Solidity: function enabled() constant returns(bool)
+// Solidity: function enabled() view returns(bool)
 func (_Kyber *KyberSession) Enabled() (bool, error) {
 	return _Kyber.Contract.Enabled(&_Kyber.CallOpts)
 }
 
 // Enabled is a free data retrieval call binding the contract method 0x238dafe0.
 //
-// Solidity: function enabled() constant returns(bool)
+// Solidity: function enabled() view returns(bool)
 func (_Kyber *KyberCallerSession) Enabled() (bool, error) {
 	return _Kyber.Contract.Enabled(&_Kyber.CallOpts)
 }
 
 // GetAlerters is a free data retrieval call binding the contract method 0x7c423f54.
 //
-// Solidity: function getAlerters() constant returns(address[])
+// Solidity: function getAlerters() view returns(address[])
 func (_Kyber *KyberCaller) GetAlerters(opts *bind.CallOpts) ([]common.Address, error) {
 	var (
 		ret0 = new([]common.Address)
@@ -238,21 +237,21 @@ func (_Kyber *KyberCaller) GetAlerters(opts *bind.CallOpts) ([]common.Address, e
 
 // GetAlerters is a free data retrieval call binding the contract method 0x7c423f54.
 //
-// Solidity: function getAlerters() constant returns(address[])
+// Solidity: function getAlerters() view returns(address[])
 func (_Kyber *KyberSession) GetAlerters() ([]common.Address, error) {
 	return _Kyber.Contract.GetAlerters(&_Kyber.CallOpts)
 }
 
 // GetAlerters is a free data retrieval call binding the contract method 0x7c423f54.
 //
-// Solidity: function getAlerters() constant returns(address[])
+// Solidity: function getAlerters() view returns(address[])
 func (_Kyber *KyberCallerSession) GetAlerters() ([]common.Address, error) {
 	return _Kyber.Contract.GetAlerters(&_Kyber.CallOpts)
 }
 
 // GetBalance is a free data retrieval call binding the contract method 0xd4fac45d.
 //
-// Solidity: function getBalance(address token, address user) constant returns(uint256)
+// Solidity: function getBalance(address token, address user) view returns(uint256)
 func (_Kyber *KyberCaller) GetBalance(opts *bind.CallOpts, token common.Address, user common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -264,21 +263,21 @@ func (_Kyber *KyberCaller) GetBalance(opts *bind.CallOpts, token common.Address,
 
 // GetBalance is a free data retrieval call binding the contract method 0xd4fac45d.
 //
-// Solidity: function getBalance(address token, address user) constant returns(uint256)
+// Solidity: function getBalance(address token, address user) view returns(uint256)
 func (_Kyber *KyberSession) GetBalance(token common.Address, user common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetBalance(&_Kyber.CallOpts, token, user)
 }
 
 // GetBalance is a free data retrieval call binding the contract method 0xd4fac45d.
 //
-// Solidity: function getBalance(address token, address user) constant returns(uint256)
+// Solidity: function getBalance(address token, address user) view returns(uint256)
 func (_Kyber *KyberCallerSession) GetBalance(token common.Address, user common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetBalance(&_Kyber.CallOpts, token, user)
 }
 
 // GetExpectedRate is a free data retrieval call binding the contract method 0x809a9e55.
 //
-// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) constant returns(uint256 expectedRate, uint256 slippageRate)
+// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) view returns(uint256 expectedRate, uint256 slippageRate)
 func (_Kyber *KyberCaller) GetExpectedRate(opts *bind.CallOpts, src common.Address, dest common.Address, srcQty *big.Int) (struct {
 	ExpectedRate *big.Int
 	SlippageRate *big.Int
@@ -294,7 +293,7 @@ func (_Kyber *KyberCaller) GetExpectedRate(opts *bind.CallOpts, src common.Addre
 
 // GetExpectedRate is a free data retrieval call binding the contract method 0x809a9e55.
 //
-// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) constant returns(uint256 expectedRate, uint256 slippageRate)
+// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) view returns(uint256 expectedRate, uint256 slippageRate)
 func (_Kyber *KyberSession) GetExpectedRate(src common.Address, dest common.Address, srcQty *big.Int) (struct {
 	ExpectedRate *big.Int
 	SlippageRate *big.Int
@@ -304,7 +303,7 @@ func (_Kyber *KyberSession) GetExpectedRate(src common.Address, dest common.Addr
 
 // GetExpectedRate is a free data retrieval call binding the contract method 0x809a9e55.
 //
-// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) constant returns(uint256 expectedRate, uint256 slippageRate)
+// Solidity: function getExpectedRate(address src, address dest, uint256 srcQty) view returns(uint256 expectedRate, uint256 slippageRate)
 func (_Kyber *KyberCallerSession) GetExpectedRate(src common.Address, dest common.Address, srcQty *big.Int) (struct {
 	ExpectedRate *big.Int
 	SlippageRate *big.Int
@@ -314,7 +313,7 @@ func (_Kyber *KyberCallerSession) GetExpectedRate(src common.Address, dest commo
 
 // GetOperators is a free data retrieval call binding the contract method 0x27a099d8.
 //
-// Solidity: function getOperators() constant returns(address[])
+// Solidity: function getOperators() view returns(address[])
 func (_Kyber *KyberCaller) GetOperators(opts *bind.CallOpts) ([]common.Address, error) {
 	var (
 		ret0 = new([]common.Address)
@@ -326,21 +325,21 @@ func (_Kyber *KyberCaller) GetOperators(opts *bind.CallOpts) ([]common.Address, 
 
 // GetOperators is a free data retrieval call binding the contract method 0x27a099d8.
 //
-// Solidity: function getOperators() constant returns(address[])
+// Solidity: function getOperators() view returns(address[])
 func (_Kyber *KyberSession) GetOperators() ([]common.Address, error) {
 	return _Kyber.Contract.GetOperators(&_Kyber.CallOpts)
 }
 
 // GetOperators is a free data retrieval call binding the contract method 0x27a099d8.
 //
-// Solidity: function getOperators() constant returns(address[])
+// Solidity: function getOperators() view returns(address[])
 func (_Kyber *KyberCallerSession) GetOperators() ([]common.Address, error) {
 	return _Kyber.Contract.GetOperators(&_Kyber.CallOpts)
 }
 
 // GetUserCapInTokenWei is a free data retrieval call binding the contract method 0x8eaaeecf.
 //
-// Solidity: function getUserCapInTokenWei(address user, address token) constant returns(uint256)
+// Solidity: function getUserCapInTokenWei(address user, address token) view returns(uint256)
 func (_Kyber *KyberCaller) GetUserCapInTokenWei(opts *bind.CallOpts, user common.Address, token common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -352,21 +351,21 @@ func (_Kyber *KyberCaller) GetUserCapInTokenWei(opts *bind.CallOpts, user common
 
 // GetUserCapInTokenWei is a free data retrieval call binding the contract method 0x8eaaeecf.
 //
-// Solidity: function getUserCapInTokenWei(address user, address token) constant returns(uint256)
+// Solidity: function getUserCapInTokenWei(address user, address token) view returns(uint256)
 func (_Kyber *KyberSession) GetUserCapInTokenWei(user common.Address, token common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetUserCapInTokenWei(&_Kyber.CallOpts, user, token)
 }
 
 // GetUserCapInTokenWei is a free data retrieval call binding the contract method 0x8eaaeecf.
 //
-// Solidity: function getUserCapInTokenWei(address user, address token) constant returns(uint256)
+// Solidity: function getUserCapInTokenWei(address user, address token) view returns(uint256)
 func (_Kyber *KyberCallerSession) GetUserCapInTokenWei(user common.Address, token common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetUserCapInTokenWei(&_Kyber.CallOpts, user, token)
 }
 
 // GetUserCapInWei is a free data retrieval call binding the contract method 0x6432679f.
 //
-// Solidity: function getUserCapInWei(address user) constant returns(uint256)
+// Solidity: function getUserCapInWei(address user) view returns(uint256)
 func (_Kyber *KyberCaller) GetUserCapInWei(opts *bind.CallOpts, user common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -378,21 +377,21 @@ func (_Kyber *KyberCaller) GetUserCapInWei(opts *bind.CallOpts, user common.Addr
 
 // GetUserCapInWei is a free data retrieval call binding the contract method 0x6432679f.
 //
-// Solidity: function getUserCapInWei(address user) constant returns(uint256)
+// Solidity: function getUserCapInWei(address user) view returns(uint256)
 func (_Kyber *KyberSession) GetUserCapInWei(user common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetUserCapInWei(&_Kyber.CallOpts, user)
 }
 
 // GetUserCapInWei is a free data retrieval call binding the contract method 0x6432679f.
 //
-// Solidity: function getUserCapInWei(address user) constant returns(uint256)
+// Solidity: function getUserCapInWei(address user) view returns(uint256)
 func (_Kyber *KyberCallerSession) GetUserCapInWei(user common.Address) (*big.Int, error) {
 	return _Kyber.Contract.GetUserCapInWei(&_Kyber.CallOpts, user)
 }
 
 // Info is a free data retrieval call binding the contract method 0xb64a097e.
 //
-// Solidity: function info(bytes32 field) constant returns(uint256)
+// Solidity: function info(bytes32 field) view returns(uint256)
 func (_Kyber *KyberCaller) Info(opts *bind.CallOpts, field [32]byte) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -404,21 +403,21 @@ func (_Kyber *KyberCaller) Info(opts *bind.CallOpts, field [32]byte) (*big.Int, 
 
 // Info is a free data retrieval call binding the contract method 0xb64a097e.
 //
-// Solidity: function info(bytes32 field) constant returns(uint256)
+// Solidity: function info(bytes32 field) view returns(uint256)
 func (_Kyber *KyberSession) Info(field [32]byte) (*big.Int, error) {
 	return _Kyber.Contract.Info(&_Kyber.CallOpts, field)
 }
 
 // Info is a free data retrieval call binding the contract method 0xb64a097e.
 //
-// Solidity: function info(bytes32 field) constant returns(uint256)
+// Solidity: function info(bytes32 field) view returns(uint256)
 func (_Kyber *KyberCallerSession) Info(field [32]byte) (*big.Int, error) {
 	return _Kyber.Contract.Info(&_Kyber.CallOpts, field)
 }
 
 // KyberNetworkContract is a free data retrieval call binding the contract method 0x4f61ff8b.
 //
-// Solidity: function kyberNetworkContract() constant returns(address)
+// Solidity: function kyberNetworkContract() view returns(address)
 func (_Kyber *KyberCaller) KyberNetworkContract(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -430,21 +429,21 @@ func (_Kyber *KyberCaller) KyberNetworkContract(opts *bind.CallOpts) (common.Add
 
 // KyberNetworkContract is a free data retrieval call binding the contract method 0x4f61ff8b.
 //
-// Solidity: function kyberNetworkContract() constant returns(address)
+// Solidity: function kyberNetworkContract() view returns(address)
 func (_Kyber *KyberSession) KyberNetworkContract() (common.Address, error) {
 	return _Kyber.Contract.KyberNetworkContract(&_Kyber.CallOpts)
 }
 
 // KyberNetworkContract is a free data retrieval call binding the contract method 0x4f61ff8b.
 //
-// Solidity: function kyberNetworkContract() constant returns(address)
+// Solidity: function kyberNetworkContract() view returns(address)
 func (_Kyber *KyberCallerSession) KyberNetworkContract() (common.Address, error) {
 	return _Kyber.Contract.KyberNetworkContract(&_Kyber.CallOpts)
 }
 
 // MaxGasPrice is a free data retrieval call binding the contract method 0x3de39c11.
 //
-// Solidity: function maxGasPrice() constant returns(uint256)
+// Solidity: function maxGasPrice() view returns(uint256)
 func (_Kyber *KyberCaller) MaxGasPrice(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -456,21 +455,21 @@ func (_Kyber *KyberCaller) MaxGasPrice(opts *bind.CallOpts) (*big.Int, error) {
 
 // MaxGasPrice is a free data retrieval call binding the contract method 0x3de39c11.
 //
-// Solidity: function maxGasPrice() constant returns(uint256)
+// Solidity: function maxGasPrice() view returns(uint256)
 func (_Kyber *KyberSession) MaxGasPrice() (*big.Int, error) {
 	return _Kyber.Contract.MaxGasPrice(&_Kyber.CallOpts)
 }
 
 // MaxGasPrice is a free data retrieval call binding the contract method 0x3de39c11.
 //
-// Solidity: function maxGasPrice() constant returns(uint256)
+// Solidity: function maxGasPrice() view returns(uint256)
 func (_Kyber *KyberCallerSession) MaxGasPrice() (*big.Int, error) {
 	return _Kyber.Contract.MaxGasPrice(&_Kyber.CallOpts)
 }
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Kyber *KyberCaller) PendingAdmin(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -482,14 +481,14 @@ func (_Kyber *KyberCaller) PendingAdmin(opts *bind.CallOpts) (common.Address, er
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Kyber *KyberSession) PendingAdmin() (common.Address, error) {
 	return _Kyber.Contract.PendingAdmin(&_Kyber.CallOpts)
 }
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Kyber *KyberCallerSession) PendingAdmin() (common.Address, error) {
 	return _Kyber.Contract.PendingAdmin(&_Kyber.CallOpts)
 }
@@ -622,21 +621,21 @@ func (_Kyber *KyberTransactorSession) SetKyberNetworkContract(_kyberNetworkContr
 
 // SwapEtherToToken is a paid mutator transaction binding the contract method 0x7a2a0456.
 //
-// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) returns(uint256)
+// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) payable returns(uint256)
 func (_Kyber *KyberTransactor) SwapEtherToToken(opts *bind.TransactOpts, token common.Address, minConversionRate *big.Int) (*types.Transaction, error) {
 	return _Kyber.contract.Transact(opts, "swapEtherToToken", token, minConversionRate)
 }
 
 // SwapEtherToToken is a paid mutator transaction binding the contract method 0x7a2a0456.
 //
-// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) returns(uint256)
+// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) payable returns(uint256)
 func (_Kyber *KyberSession) SwapEtherToToken(token common.Address, minConversionRate *big.Int) (*types.Transaction, error) {
 	return _Kyber.Contract.SwapEtherToToken(&_Kyber.TransactOpts, token, minConversionRate)
 }
 
 // SwapEtherToToken is a paid mutator transaction binding the contract method 0x7a2a0456.
 //
-// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) returns(uint256)
+// Solidity: function swapEtherToToken(address token, uint256 minConversionRate) payable returns(uint256)
 func (_Kyber *KyberTransactorSession) SwapEtherToToken(token common.Address, minConversionRate *big.Int) (*types.Transaction, error) {
 	return _Kyber.Contract.SwapEtherToToken(&_Kyber.TransactOpts, token, minConversionRate)
 }
@@ -685,42 +684,42 @@ func (_Kyber *KyberTransactorSession) SwapTokenToToken(src common.Address, srcAm
 
 // Trade is a paid mutator transaction binding the contract method 0xcb3c28c7.
 //
-// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) returns(uint256)
+// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) payable returns(uint256)
 func (_Kyber *KyberTransactor) Trade(opts *bind.TransactOpts, src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address) (*types.Transaction, error) {
 	return _Kyber.contract.Transact(opts, "trade", src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId)
 }
 
 // Trade is a paid mutator transaction binding the contract method 0xcb3c28c7.
 //
-// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) returns(uint256)
+// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) payable returns(uint256)
 func (_Kyber *KyberSession) Trade(src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address) (*types.Transaction, error) {
 	return _Kyber.Contract.Trade(&_Kyber.TransactOpts, src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId)
 }
 
 // Trade is a paid mutator transaction binding the contract method 0xcb3c28c7.
 //
-// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) returns(uint256)
+// Solidity: function trade(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId) payable returns(uint256)
 func (_Kyber *KyberTransactorSession) Trade(src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address) (*types.Transaction, error) {
 	return _Kyber.Contract.Trade(&_Kyber.TransactOpts, src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId)
 }
 
 // TradeWithHint is a paid mutator transaction binding the contract method 0x29589f61.
 //
-// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) returns(uint256)
+// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) payable returns(uint256)
 func (_Kyber *KyberTransactor) TradeWithHint(opts *bind.TransactOpts, src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address, hint []byte) (*types.Transaction, error) {
 	return _Kyber.contract.Transact(opts, "tradeWithHint", src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId, hint)
 }
 
 // TradeWithHint is a paid mutator transaction binding the contract method 0x29589f61.
 //
-// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) returns(uint256)
+// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) payable returns(uint256)
 func (_Kyber *KyberSession) TradeWithHint(src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address, hint []byte) (*types.Transaction, error) {
 	return _Kyber.Contract.TradeWithHint(&_Kyber.TransactOpts, src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId, hint)
 }
 
 // TradeWithHint is a paid mutator transaction binding the contract method 0x29589f61.
 //
-// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) returns(uint256)
+// Solidity: function tradeWithHint(address src, uint256 srcAmount, address dest, address destAddress, uint256 maxDestAmount, uint256 minConversionRate, address walletId, bytes hint) payable returns(uint256)
 func (_Kyber *KyberTransactorSession) TradeWithHint(src common.Address, srcAmount *big.Int, dest common.Address, destAddress common.Address, maxDestAmount *big.Int, minConversionRate *big.Int, walletId common.Address, hint []byte) (*types.Transaction, error) {
 	return _Kyber.Contract.TradeWithHint(&_Kyber.TransactOpts, src, srcAmount, dest, destAddress, maxDestAmount, minConversionRate, walletId, hint)
 }

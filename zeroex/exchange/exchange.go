@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -233,7 +232,7 @@ func (_Exchange *ExchangeTransactorRaw) Transact(opts *bind.TransactOpts, method
 
 // EIP1271MAGICVALUE is a free data retrieval call binding the contract method 0xdd885e2d.
 //
-// Solidity: function EIP1271_MAGIC_VALUE() constant returns(bytes4)
+// Solidity: function EIP1271_MAGIC_VALUE() view returns(bytes4)
 func (_Exchange *ExchangeCaller) EIP1271MAGICVALUE(opts *bind.CallOpts) ([4]byte, error) {
 	var (
 		ret0 = new([4]byte)
@@ -245,21 +244,21 @@ func (_Exchange *ExchangeCaller) EIP1271MAGICVALUE(opts *bind.CallOpts) ([4]byte
 
 // EIP1271MAGICVALUE is a free data retrieval call binding the contract method 0xdd885e2d.
 //
-// Solidity: function EIP1271_MAGIC_VALUE() constant returns(bytes4)
+// Solidity: function EIP1271_MAGIC_VALUE() view returns(bytes4)
 func (_Exchange *ExchangeSession) EIP1271MAGICVALUE() ([4]byte, error) {
 	return _Exchange.Contract.EIP1271MAGICVALUE(&_Exchange.CallOpts)
 }
 
 // EIP1271MAGICVALUE is a free data retrieval call binding the contract method 0xdd885e2d.
 //
-// Solidity: function EIP1271_MAGIC_VALUE() constant returns(bytes4)
+// Solidity: function EIP1271_MAGIC_VALUE() view returns(bytes4)
 func (_Exchange *ExchangeCallerSession) EIP1271MAGICVALUE() ([4]byte, error) {
 	return _Exchange.Contract.EIP1271MAGICVALUE(&_Exchange.CallOpts)
 }
 
 // EIP712EXCHANGEDOMAINHASH is a free data retrieval call binding the contract method 0xc26cfecd.
 //
-// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() constant returns(bytes32)
+// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() view returns(bytes32)
 func (_Exchange *ExchangeCaller) EIP712EXCHANGEDOMAINHASH(opts *bind.CallOpts) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -271,21 +270,21 @@ func (_Exchange *ExchangeCaller) EIP712EXCHANGEDOMAINHASH(opts *bind.CallOpts) (
 
 // EIP712EXCHANGEDOMAINHASH is a free data retrieval call binding the contract method 0xc26cfecd.
 //
-// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() constant returns(bytes32)
+// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() view returns(bytes32)
 func (_Exchange *ExchangeSession) EIP712EXCHANGEDOMAINHASH() ([32]byte, error) {
 	return _Exchange.Contract.EIP712EXCHANGEDOMAINHASH(&_Exchange.CallOpts)
 }
 
 // EIP712EXCHANGEDOMAINHASH is a free data retrieval call binding the contract method 0xc26cfecd.
 //
-// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() constant returns(bytes32)
+// Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() view returns(bytes32)
 func (_Exchange *ExchangeCallerSession) EIP712EXCHANGEDOMAINHASH() ([32]byte, error) {
 	return _Exchange.Contract.EIP712EXCHANGEDOMAINHASH(&_Exchange.CallOpts)
 }
 
 // AllowedValidators is a free data retrieval call binding the contract method 0x7b8e3514.
 //
-// Solidity: function allowedValidators(address , address ) constant returns(bool)
+// Solidity: function allowedValidators(address , address ) view returns(bool)
 func (_Exchange *ExchangeCaller) AllowedValidators(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -297,21 +296,21 @@ func (_Exchange *ExchangeCaller) AllowedValidators(opts *bind.CallOpts, arg0 com
 
 // AllowedValidators is a free data retrieval call binding the contract method 0x7b8e3514.
 //
-// Solidity: function allowedValidators(address , address ) constant returns(bool)
+// Solidity: function allowedValidators(address , address ) view returns(bool)
 func (_Exchange *ExchangeSession) AllowedValidators(arg0 common.Address, arg1 common.Address) (bool, error) {
 	return _Exchange.Contract.AllowedValidators(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // AllowedValidators is a free data retrieval call binding the contract method 0x7b8e3514.
 //
-// Solidity: function allowedValidators(address , address ) constant returns(bool)
+// Solidity: function allowedValidators(address , address ) view returns(bool)
 func (_Exchange *ExchangeCallerSession) AllowedValidators(arg0 common.Address, arg1 common.Address) (bool, error) {
 	return _Exchange.Contract.AllowedValidators(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // Cancelled is a free data retrieval call binding the contract method 0x2ac12622.
 //
-// Solidity: function cancelled(bytes32 ) constant returns(bool)
+// Solidity: function cancelled(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCaller) Cancelled(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -323,21 +322,21 @@ func (_Exchange *ExchangeCaller) Cancelled(opts *bind.CallOpts, arg0 [32]byte) (
 
 // Cancelled is a free data retrieval call binding the contract method 0x2ac12622.
 //
-// Solidity: function cancelled(bytes32 ) constant returns(bool)
+// Solidity: function cancelled(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeSession) Cancelled(arg0 [32]byte) (bool, error) {
 	return _Exchange.Contract.Cancelled(&_Exchange.CallOpts, arg0)
 }
 
 // Cancelled is a free data retrieval call binding the contract method 0x2ac12622.
 //
-// Solidity: function cancelled(bytes32 ) constant returns(bool)
+// Solidity: function cancelled(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCallerSession) Cancelled(arg0 [32]byte) (bool, error) {
 	return _Exchange.Contract.Cancelled(&_Exchange.CallOpts, arg0)
 }
 
 // CurrentContextAddress is a free data retrieval call binding the contract method 0xeea086ba.
 //
-// Solidity: function currentContextAddress() constant returns(address)
+// Solidity: function currentContextAddress() view returns(address)
 func (_Exchange *ExchangeCaller) CurrentContextAddress(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -349,21 +348,21 @@ func (_Exchange *ExchangeCaller) CurrentContextAddress(opts *bind.CallOpts) (com
 
 // CurrentContextAddress is a free data retrieval call binding the contract method 0xeea086ba.
 //
-// Solidity: function currentContextAddress() constant returns(address)
+// Solidity: function currentContextAddress() view returns(address)
 func (_Exchange *ExchangeSession) CurrentContextAddress() (common.Address, error) {
 	return _Exchange.Contract.CurrentContextAddress(&_Exchange.CallOpts)
 }
 
 // CurrentContextAddress is a free data retrieval call binding the contract method 0xeea086ba.
 //
-// Solidity: function currentContextAddress() constant returns(address)
+// Solidity: function currentContextAddress() view returns(address)
 func (_Exchange *ExchangeCallerSession) CurrentContextAddress() (common.Address, error) {
 	return _Exchange.Contract.CurrentContextAddress(&_Exchange.CallOpts)
 }
 
 // Filled is a free data retrieval call binding the contract method 0x288cdc91.
 //
-// Solidity: function filled(bytes32 ) constant returns(uint256)
+// Solidity: function filled(bytes32 ) view returns(uint256)
 func (_Exchange *ExchangeCaller) Filled(opts *bind.CallOpts, arg0 [32]byte) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -375,21 +374,21 @@ func (_Exchange *ExchangeCaller) Filled(opts *bind.CallOpts, arg0 [32]byte) (*bi
 
 // Filled is a free data retrieval call binding the contract method 0x288cdc91.
 //
-// Solidity: function filled(bytes32 ) constant returns(uint256)
+// Solidity: function filled(bytes32 ) view returns(uint256)
 func (_Exchange *ExchangeSession) Filled(arg0 [32]byte) (*big.Int, error) {
 	return _Exchange.Contract.Filled(&_Exchange.CallOpts, arg0)
 }
 
 // Filled is a free data retrieval call binding the contract method 0x288cdc91.
 //
-// Solidity: function filled(bytes32 ) constant returns(uint256)
+// Solidity: function filled(bytes32 ) view returns(uint256)
 func (_Exchange *ExchangeCallerSession) Filled(arg0 [32]byte) (*big.Int, error) {
 	return _Exchange.Contract.Filled(&_Exchange.CallOpts, arg0)
 }
 
 // GetAssetProxy is a free data retrieval call binding the contract method 0x60704108.
 //
-// Solidity: function getAssetProxy(bytes4 assetProxyId) constant returns(address)
+// Solidity: function getAssetProxy(bytes4 assetProxyId) view returns(address)
 func (_Exchange *ExchangeCaller) GetAssetProxy(opts *bind.CallOpts, assetProxyId [4]byte) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -401,21 +400,21 @@ func (_Exchange *ExchangeCaller) GetAssetProxy(opts *bind.CallOpts, assetProxyId
 
 // GetAssetProxy is a free data retrieval call binding the contract method 0x60704108.
 //
-// Solidity: function getAssetProxy(bytes4 assetProxyId) constant returns(address)
+// Solidity: function getAssetProxy(bytes4 assetProxyId) view returns(address)
 func (_Exchange *ExchangeSession) GetAssetProxy(assetProxyId [4]byte) (common.Address, error) {
 	return _Exchange.Contract.GetAssetProxy(&_Exchange.CallOpts, assetProxyId)
 }
 
 // GetAssetProxy is a free data retrieval call binding the contract method 0x60704108.
 //
-// Solidity: function getAssetProxy(bytes4 assetProxyId) constant returns(address)
+// Solidity: function getAssetProxy(bytes4 assetProxyId) view returns(address)
 func (_Exchange *ExchangeCallerSession) GetAssetProxy(assetProxyId [4]byte) (common.Address, error) {
 	return _Exchange.Contract.GetAssetProxy(&_Exchange.CallOpts, assetProxyId)
 }
 
 // GetOrderInfo is a free data retrieval call binding the contract method 0x9d3fa4b9.
 //
-// Solidity: function getOrderInfo(LibOrderOrder order) constant returns(LibOrderOrderInfo orderInfo)
+// Solidity: function getOrderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) view returns((uint8,bytes32,uint256) orderInfo)
 func (_Exchange *ExchangeCaller) GetOrderInfo(opts *bind.CallOpts, order LibOrderOrder) (LibOrderOrderInfo, error) {
 	var (
 		ret0 = new(LibOrderOrderInfo)
@@ -427,21 +426,21 @@ func (_Exchange *ExchangeCaller) GetOrderInfo(opts *bind.CallOpts, order LibOrde
 
 // GetOrderInfo is a free data retrieval call binding the contract method 0x9d3fa4b9.
 //
-// Solidity: function getOrderInfo(LibOrderOrder order) constant returns(LibOrderOrderInfo orderInfo)
+// Solidity: function getOrderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) view returns((uint8,bytes32,uint256) orderInfo)
 func (_Exchange *ExchangeSession) GetOrderInfo(order LibOrderOrder) (LibOrderOrderInfo, error) {
 	return _Exchange.Contract.GetOrderInfo(&_Exchange.CallOpts, order)
 }
 
 // GetOrderInfo is a free data retrieval call binding the contract method 0x9d3fa4b9.
 //
-// Solidity: function getOrderInfo(LibOrderOrder order) constant returns(LibOrderOrderInfo orderInfo)
+// Solidity: function getOrderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) view returns((uint8,bytes32,uint256) orderInfo)
 func (_Exchange *ExchangeCallerSession) GetOrderInfo(order LibOrderOrder) (LibOrderOrderInfo, error) {
 	return _Exchange.Contract.GetOrderInfo(&_Exchange.CallOpts, order)
 }
 
 // IsValidHashSignature is a free data retrieval call binding the contract method 0x8171c407.
 //
-// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidHashSignature(opts *bind.CallOpts, hash [32]byte, signerAddress common.Address, signature []byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -453,21 +452,21 @@ func (_Exchange *ExchangeCaller) IsValidHashSignature(opts *bind.CallOpts, hash 
 
 // IsValidHashSignature is a free data retrieval call binding the contract method 0x8171c407.
 //
-// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeSession) IsValidHashSignature(hash [32]byte, signerAddress common.Address, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidHashSignature(&_Exchange.CallOpts, hash, signerAddress, signature)
 }
 
 // IsValidHashSignature is a free data retrieval call binding the contract method 0x8171c407.
 //
-// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCallerSession) IsValidHashSignature(hash [32]byte, signerAddress common.Address, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidHashSignature(&_Exchange.CallOpts, hash, signerAddress, signature)
 }
 
 // IsValidOrderSignature is a free data retrieval call binding the contract method 0xa12dcc6f.
 //
-// Solidity: function isValidOrderSignature(LibOrderOrder order, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidOrderSignature((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidOrderSignature(opts *bind.CallOpts, order LibOrderOrder, signature []byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -479,21 +478,21 @@ func (_Exchange *ExchangeCaller) IsValidOrderSignature(opts *bind.CallOpts, orde
 
 // IsValidOrderSignature is a free data retrieval call binding the contract method 0xa12dcc6f.
 //
-// Solidity: function isValidOrderSignature(LibOrderOrder order, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidOrderSignature((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeSession) IsValidOrderSignature(order LibOrderOrder, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidOrderSignature(&_Exchange.CallOpts, order, signature)
 }
 
 // IsValidOrderSignature is a free data retrieval call binding the contract method 0xa12dcc6f.
 //
-// Solidity: function isValidOrderSignature(LibOrderOrder order, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidOrderSignature((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCallerSession) IsValidOrderSignature(order LibOrderOrder, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidOrderSignature(&_Exchange.CallOpts, order, signature)
 }
 
 // IsValidTransactionSignature is a free data retrieval call binding the contract method 0x8d45cd23.
 //
-// Solidity: function isValidTransactionSignature(LibZeroExTransactionZeroExTransaction transaction, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidTransactionSignature((uint256,uint256,uint256,address,bytes) transaction, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidTransactionSignature(opts *bind.CallOpts, transaction LibZeroExTransactionZeroExTransaction, signature []byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -505,21 +504,21 @@ func (_Exchange *ExchangeCaller) IsValidTransactionSignature(opts *bind.CallOpts
 
 // IsValidTransactionSignature is a free data retrieval call binding the contract method 0x8d45cd23.
 //
-// Solidity: function isValidTransactionSignature(LibZeroExTransactionZeroExTransaction transaction, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidTransactionSignature((uint256,uint256,uint256,address,bytes) transaction, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeSession) IsValidTransactionSignature(transaction LibZeroExTransactionZeroExTransaction, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidTransactionSignature(&_Exchange.CallOpts, transaction, signature)
 }
 
 // IsValidTransactionSignature is a free data retrieval call binding the contract method 0x8d45cd23.
 //
-// Solidity: function isValidTransactionSignature(LibZeroExTransactionZeroExTransaction transaction, bytes signature) constant returns(bool isValid)
+// Solidity: function isValidTransactionSignature((uint256,uint256,uint256,address,bytes) transaction, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCallerSession) IsValidTransactionSignature(transaction LibZeroExTransactionZeroExTransaction, signature []byte) (bool, error) {
 	return _Exchange.Contract.IsValidTransactionSignature(&_Exchange.CallOpts, transaction, signature)
 }
 
 // OrderEpoch is a free data retrieval call binding the contract method 0xd9bfa73e.
 //
-// Solidity: function orderEpoch(address , address ) constant returns(uint256)
+// Solidity: function orderEpoch(address , address ) view returns(uint256)
 func (_Exchange *ExchangeCaller) OrderEpoch(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -531,21 +530,21 @@ func (_Exchange *ExchangeCaller) OrderEpoch(opts *bind.CallOpts, arg0 common.Add
 
 // OrderEpoch is a free data retrieval call binding the contract method 0xd9bfa73e.
 //
-// Solidity: function orderEpoch(address , address ) constant returns(uint256)
+// Solidity: function orderEpoch(address , address ) view returns(uint256)
 func (_Exchange *ExchangeSession) OrderEpoch(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _Exchange.Contract.OrderEpoch(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // OrderEpoch is a free data retrieval call binding the contract method 0xd9bfa73e.
 //
-// Solidity: function orderEpoch(address , address ) constant returns(uint256)
+// Solidity: function orderEpoch(address , address ) view returns(uint256)
 func (_Exchange *ExchangeCallerSession) OrderEpoch(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _Exchange.Contract.OrderEpoch(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_Exchange *ExchangeCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -557,21 +556,21 @@ func (_Exchange *ExchangeCaller) Owner(opts *bind.CallOpts) (common.Address, err
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_Exchange *ExchangeSession) Owner() (common.Address, error) {
 	return _Exchange.Contract.Owner(&_Exchange.CallOpts)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
 //
-// Solidity: function owner() constant returns(address)
+// Solidity: function owner() view returns(address)
 func (_Exchange *ExchangeCallerSession) Owner() (common.Address, error) {
 	return _Exchange.Contract.Owner(&_Exchange.CallOpts)
 }
 
 // PreSigned is a free data retrieval call binding the contract method 0x82c174d0.
 //
-// Solidity: function preSigned(bytes32 , address ) constant returns(bool)
+// Solidity: function preSigned(bytes32 , address ) view returns(bool)
 func (_Exchange *ExchangeCaller) PreSigned(opts *bind.CallOpts, arg0 [32]byte, arg1 common.Address) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -583,21 +582,21 @@ func (_Exchange *ExchangeCaller) PreSigned(opts *bind.CallOpts, arg0 [32]byte, a
 
 // PreSigned is a free data retrieval call binding the contract method 0x82c174d0.
 //
-// Solidity: function preSigned(bytes32 , address ) constant returns(bool)
+// Solidity: function preSigned(bytes32 , address ) view returns(bool)
 func (_Exchange *ExchangeSession) PreSigned(arg0 [32]byte, arg1 common.Address) (bool, error) {
 	return _Exchange.Contract.PreSigned(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // PreSigned is a free data retrieval call binding the contract method 0x82c174d0.
 //
-// Solidity: function preSigned(bytes32 , address ) constant returns(bool)
+// Solidity: function preSigned(bytes32 , address ) view returns(bool)
 func (_Exchange *ExchangeCallerSession) PreSigned(arg0 [32]byte, arg1 common.Address) (bool, error) {
 	return _Exchange.Contract.PreSigned(&_Exchange.CallOpts, arg0, arg1)
 }
 
 // ProtocolFeeCollector is a free data retrieval call binding the contract method 0x850a1501.
 //
-// Solidity: function protocolFeeCollector() constant returns(address)
+// Solidity: function protocolFeeCollector() view returns(address)
 func (_Exchange *ExchangeCaller) ProtocolFeeCollector(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -609,21 +608,21 @@ func (_Exchange *ExchangeCaller) ProtocolFeeCollector(opts *bind.CallOpts) (comm
 
 // ProtocolFeeCollector is a free data retrieval call binding the contract method 0x850a1501.
 //
-// Solidity: function protocolFeeCollector() constant returns(address)
+// Solidity: function protocolFeeCollector() view returns(address)
 func (_Exchange *ExchangeSession) ProtocolFeeCollector() (common.Address, error) {
 	return _Exchange.Contract.ProtocolFeeCollector(&_Exchange.CallOpts)
 }
 
 // ProtocolFeeCollector is a free data retrieval call binding the contract method 0x850a1501.
 //
-// Solidity: function protocolFeeCollector() constant returns(address)
+// Solidity: function protocolFeeCollector() view returns(address)
 func (_Exchange *ExchangeCallerSession) ProtocolFeeCollector() (common.Address, error) {
 	return _Exchange.Contract.ProtocolFeeCollector(&_Exchange.CallOpts)
 }
 
 // ProtocolFeeMultiplier is a free data retrieval call binding the contract method 0x1ce4c78b.
 //
-// Solidity: function protocolFeeMultiplier() constant returns(uint256)
+// Solidity: function protocolFeeMultiplier() view returns(uint256)
 func (_Exchange *ExchangeCaller) ProtocolFeeMultiplier(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -635,21 +634,21 @@ func (_Exchange *ExchangeCaller) ProtocolFeeMultiplier(opts *bind.CallOpts) (*bi
 
 // ProtocolFeeMultiplier is a free data retrieval call binding the contract method 0x1ce4c78b.
 //
-// Solidity: function protocolFeeMultiplier() constant returns(uint256)
+// Solidity: function protocolFeeMultiplier() view returns(uint256)
 func (_Exchange *ExchangeSession) ProtocolFeeMultiplier() (*big.Int, error) {
 	return _Exchange.Contract.ProtocolFeeMultiplier(&_Exchange.CallOpts)
 }
 
 // ProtocolFeeMultiplier is a free data retrieval call binding the contract method 0x1ce4c78b.
 //
-// Solidity: function protocolFeeMultiplier() constant returns(uint256)
+// Solidity: function protocolFeeMultiplier() view returns(uint256)
 func (_Exchange *ExchangeCallerSession) ProtocolFeeMultiplier() (*big.Int, error) {
 	return _Exchange.Contract.ProtocolFeeMultiplier(&_Exchange.CallOpts)
 }
 
 // TransactionsExecuted is a free data retrieval call binding the contract method 0x0228e168.
 //
-// Solidity: function transactionsExecuted(bytes32 ) constant returns(bool)
+// Solidity: function transactionsExecuted(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCaller) TransactionsExecuted(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -661,203 +660,203 @@ func (_Exchange *ExchangeCaller) TransactionsExecuted(opts *bind.CallOpts, arg0 
 
 // TransactionsExecuted is a free data retrieval call binding the contract method 0x0228e168.
 //
-// Solidity: function transactionsExecuted(bytes32 ) constant returns(bool)
+// Solidity: function transactionsExecuted(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeSession) TransactionsExecuted(arg0 [32]byte) (bool, error) {
 	return _Exchange.Contract.TransactionsExecuted(&_Exchange.CallOpts, arg0)
 }
 
 // TransactionsExecuted is a free data retrieval call binding the contract method 0x0228e168.
 //
-// Solidity: function transactionsExecuted(bytes32 ) constant returns(bool)
+// Solidity: function transactionsExecuted(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCallerSession) TransactionsExecuted(arg0 [32]byte) (bool, error) {
 	return _Exchange.Contract.TransactionsExecuted(&_Exchange.CallOpts, arg0)
 }
 
 // BatchCancelOrders is a paid mutator transaction binding the contract method 0xdedfc1f1.
 //
-// Solidity: function batchCancelOrders([]LibOrderOrder orders) returns()
+// Solidity: function batchCancelOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders) payable returns()
 func (_Exchange *ExchangeTransactor) BatchCancelOrders(opts *bind.TransactOpts, orders []LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchCancelOrders", orders)
 }
 
 // BatchCancelOrders is a paid mutator transaction binding the contract method 0xdedfc1f1.
 //
-// Solidity: function batchCancelOrders([]LibOrderOrder orders) returns()
+// Solidity: function batchCancelOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders) payable returns()
 func (_Exchange *ExchangeSession) BatchCancelOrders(orders []LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchCancelOrders(&_Exchange.TransactOpts, orders)
 }
 
 // BatchCancelOrders is a paid mutator transaction binding the contract method 0xdedfc1f1.
 //
-// Solidity: function batchCancelOrders([]LibOrderOrder orders) returns()
+// Solidity: function batchCancelOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders) payable returns()
 func (_Exchange *ExchangeTransactorSession) BatchCancelOrders(orders []LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchCancelOrders(&_Exchange.TransactOpts, orders)
 }
 
 // BatchExecuteTransactions is a paid mutator transaction binding the contract method 0xfc74896d.
 //
-// Solidity: function batchExecuteTransactions([]LibZeroExTransactionZeroExTransaction transactions, bytes[] signatures) returns(bytes[])
+// Solidity: function batchExecuteTransactions((uint256,uint256,uint256,address,bytes)[] transactions, bytes[] signatures) payable returns(bytes[])
 func (_Exchange *ExchangeTransactor) BatchExecuteTransactions(opts *bind.TransactOpts, transactions []LibZeroExTransactionZeroExTransaction, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchExecuteTransactions", transactions, signatures)
 }
 
 // BatchExecuteTransactions is a paid mutator transaction binding the contract method 0xfc74896d.
 //
-// Solidity: function batchExecuteTransactions([]LibZeroExTransactionZeroExTransaction transactions, bytes[] signatures) returns(bytes[])
+// Solidity: function batchExecuteTransactions((uint256,uint256,uint256,address,bytes)[] transactions, bytes[] signatures) payable returns(bytes[])
 func (_Exchange *ExchangeSession) BatchExecuteTransactions(transactions []LibZeroExTransactionZeroExTransaction, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchExecuteTransactions(&_Exchange.TransactOpts, transactions, signatures)
 }
 
 // BatchExecuteTransactions is a paid mutator transaction binding the contract method 0xfc74896d.
 //
-// Solidity: function batchExecuteTransactions([]LibZeroExTransactionZeroExTransaction transactions, bytes[] signatures) returns(bytes[])
+// Solidity: function batchExecuteTransactions((uint256,uint256,uint256,address,bytes)[] transactions, bytes[] signatures) payable returns(bytes[])
 func (_Exchange *ExchangeTransactorSession) BatchExecuteTransactions(transactions []LibZeroExTransactionZeroExTransaction, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchExecuteTransactions(&_Exchange.TransactOpts, transactions, signatures)
 }
 
 // BatchFillOrKillOrders is a paid mutator transaction binding the contract method 0xbeee2e14.
 //
-// Solidity: function batchFillOrKillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrKillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactor) BatchFillOrKillOrders(opts *bind.TransactOpts, orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchFillOrKillOrders", orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrKillOrders is a paid mutator transaction binding the contract method 0xbeee2e14.
 //
-// Solidity: function batchFillOrKillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrKillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeSession) BatchFillOrKillOrders(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrKillOrders(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrKillOrders is a paid mutator transaction binding the contract method 0xbeee2e14.
 //
-// Solidity: function batchFillOrKillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrKillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactorSession) BatchFillOrKillOrders(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrKillOrders(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrders is a paid mutator transaction binding the contract method 0x9694a402.
 //
-// Solidity: function batchFillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactor) BatchFillOrders(opts *bind.TransactOpts, orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchFillOrders", orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrders is a paid mutator transaction binding the contract method 0x9694a402.
 //
-// Solidity: function batchFillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeSession) BatchFillOrders(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrders(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrders is a paid mutator transaction binding the contract method 0x9694a402.
 //
-// Solidity: function batchFillOrders([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactorSession) BatchFillOrders(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrders(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrdersNoThrow is a paid mutator transaction binding the contract method 0x8ea8dfe4.
 //
-// Solidity: function batchFillOrdersNoThrow([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactor) BatchFillOrdersNoThrow(opts *bind.TransactOpts, orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchFillOrdersNoThrow", orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrdersNoThrow is a paid mutator transaction binding the contract method 0x8ea8dfe4.
 //
-// Solidity: function batchFillOrdersNoThrow([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeSession) BatchFillOrdersNoThrow(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrdersNoThrow(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchFillOrdersNoThrow is a paid mutator transaction binding the contract method 0x8ea8dfe4.
 //
-// Solidity: function batchFillOrdersNoThrow([]LibOrderOrder orders, uint256[] takerAssetFillAmounts, bytes[] signatures) returns([]LibFillResultsFillResults fillResults)
+// Solidity: function batchFillOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256[] takerAssetFillAmounts, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256)[] fillResults)
 func (_Exchange *ExchangeTransactorSession) BatchFillOrdersNoThrow(orders []LibOrderOrder, takerAssetFillAmounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchFillOrdersNoThrow(&_Exchange.TransactOpts, orders, takerAssetFillAmounts, signatures)
 }
 
 // BatchMatchOrders is a paid mutator transaction binding the contract method 0x6fcf3e9e.
 //
-// Solidity: function batchMatchOrders([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeTransactor) BatchMatchOrders(opts *bind.TransactOpts, leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchMatchOrders", leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // BatchMatchOrders is a paid mutator transaction binding the contract method 0x6fcf3e9e.
 //
-// Solidity: function batchMatchOrders([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeSession) BatchMatchOrders(leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchMatchOrders(&_Exchange.TransactOpts, leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // BatchMatchOrders is a paid mutator transaction binding the contract method 0x6fcf3e9e.
 //
-// Solidity: function batchMatchOrders([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeTransactorSession) BatchMatchOrders(leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchMatchOrders(&_Exchange.TransactOpts, leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // BatchMatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0x6a1a80fd.
 //
-// Solidity: function batchMatchOrdersWithMaximalFill([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeTransactor) BatchMatchOrdersWithMaximalFill(opts *bind.TransactOpts, leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "batchMatchOrdersWithMaximalFill", leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // BatchMatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0x6a1a80fd.
 //
-// Solidity: function batchMatchOrdersWithMaximalFill([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeSession) BatchMatchOrdersWithMaximalFill(leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchMatchOrdersWithMaximalFill(&_Exchange.TransactOpts, leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // BatchMatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0x6a1a80fd.
 //
-// Solidity: function batchMatchOrdersWithMaximalFill([]LibOrderOrder leftOrders, []LibOrderOrder rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) returns(LibFillResultsBatchMatchedFillResults batchMatchedFillResults)
+// Solidity: function batchMatchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] leftOrders, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] rightOrders, bytes[] leftSignatures, bytes[] rightSignatures) payable returns(((uint256,uint256,uint256,uint256,uint256)[],(uint256,uint256,uint256,uint256,uint256)[],uint256,uint256) batchMatchedFillResults)
 func (_Exchange *ExchangeTransactorSession) BatchMatchOrdersWithMaximalFill(leftOrders []LibOrderOrder, rightOrders []LibOrderOrder, leftSignatures [][]byte, rightSignatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.BatchMatchOrdersWithMaximalFill(&_Exchange.TransactOpts, leftOrders, rightOrders, leftSignatures, rightSignatures)
 }
 
 // CancelOrder is a paid mutator transaction binding the contract method 0x2da62987.
 //
-// Solidity: function cancelOrder(LibOrderOrder order) returns()
+// Solidity: function cancelOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) payable returns()
 func (_Exchange *ExchangeTransactor) CancelOrder(opts *bind.TransactOpts, order LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "cancelOrder", order)
 }
 
 // CancelOrder is a paid mutator transaction binding the contract method 0x2da62987.
 //
-// Solidity: function cancelOrder(LibOrderOrder order) returns()
+// Solidity: function cancelOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) payable returns()
 func (_Exchange *ExchangeSession) CancelOrder(order LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.Contract.CancelOrder(&_Exchange.TransactOpts, order)
 }
 
 // CancelOrder is a paid mutator transaction binding the contract method 0x2da62987.
 //
-// Solidity: function cancelOrder(LibOrderOrder order) returns()
+// Solidity: function cancelOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) payable returns()
 func (_Exchange *ExchangeTransactorSession) CancelOrder(order LibOrderOrder) (*types.Transaction, error) {
 	return _Exchange.Contract.CancelOrder(&_Exchange.TransactOpts, order)
 }
 
 // CancelOrdersUpTo is a paid mutator transaction binding the contract method 0x4f9559b1.
 //
-// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) returns()
+// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) payable returns()
 func (_Exchange *ExchangeTransactor) CancelOrdersUpTo(opts *bind.TransactOpts, targetOrderEpoch *big.Int) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "cancelOrdersUpTo", targetOrderEpoch)
 }
 
 // CancelOrdersUpTo is a paid mutator transaction binding the contract method 0x4f9559b1.
 //
-// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) returns()
+// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) payable returns()
 func (_Exchange *ExchangeSession) CancelOrdersUpTo(targetOrderEpoch *big.Int) (*types.Transaction, error) {
 	return _Exchange.Contract.CancelOrdersUpTo(&_Exchange.TransactOpts, targetOrderEpoch)
 }
 
 // CancelOrdersUpTo is a paid mutator transaction binding the contract method 0x4f9559b1.
 //
-// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) returns()
+// Solidity: function cancelOrdersUpTo(uint256 targetOrderEpoch) payable returns()
 func (_Exchange *ExchangeTransactorSession) CancelOrdersUpTo(targetOrderEpoch *big.Int) (*types.Transaction, error) {
 	return _Exchange.Contract.CancelOrdersUpTo(&_Exchange.TransactOpts, targetOrderEpoch)
 }
@@ -885,210 +884,210 @@ func (_Exchange *ExchangeTransactorSession) DetachProtocolFeeCollector() (*types
 
 // ExecuteTransaction is a paid mutator transaction binding the contract method 0x2280c910.
 //
-// Solidity: function executeTransaction(LibZeroExTransactionZeroExTransaction transaction, bytes signature) returns(bytes)
+// Solidity: function executeTransaction((uint256,uint256,uint256,address,bytes) transaction, bytes signature) payable returns(bytes)
 func (_Exchange *ExchangeTransactor) ExecuteTransaction(opts *bind.TransactOpts, transaction LibZeroExTransactionZeroExTransaction, signature []byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "executeTransaction", transaction, signature)
 }
 
 // ExecuteTransaction is a paid mutator transaction binding the contract method 0x2280c910.
 //
-// Solidity: function executeTransaction(LibZeroExTransactionZeroExTransaction transaction, bytes signature) returns(bytes)
+// Solidity: function executeTransaction((uint256,uint256,uint256,address,bytes) transaction, bytes signature) payable returns(bytes)
 func (_Exchange *ExchangeSession) ExecuteTransaction(transaction LibZeroExTransactionZeroExTransaction, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.ExecuteTransaction(&_Exchange.TransactOpts, transaction, signature)
 }
 
 // ExecuteTransaction is a paid mutator transaction binding the contract method 0x2280c910.
 //
-// Solidity: function executeTransaction(LibZeroExTransactionZeroExTransaction transaction, bytes signature) returns(bytes)
+// Solidity: function executeTransaction((uint256,uint256,uint256,address,bytes) transaction, bytes signature) payable returns(bytes)
 func (_Exchange *ExchangeTransactorSession) ExecuteTransaction(transaction LibZeroExTransactionZeroExTransaction, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.ExecuteTransaction(&_Exchange.TransactOpts, transaction, signature)
 }
 
 // FillOrKillOrder is a paid mutator transaction binding the contract method 0xe14b58c4.
 //
-// Solidity: function fillOrKillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrKillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) FillOrKillOrder(opts *bind.TransactOpts, order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "fillOrKillOrder", order, takerAssetFillAmount, signature)
 }
 
 // FillOrKillOrder is a paid mutator transaction binding the contract method 0xe14b58c4.
 //
-// Solidity: function fillOrKillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrKillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) FillOrKillOrder(order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.FillOrKillOrder(&_Exchange.TransactOpts, order, takerAssetFillAmount, signature)
 }
 
 // FillOrKillOrder is a paid mutator transaction binding the contract method 0xe14b58c4.
 //
-// Solidity: function fillOrKillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrKillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) FillOrKillOrder(order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.FillOrKillOrder(&_Exchange.TransactOpts, order, takerAssetFillAmount, signature)
 }
 
 // FillOrder is a paid mutator transaction binding the contract method 0x9b44d556.
 //
-// Solidity: function fillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) FillOrder(opts *bind.TransactOpts, order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "fillOrder", order, takerAssetFillAmount, signature)
 }
 
 // FillOrder is a paid mutator transaction binding the contract method 0x9b44d556.
 //
-// Solidity: function fillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) FillOrder(order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.FillOrder(&_Exchange.TransactOpts, order, takerAssetFillAmount, signature)
 }
 
 // FillOrder is a paid mutator transaction binding the contract method 0x9b44d556.
 //
-// Solidity: function fillOrder(LibOrderOrder order, uint256 takerAssetFillAmount, bytes signature) returns(LibFillResultsFillResults fillResults)
+// Solidity: function fillOrder((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, uint256 takerAssetFillAmount, bytes signature) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) FillOrder(order LibOrderOrder, takerAssetFillAmount *big.Int, signature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.FillOrder(&_Exchange.TransactOpts, order, takerAssetFillAmount, signature)
 }
 
 // MarketBuyOrdersFillOrKill is a paid mutator transaction binding the contract method 0x8bc8efb3.
 //
-// Solidity: function marketBuyOrdersFillOrKill([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) MarketBuyOrdersFillOrKill(opts *bind.TransactOpts, orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "marketBuyOrdersFillOrKill", orders, makerAssetFillAmount, signatures)
 }
 
 // MarketBuyOrdersFillOrKill is a paid mutator transaction binding the contract method 0x8bc8efb3.
 //
-// Solidity: function marketBuyOrdersFillOrKill([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) MarketBuyOrdersFillOrKill(orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketBuyOrdersFillOrKill(&_Exchange.TransactOpts, orders, makerAssetFillAmount, signatures)
 }
 
 // MarketBuyOrdersFillOrKill is a paid mutator transaction binding the contract method 0x8bc8efb3.
 //
-// Solidity: function marketBuyOrdersFillOrKill([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) MarketBuyOrdersFillOrKill(orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketBuyOrdersFillOrKill(&_Exchange.TransactOpts, orders, makerAssetFillAmount, signatures)
 }
 
 // MarketBuyOrdersNoThrow is a paid mutator transaction binding the contract method 0x78d29ac1.
 //
-// Solidity: function marketBuyOrdersNoThrow([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) MarketBuyOrdersNoThrow(opts *bind.TransactOpts, orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "marketBuyOrdersNoThrow", orders, makerAssetFillAmount, signatures)
 }
 
 // MarketBuyOrdersNoThrow is a paid mutator transaction binding the contract method 0x78d29ac1.
 //
-// Solidity: function marketBuyOrdersNoThrow([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) MarketBuyOrdersNoThrow(orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketBuyOrdersNoThrow(&_Exchange.TransactOpts, orders, makerAssetFillAmount, signatures)
 }
 
 // MarketBuyOrdersNoThrow is a paid mutator transaction binding the contract method 0x78d29ac1.
 //
-// Solidity: function marketBuyOrdersNoThrow([]LibOrderOrder orders, uint256 makerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketBuyOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 makerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) MarketBuyOrdersNoThrow(orders []LibOrderOrder, makerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketBuyOrdersNoThrow(&_Exchange.TransactOpts, orders, makerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersFillOrKill is a paid mutator transaction binding the contract method 0xa6c3bf33.
 //
-// Solidity: function marketSellOrdersFillOrKill([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) MarketSellOrdersFillOrKill(opts *bind.TransactOpts, orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "marketSellOrdersFillOrKill", orders, takerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersFillOrKill is a paid mutator transaction binding the contract method 0xa6c3bf33.
 //
-// Solidity: function marketSellOrdersFillOrKill([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) MarketSellOrdersFillOrKill(orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketSellOrdersFillOrKill(&_Exchange.TransactOpts, orders, takerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersFillOrKill is a paid mutator transaction binding the contract method 0xa6c3bf33.
 //
-// Solidity: function marketSellOrdersFillOrKill([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersFillOrKill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) MarketSellOrdersFillOrKill(orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketSellOrdersFillOrKill(&_Exchange.TransactOpts, orders, takerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersNoThrow is a paid mutator transaction binding the contract method 0x369da099.
 //
-// Solidity: function marketSellOrdersNoThrow([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactor) MarketSellOrdersNoThrow(opts *bind.TransactOpts, orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "marketSellOrdersNoThrow", orders, takerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersNoThrow is a paid mutator transaction binding the contract method 0x369da099.
 //
-// Solidity: function marketSellOrdersNoThrow([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeSession) MarketSellOrdersNoThrow(orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketSellOrdersNoThrow(&_Exchange.TransactOpts, orders, takerAssetFillAmount, signatures)
 }
 
 // MarketSellOrdersNoThrow is a paid mutator transaction binding the contract method 0x369da099.
 //
-// Solidity: function marketSellOrdersNoThrow([]LibOrderOrder orders, uint256 takerAssetFillAmount, bytes[] signatures) returns(LibFillResultsFillResults fillResults)
+// Solidity: function marketSellOrdersNoThrow((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes)[] orders, uint256 takerAssetFillAmount, bytes[] signatures) payable returns((uint256,uint256,uint256,uint256,uint256) fillResults)
 func (_Exchange *ExchangeTransactorSession) MarketSellOrdersNoThrow(orders []LibOrderOrder, takerAssetFillAmount *big.Int, signatures [][]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MarketSellOrdersNoThrow(&_Exchange.TransactOpts, orders, takerAssetFillAmount, signatures)
 }
 
 // MatchOrders is a paid mutator transaction binding the contract method 0x88ec79fb.
 //
-// Solidity: function matchOrders(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeTransactor) MatchOrders(opts *bind.TransactOpts, leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "matchOrders", leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // MatchOrders is a paid mutator transaction binding the contract method 0x88ec79fb.
 //
-// Solidity: function matchOrders(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeSession) MatchOrders(leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MatchOrders(&_Exchange.TransactOpts, leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // MatchOrders is a paid mutator transaction binding the contract method 0x88ec79fb.
 //
-// Solidity: function matchOrders(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrders((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeTransactorSession) MatchOrders(leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MatchOrders(&_Exchange.TransactOpts, leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // MatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0xb718e292.
 //
-// Solidity: function matchOrdersWithMaximalFill(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeTransactor) MatchOrdersWithMaximalFill(opts *bind.TransactOpts, leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "matchOrdersWithMaximalFill", leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // MatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0xb718e292.
 //
-// Solidity: function matchOrdersWithMaximalFill(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeSession) MatchOrdersWithMaximalFill(leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MatchOrdersWithMaximalFill(&_Exchange.TransactOpts, leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // MatchOrdersWithMaximalFill is a paid mutator transaction binding the contract method 0xb718e292.
 //
-// Solidity: function matchOrdersWithMaximalFill(LibOrderOrder leftOrder, LibOrderOrder rightOrder, bytes leftSignature, bytes rightSignature) returns(LibFillResultsMatchedFillResults matchedFillResults)
+// Solidity: function matchOrdersWithMaximalFill((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) leftOrder, (address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) rightOrder, bytes leftSignature, bytes rightSignature) payable returns(((uint256,uint256,uint256,uint256,uint256),(uint256,uint256,uint256,uint256,uint256),uint256,uint256) matchedFillResults)
 func (_Exchange *ExchangeTransactorSession) MatchOrdersWithMaximalFill(leftOrder LibOrderOrder, rightOrder LibOrderOrder, leftSignature []byte, rightSignature []byte) (*types.Transaction, error) {
 	return _Exchange.Contract.MatchOrdersWithMaximalFill(&_Exchange.TransactOpts, leftOrder, rightOrder, leftSignature, rightSignature)
 }
 
 // PreSign is a paid mutator transaction binding the contract method 0x46c02d7a.
 //
-// Solidity: function preSign(bytes32 hash) returns()
+// Solidity: function preSign(bytes32 hash) payable returns()
 func (_Exchange *ExchangeTransactor) PreSign(opts *bind.TransactOpts, hash [32]byte) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "preSign", hash)
 }
 
 // PreSign is a paid mutator transaction binding the contract method 0x46c02d7a.
 //
-// Solidity: function preSign(bytes32 hash) returns()
+// Solidity: function preSign(bytes32 hash) payable returns()
 func (_Exchange *ExchangeSession) PreSign(hash [32]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.PreSign(&_Exchange.TransactOpts, hash)
 }
 
 // PreSign is a paid mutator transaction binding the contract method 0x46c02d7a.
 //
-// Solidity: function preSign(bytes32 hash) returns()
+// Solidity: function preSign(bytes32 hash) payable returns()
 func (_Exchange *ExchangeTransactorSession) PreSign(hash [32]byte) (*types.Transaction, error) {
 	return _Exchange.Contract.PreSign(&_Exchange.TransactOpts, hash)
 }
@@ -1158,21 +1157,21 @@ func (_Exchange *ExchangeTransactorSession) SetProtocolFeeMultiplier(updatedProt
 
 // SetSignatureValidatorApproval is a paid mutator transaction binding the contract method 0x77fcce68.
 //
-// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) returns()
+// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) payable returns()
 func (_Exchange *ExchangeTransactor) SetSignatureValidatorApproval(opts *bind.TransactOpts, validatorAddress common.Address, approval bool) (*types.Transaction, error) {
 	return _Exchange.contract.Transact(opts, "setSignatureValidatorApproval", validatorAddress, approval)
 }
 
 // SetSignatureValidatorApproval is a paid mutator transaction binding the contract method 0x77fcce68.
 //
-// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) returns()
+// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) payable returns()
 func (_Exchange *ExchangeSession) SetSignatureValidatorApproval(validatorAddress common.Address, approval bool) (*types.Transaction, error) {
 	return _Exchange.Contract.SetSignatureValidatorApproval(&_Exchange.TransactOpts, validatorAddress, approval)
 }
 
 // SetSignatureValidatorApproval is a paid mutator transaction binding the contract method 0x77fcce68.
 //
-// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) returns()
+// Solidity: function setSignatureValidatorApproval(address validatorAddress, bool approval) payable returns()
 func (_Exchange *ExchangeTransactorSession) SetSignatureValidatorApproval(validatorAddress common.Address, approval bool) (*types.Transaction, error) {
 	return _Exchange.Contract.SetSignatureValidatorApproval(&_Exchange.TransactOpts, validatorAddress, approval)
 }

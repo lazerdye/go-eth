@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Exchange *ExchangeTransactorRaw) Transact(opts *bind.TransactOpts, method
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address _owner, address _spender) constant returns(uint256 out)
+// Solidity: function allowance(address _owner, address _spender) returns(uint256 out)
 func (_Exchange *ExchangeCaller) Allowance(opts *bind.CallOpts, _owner common.Address, _spender common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -186,21 +185,21 @@ func (_Exchange *ExchangeCaller) Allowance(opts *bind.CallOpts, _owner common.Ad
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address _owner, address _spender) constant returns(uint256 out)
+// Solidity: function allowance(address _owner, address _spender) returns(uint256 out)
 func (_Exchange *ExchangeSession) Allowance(_owner common.Address, _spender common.Address) (*big.Int, error) {
 	return _Exchange.Contract.Allowance(&_Exchange.CallOpts, _owner, _spender)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address _owner, address _spender) constant returns(uint256 out)
+// Solidity: function allowance(address _owner, address _spender) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) Allowance(_owner common.Address, _spender common.Address) (*big.Int, error) {
 	return _Exchange.Contract.Allowance(&_Exchange.CallOpts, _owner, _spender)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address _owner) constant returns(uint256 out)
+// Solidity: function balanceOf(address _owner) returns(uint256 out)
 func (_Exchange *ExchangeCaller) BalanceOf(opts *bind.CallOpts, _owner common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -212,21 +211,21 @@ func (_Exchange *ExchangeCaller) BalanceOf(opts *bind.CallOpts, _owner common.Ad
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address _owner) constant returns(uint256 out)
+// Solidity: function balanceOf(address _owner) returns(uint256 out)
 func (_Exchange *ExchangeSession) BalanceOf(_owner common.Address) (*big.Int, error) {
 	return _Exchange.Contract.BalanceOf(&_Exchange.CallOpts, _owner)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address _owner) constant returns(uint256 out)
+// Solidity: function balanceOf(address _owner) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) BalanceOf(_owner common.Address) (*big.Int, error) {
 	return _Exchange.Contract.BalanceOf(&_Exchange.CallOpts, _owner)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256 out)
+// Solidity: function decimals() returns(uint256 out)
 func (_Exchange *ExchangeCaller) Decimals(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -238,21 +237,21 @@ func (_Exchange *ExchangeCaller) Decimals(opts *bind.CallOpts) (*big.Int, error)
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256 out)
+// Solidity: function decimals() returns(uint256 out)
 func (_Exchange *ExchangeSession) Decimals() (*big.Int, error) {
 	return _Exchange.Contract.Decimals(&_Exchange.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256 out)
+// Solidity: function decimals() returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) Decimals() (*big.Int, error) {
 	return _Exchange.Contract.Decimals(&_Exchange.CallOpts)
 }
 
 // FactoryAddress is a free data retrieval call binding the contract method 0x966dae0e.
 //
-// Solidity: function factoryAddress() constant returns(address out)
+// Solidity: function factoryAddress() returns(address out)
 func (_Exchange *ExchangeCaller) FactoryAddress(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -264,21 +263,21 @@ func (_Exchange *ExchangeCaller) FactoryAddress(opts *bind.CallOpts) (common.Add
 
 // FactoryAddress is a free data retrieval call binding the contract method 0x966dae0e.
 //
-// Solidity: function factoryAddress() constant returns(address out)
+// Solidity: function factoryAddress() returns(address out)
 func (_Exchange *ExchangeSession) FactoryAddress() (common.Address, error) {
 	return _Exchange.Contract.FactoryAddress(&_Exchange.CallOpts)
 }
 
 // FactoryAddress is a free data retrieval call binding the contract method 0x966dae0e.
 //
-// Solidity: function factoryAddress() constant returns(address out)
+// Solidity: function factoryAddress() returns(address out)
 func (_Exchange *ExchangeCallerSession) FactoryAddress() (common.Address, error) {
 	return _Exchange.Contract.FactoryAddress(&_Exchange.CallOpts)
 }
 
 // GetEthToTokenInputPrice is a free data retrieval call binding the contract method 0xcd7724c3.
 //
-// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) constant returns(uint256 out)
+// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) returns(uint256 out)
 func (_Exchange *ExchangeCaller) GetEthToTokenInputPrice(opts *bind.CallOpts, eth_sold *big.Int) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -290,21 +289,21 @@ func (_Exchange *ExchangeCaller) GetEthToTokenInputPrice(opts *bind.CallOpts, et
 
 // GetEthToTokenInputPrice is a free data retrieval call binding the contract method 0xcd7724c3.
 //
-// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) constant returns(uint256 out)
+// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) returns(uint256 out)
 func (_Exchange *ExchangeSession) GetEthToTokenInputPrice(eth_sold *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetEthToTokenInputPrice(&_Exchange.CallOpts, eth_sold)
 }
 
 // GetEthToTokenInputPrice is a free data retrieval call binding the contract method 0xcd7724c3.
 //
-// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) constant returns(uint256 out)
+// Solidity: function getEthToTokenInputPrice(uint256 eth_sold) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) GetEthToTokenInputPrice(eth_sold *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetEthToTokenInputPrice(&_Exchange.CallOpts, eth_sold)
 }
 
 // GetEthToTokenOutputPrice is a free data retrieval call binding the contract method 0x59e94862.
 //
-// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) constant returns(uint256 out)
+// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) returns(uint256 out)
 func (_Exchange *ExchangeCaller) GetEthToTokenOutputPrice(opts *bind.CallOpts, tokens_bought *big.Int) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -316,21 +315,21 @@ func (_Exchange *ExchangeCaller) GetEthToTokenOutputPrice(opts *bind.CallOpts, t
 
 // GetEthToTokenOutputPrice is a free data retrieval call binding the contract method 0x59e94862.
 //
-// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) constant returns(uint256 out)
+// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) returns(uint256 out)
 func (_Exchange *ExchangeSession) GetEthToTokenOutputPrice(tokens_bought *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetEthToTokenOutputPrice(&_Exchange.CallOpts, tokens_bought)
 }
 
 // GetEthToTokenOutputPrice is a free data retrieval call binding the contract method 0x59e94862.
 //
-// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) constant returns(uint256 out)
+// Solidity: function getEthToTokenOutputPrice(uint256 tokens_bought) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) GetEthToTokenOutputPrice(tokens_bought *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetEthToTokenOutputPrice(&_Exchange.CallOpts, tokens_bought)
 }
 
 // GetTokenToEthInputPrice is a free data retrieval call binding the contract method 0x95b68fe7.
 //
-// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) constant returns(uint256 out)
+// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) returns(uint256 out)
 func (_Exchange *ExchangeCaller) GetTokenToEthInputPrice(opts *bind.CallOpts, tokens_sold *big.Int) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -342,21 +341,21 @@ func (_Exchange *ExchangeCaller) GetTokenToEthInputPrice(opts *bind.CallOpts, to
 
 // GetTokenToEthInputPrice is a free data retrieval call binding the contract method 0x95b68fe7.
 //
-// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) constant returns(uint256 out)
+// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) returns(uint256 out)
 func (_Exchange *ExchangeSession) GetTokenToEthInputPrice(tokens_sold *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetTokenToEthInputPrice(&_Exchange.CallOpts, tokens_sold)
 }
 
 // GetTokenToEthInputPrice is a free data retrieval call binding the contract method 0x95b68fe7.
 //
-// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) constant returns(uint256 out)
+// Solidity: function getTokenToEthInputPrice(uint256 tokens_sold) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) GetTokenToEthInputPrice(tokens_sold *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetTokenToEthInputPrice(&_Exchange.CallOpts, tokens_sold)
 }
 
 // GetTokenToEthOutputPrice is a free data retrieval call binding the contract method 0x2640f62c.
 //
-// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) constant returns(uint256 out)
+// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) returns(uint256 out)
 func (_Exchange *ExchangeCaller) GetTokenToEthOutputPrice(opts *bind.CallOpts, eth_bought *big.Int) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -368,21 +367,21 @@ func (_Exchange *ExchangeCaller) GetTokenToEthOutputPrice(opts *bind.CallOpts, e
 
 // GetTokenToEthOutputPrice is a free data retrieval call binding the contract method 0x2640f62c.
 //
-// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) constant returns(uint256 out)
+// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) returns(uint256 out)
 func (_Exchange *ExchangeSession) GetTokenToEthOutputPrice(eth_bought *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetTokenToEthOutputPrice(&_Exchange.CallOpts, eth_bought)
 }
 
 // GetTokenToEthOutputPrice is a free data retrieval call binding the contract method 0x2640f62c.
 //
-// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) constant returns(uint256 out)
+// Solidity: function getTokenToEthOutputPrice(uint256 eth_bought) returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) GetTokenToEthOutputPrice(eth_bought *big.Int) (*big.Int, error) {
 	return _Exchange.Contract.GetTokenToEthOutputPrice(&_Exchange.CallOpts, eth_bought)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(bytes32 out)
+// Solidity: function name() returns(bytes32 out)
 func (_Exchange *ExchangeCaller) Name(opts *bind.CallOpts) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -394,21 +393,21 @@ func (_Exchange *ExchangeCaller) Name(opts *bind.CallOpts) ([32]byte, error) {
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(bytes32 out)
+// Solidity: function name() returns(bytes32 out)
 func (_Exchange *ExchangeSession) Name() ([32]byte, error) {
 	return _Exchange.Contract.Name(&_Exchange.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(bytes32 out)
+// Solidity: function name() returns(bytes32 out)
 func (_Exchange *ExchangeCallerSession) Name() ([32]byte, error) {
 	return _Exchange.Contract.Name(&_Exchange.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(bytes32 out)
+// Solidity: function symbol() returns(bytes32 out)
 func (_Exchange *ExchangeCaller) Symbol(opts *bind.CallOpts) ([32]byte, error) {
 	var (
 		ret0 = new([32]byte)
@@ -420,21 +419,21 @@ func (_Exchange *ExchangeCaller) Symbol(opts *bind.CallOpts) ([32]byte, error) {
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(bytes32 out)
+// Solidity: function symbol() returns(bytes32 out)
 func (_Exchange *ExchangeSession) Symbol() ([32]byte, error) {
 	return _Exchange.Contract.Symbol(&_Exchange.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(bytes32 out)
+// Solidity: function symbol() returns(bytes32 out)
 func (_Exchange *ExchangeCallerSession) Symbol() ([32]byte, error) {
 	return _Exchange.Contract.Symbol(&_Exchange.CallOpts)
 }
 
 // TokenAddress is a free data retrieval call binding the contract method 0x9d76ea58.
 //
-// Solidity: function tokenAddress() constant returns(address out)
+// Solidity: function tokenAddress() returns(address out)
 func (_Exchange *ExchangeCaller) TokenAddress(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -446,21 +445,21 @@ func (_Exchange *ExchangeCaller) TokenAddress(opts *bind.CallOpts) (common.Addre
 
 // TokenAddress is a free data retrieval call binding the contract method 0x9d76ea58.
 //
-// Solidity: function tokenAddress() constant returns(address out)
+// Solidity: function tokenAddress() returns(address out)
 func (_Exchange *ExchangeSession) TokenAddress() (common.Address, error) {
 	return _Exchange.Contract.TokenAddress(&_Exchange.CallOpts)
 }
 
 // TokenAddress is a free data retrieval call binding the contract method 0x9d76ea58.
 //
-// Solidity: function tokenAddress() constant returns(address out)
+// Solidity: function tokenAddress() returns(address out)
 func (_Exchange *ExchangeCallerSession) TokenAddress() (common.Address, error) {
 	return _Exchange.Contract.TokenAddress(&_Exchange.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256 out)
+// Solidity: function totalSupply() returns(uint256 out)
 func (_Exchange *ExchangeCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -472,14 +471,14 @@ func (_Exchange *ExchangeCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, err
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256 out)
+// Solidity: function totalSupply() returns(uint256 out)
 func (_Exchange *ExchangeSession) TotalSupply() (*big.Int, error) {
 	return _Exchange.Contract.TotalSupply(&_Exchange.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256 out)
+// Solidity: function totalSupply() returns(uint256 out)
 func (_Exchange *ExchangeCallerSession) TotalSupply() (*big.Int, error) {
 	return _Exchange.Contract.TotalSupply(&_Exchange.CallOpts)
 }

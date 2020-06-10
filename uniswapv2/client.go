@@ -19,7 +19,7 @@ import (
 
 var (
 	UniswapV2FactoryContract  = common.HexToAddress("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
-	UniswapV2Router01Contract = common.HexToAddress("0xf164fc0ec4e93095b804a4795bbe1e041497b92a")
+	UniswapV2Router02Contract = common.HexToAddress("0x7a250d5630b4cf539739df2c5dacb4c659f2488d")
 
 	buyGasSpeed  = gasstation.Fastest
 	sellGasSpeed = gasstation.Fastest
@@ -31,7 +31,7 @@ type Client struct {
 	*client.Client
 
 	factory *Factory
-	router  *Router01
+	router  *Router02
 }
 
 func NewClient(client *client.Client) (*Client, error) {
@@ -39,7 +39,7 @@ func NewClient(client *client.Client) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	routerInstance, err := NewRouter01(UniswapV2Router01Contract, client)
+	routerInstance, err := NewRouter02(UniswapV2Router02Contract, client)
 	if err != nil {
 		return nil, err
 	}

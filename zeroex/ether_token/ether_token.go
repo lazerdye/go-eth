@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_EtherToken *EtherTokenTransactorRaw) Transact(opts *bind.TransactOpts, me
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_EtherToken *EtherTokenCaller) Allowance(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -186,21 +185,21 @@ func (_EtherToken *EtherTokenCaller) Allowance(opts *bind.CallOpts, arg0 common.
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_EtherToken *EtherTokenSession) Allowance(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _EtherToken.Contract.Allowance(&_EtherToken.CallOpts, arg0, arg1)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address , address ) constant returns(uint256)
+// Solidity: function allowance(address , address ) view returns(uint256)
 func (_EtherToken *EtherTokenCallerSession) Allowance(arg0 common.Address, arg1 common.Address) (*big.Int, error) {
 	return _EtherToken.Contract.Allowance(&_EtherToken.CallOpts, arg0, arg1)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_EtherToken *EtherTokenCaller) BalanceOf(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -212,21 +211,21 @@ func (_EtherToken *EtherTokenCaller) BalanceOf(opts *bind.CallOpts, arg0 common.
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_EtherToken *EtherTokenSession) BalanceOf(arg0 common.Address) (*big.Int, error) {
 	return _EtherToken.Contract.BalanceOf(&_EtherToken.CallOpts, arg0)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address ) constant returns(uint256)
+// Solidity: function balanceOf(address ) view returns(uint256)
 func (_EtherToken *EtherTokenCallerSession) BalanceOf(arg0 common.Address) (*big.Int, error) {
 	return _EtherToken.Contract.BalanceOf(&_EtherToken.CallOpts, arg0)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_EtherToken *EtherTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error) {
 	var (
 		ret0 = new(uint8)
@@ -238,21 +237,21 @@ func (_EtherToken *EtherTokenCaller) Decimals(opts *bind.CallOpts) (uint8, error
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_EtherToken *EtherTokenSession) Decimals() (uint8, error) {
 	return _EtherToken.Contract.Decimals(&_EtherToken.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint8)
+// Solidity: function decimals() view returns(uint8)
 func (_EtherToken *EtherTokenCallerSession) Decimals() (uint8, error) {
 	return _EtherToken.Contract.Decimals(&_EtherToken.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_EtherToken *EtherTokenCaller) Name(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -264,21 +263,21 @@ func (_EtherToken *EtherTokenCaller) Name(opts *bind.CallOpts) (string, error) {
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_EtherToken *EtherTokenSession) Name() (string, error) {
 	return _EtherToken.Contract.Name(&_EtherToken.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_EtherToken *EtherTokenCallerSession) Name() (string, error) {
 	return _EtherToken.Contract.Name(&_EtherToken.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_EtherToken *EtherTokenCaller) Symbol(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -290,21 +289,21 @@ func (_EtherToken *EtherTokenCaller) Symbol(opts *bind.CallOpts) (string, error)
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_EtherToken *EtherTokenSession) Symbol() (string, error) {
 	return _EtherToken.Contract.Symbol(&_EtherToken.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_EtherToken *EtherTokenCallerSession) Symbol() (string, error) {
 	return _EtherToken.Contract.Symbol(&_EtherToken.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_EtherToken *EtherTokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -316,14 +315,14 @@ func (_EtherToken *EtherTokenCaller) TotalSupply(opts *bind.CallOpts) (*big.Int,
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_EtherToken *EtherTokenSession) TotalSupply() (*big.Int, error) {
 	return _EtherToken.Contract.TotalSupply(&_EtherToken.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_EtherToken *EtherTokenCallerSession) TotalSupply() (*big.Int, error) {
 	return _EtherToken.Contract.TotalSupply(&_EtherToken.CallOpts)
 }
@@ -351,21 +350,21 @@ func (_EtherToken *EtherTokenTransactorSession) Approve(guy common.Address, wad 
 
 // Deposit is a paid mutator transaction binding the contract method 0xd0e30db0.
 //
-// Solidity: function deposit() returns()
+// Solidity: function deposit() payable returns()
 func (_EtherToken *EtherTokenTransactor) Deposit(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _EtherToken.contract.Transact(opts, "deposit")
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xd0e30db0.
 //
-// Solidity: function deposit() returns()
+// Solidity: function deposit() payable returns()
 func (_EtherToken *EtherTokenSession) Deposit() (*types.Transaction, error) {
 	return _EtherToken.Contract.Deposit(&_EtherToken.TransactOpts)
 }
 
 // Deposit is a paid mutator transaction binding the contract method 0xd0e30db0.
 //
-// Solidity: function deposit() returns()
+// Solidity: function deposit() payable returns()
 func (_EtherToken *EtherTokenTransactorSession) Deposit() (*types.Transaction, error) {
 	return _EtherToken.Contract.Deposit(&_EtherToken.TransactOpts)
 }
@@ -431,6 +430,27 @@ func (_EtherToken *EtherTokenSession) Withdraw(wad *big.Int) (*types.Transaction
 // Solidity: function withdraw(uint256 wad) returns()
 func (_EtherToken *EtherTokenTransactorSession) Withdraw(wad *big.Int) (*types.Transaction, error) {
 	return _EtherToken.Contract.Withdraw(&_EtherToken.TransactOpts, wad)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_EtherToken *EtherTokenTransactor) Fallback(opts *bind.TransactOpts, calldata []byte) (*types.Transaction, error) {
+	return _EtherToken.contract.RawTransact(opts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_EtherToken *EtherTokenSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _EtherToken.Contract.Fallback(&_EtherToken.TransactOpts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_EtherToken *EtherTokenTransactorSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _EtherToken.Contract.Fallback(&_EtherToken.TransactOpts, calldata)
 }
 
 // EtherTokenApprovalIterator is returned from FilterApproval and is used to iterate over the raw logs and unpacked data for Approval events raised by the EtherToken contract.

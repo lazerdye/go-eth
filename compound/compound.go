@@ -20,7 +20,6 @@ var (
 	_ = big.NewInt
 	_ = strings.NewReader
 	_ = ethereum.NotFound
-	_ = abi.U256
 	_ = bind.Bind
 	_ = common.Big1
 	_ = types.BloomLookup
@@ -174,7 +173,7 @@ func (_Compound *CompoundTransactorRaw) Transact(opts *bind.TransactOpts, method
 
 // AccrualBlockNumber is a free data retrieval call binding the contract method 0x6c540baf.
 //
-// Solidity: function accrualBlockNumber() constant returns(uint256)
+// Solidity: function accrualBlockNumber() view returns(uint256)
 func (_Compound *CompoundCaller) AccrualBlockNumber(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -186,21 +185,21 @@ func (_Compound *CompoundCaller) AccrualBlockNumber(opts *bind.CallOpts) (*big.I
 
 // AccrualBlockNumber is a free data retrieval call binding the contract method 0x6c540baf.
 //
-// Solidity: function accrualBlockNumber() constant returns(uint256)
+// Solidity: function accrualBlockNumber() view returns(uint256)
 func (_Compound *CompoundSession) AccrualBlockNumber() (*big.Int, error) {
 	return _Compound.Contract.AccrualBlockNumber(&_Compound.CallOpts)
 }
 
 // AccrualBlockNumber is a free data retrieval call binding the contract method 0x6c540baf.
 //
-// Solidity: function accrualBlockNumber() constant returns(uint256)
+// Solidity: function accrualBlockNumber() view returns(uint256)
 func (_Compound *CompoundCallerSession) AccrualBlockNumber() (*big.Int, error) {
 	return _Compound.Contract.AccrualBlockNumber(&_Compound.CallOpts)
 }
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Compound *CompoundCaller) Admin(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -212,21 +211,21 @@ func (_Compound *CompoundCaller) Admin(opts *bind.CallOpts) (common.Address, err
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Compound *CompoundSession) Admin() (common.Address, error) {
 	return _Compound.Contract.Admin(&_Compound.CallOpts)
 }
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
 //
-// Solidity: function admin() constant returns(address)
+// Solidity: function admin() view returns(address)
 func (_Compound *CompoundCallerSession) Admin() (common.Address, error) {
 	return _Compound.Contract.Admin(&_Compound.CallOpts)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address owner, address spender) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) view returns(uint256)
 func (_Compound *CompoundCaller) Allowance(opts *bind.CallOpts, owner common.Address, spender common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -238,21 +237,21 @@ func (_Compound *CompoundCaller) Allowance(opts *bind.CallOpts, owner common.Add
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address owner, address spender) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) view returns(uint256)
 func (_Compound *CompoundSession) Allowance(owner common.Address, spender common.Address) (*big.Int, error) {
 	return _Compound.Contract.Allowance(&_Compound.CallOpts, owner, spender)
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
 //
-// Solidity: function allowance(address owner, address spender) constant returns(uint256)
+// Solidity: function allowance(address owner, address spender) view returns(uint256)
 func (_Compound *CompoundCallerSession) Allowance(owner common.Address, spender common.Address) (*big.Int, error) {
 	return _Compound.Contract.Allowance(&_Compound.CallOpts, owner, spender)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address owner) constant returns(uint256)
+// Solidity: function balanceOf(address owner) view returns(uint256)
 func (_Compound *CompoundCaller) BalanceOf(opts *bind.CallOpts, owner common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -264,21 +263,21 @@ func (_Compound *CompoundCaller) BalanceOf(opts *bind.CallOpts, owner common.Add
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address owner) constant returns(uint256)
+// Solidity: function balanceOf(address owner) view returns(uint256)
 func (_Compound *CompoundSession) BalanceOf(owner common.Address) (*big.Int, error) {
 	return _Compound.Contract.BalanceOf(&_Compound.CallOpts, owner)
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
 //
-// Solidity: function balanceOf(address owner) constant returns(uint256)
+// Solidity: function balanceOf(address owner) view returns(uint256)
 func (_Compound *CompoundCallerSession) BalanceOf(owner common.Address) (*big.Int, error) {
 	return _Compound.Contract.BalanceOf(&_Compound.CallOpts, owner)
 }
 
 // BorrowBalanceStored is a free data retrieval call binding the contract method 0x95dd9193.
 //
-// Solidity: function borrowBalanceStored(address account) constant returns(uint256)
+// Solidity: function borrowBalanceStored(address account) view returns(uint256)
 func (_Compound *CompoundCaller) BorrowBalanceStored(opts *bind.CallOpts, account common.Address) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -290,21 +289,21 @@ func (_Compound *CompoundCaller) BorrowBalanceStored(opts *bind.CallOpts, accoun
 
 // BorrowBalanceStored is a free data retrieval call binding the contract method 0x95dd9193.
 //
-// Solidity: function borrowBalanceStored(address account) constant returns(uint256)
+// Solidity: function borrowBalanceStored(address account) view returns(uint256)
 func (_Compound *CompoundSession) BorrowBalanceStored(account common.Address) (*big.Int, error) {
 	return _Compound.Contract.BorrowBalanceStored(&_Compound.CallOpts, account)
 }
 
 // BorrowBalanceStored is a free data retrieval call binding the contract method 0x95dd9193.
 //
-// Solidity: function borrowBalanceStored(address account) constant returns(uint256)
+// Solidity: function borrowBalanceStored(address account) view returns(uint256)
 func (_Compound *CompoundCallerSession) BorrowBalanceStored(account common.Address) (*big.Int, error) {
 	return _Compound.Contract.BorrowBalanceStored(&_Compound.CallOpts, account)
 }
 
 // BorrowIndex is a free data retrieval call binding the contract method 0xaa5af0fd.
 //
-// Solidity: function borrowIndex() constant returns(uint256)
+// Solidity: function borrowIndex() view returns(uint256)
 func (_Compound *CompoundCaller) BorrowIndex(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -316,21 +315,21 @@ func (_Compound *CompoundCaller) BorrowIndex(opts *bind.CallOpts) (*big.Int, err
 
 // BorrowIndex is a free data retrieval call binding the contract method 0xaa5af0fd.
 //
-// Solidity: function borrowIndex() constant returns(uint256)
+// Solidity: function borrowIndex() view returns(uint256)
 func (_Compound *CompoundSession) BorrowIndex() (*big.Int, error) {
 	return _Compound.Contract.BorrowIndex(&_Compound.CallOpts)
 }
 
 // BorrowIndex is a free data retrieval call binding the contract method 0xaa5af0fd.
 //
-// Solidity: function borrowIndex() constant returns(uint256)
+// Solidity: function borrowIndex() view returns(uint256)
 func (_Compound *CompoundCallerSession) BorrowIndex() (*big.Int, error) {
 	return _Compound.Contract.BorrowIndex(&_Compound.CallOpts)
 }
 
 // BorrowRatePerBlock is a free data retrieval call binding the contract method 0xf8f9da28.
 //
-// Solidity: function borrowRatePerBlock() constant returns(uint256)
+// Solidity: function borrowRatePerBlock() view returns(uint256)
 func (_Compound *CompoundCaller) BorrowRatePerBlock(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -342,21 +341,21 @@ func (_Compound *CompoundCaller) BorrowRatePerBlock(opts *bind.CallOpts) (*big.I
 
 // BorrowRatePerBlock is a free data retrieval call binding the contract method 0xf8f9da28.
 //
-// Solidity: function borrowRatePerBlock() constant returns(uint256)
+// Solidity: function borrowRatePerBlock() view returns(uint256)
 func (_Compound *CompoundSession) BorrowRatePerBlock() (*big.Int, error) {
 	return _Compound.Contract.BorrowRatePerBlock(&_Compound.CallOpts)
 }
 
 // BorrowRatePerBlock is a free data retrieval call binding the contract method 0xf8f9da28.
 //
-// Solidity: function borrowRatePerBlock() constant returns(uint256)
+// Solidity: function borrowRatePerBlock() view returns(uint256)
 func (_Compound *CompoundCallerSession) BorrowRatePerBlock() (*big.Int, error) {
 	return _Compound.Contract.BorrowRatePerBlock(&_Compound.CallOpts)
 }
 
 // Comptroller is a free data retrieval call binding the contract method 0x5fe3b567.
 //
-// Solidity: function comptroller() constant returns(address)
+// Solidity: function comptroller() view returns(address)
 func (_Compound *CompoundCaller) Comptroller(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -368,21 +367,21 @@ func (_Compound *CompoundCaller) Comptroller(opts *bind.CallOpts) (common.Addres
 
 // Comptroller is a free data retrieval call binding the contract method 0x5fe3b567.
 //
-// Solidity: function comptroller() constant returns(address)
+// Solidity: function comptroller() view returns(address)
 func (_Compound *CompoundSession) Comptroller() (common.Address, error) {
 	return _Compound.Contract.Comptroller(&_Compound.CallOpts)
 }
 
 // Comptroller is a free data retrieval call binding the contract method 0x5fe3b567.
 //
-// Solidity: function comptroller() constant returns(address)
+// Solidity: function comptroller() view returns(address)
 func (_Compound *CompoundCallerSession) Comptroller() (common.Address, error) {
 	return _Compound.Contract.Comptroller(&_Compound.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256)
+// Solidity: function decimals() view returns(uint256)
 func (_Compound *CompoundCaller) Decimals(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -394,21 +393,21 @@ func (_Compound *CompoundCaller) Decimals(opts *bind.CallOpts) (*big.Int, error)
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256)
+// Solidity: function decimals() view returns(uint256)
 func (_Compound *CompoundSession) Decimals() (*big.Int, error) {
 	return _Compound.Contract.Decimals(&_Compound.CallOpts)
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
 //
-// Solidity: function decimals() constant returns(uint256)
+// Solidity: function decimals() view returns(uint256)
 func (_Compound *CompoundCallerSession) Decimals() (*big.Int, error) {
 	return _Compound.Contract.Decimals(&_Compound.CallOpts)
 }
 
 // ExchangeRateStored is a free data retrieval call binding the contract method 0x182df0f5.
 //
-// Solidity: function exchangeRateStored() constant returns(uint256)
+// Solidity: function exchangeRateStored() view returns(uint256)
 func (_Compound *CompoundCaller) ExchangeRateStored(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -420,21 +419,21 @@ func (_Compound *CompoundCaller) ExchangeRateStored(opts *bind.CallOpts) (*big.I
 
 // ExchangeRateStored is a free data retrieval call binding the contract method 0x182df0f5.
 //
-// Solidity: function exchangeRateStored() constant returns(uint256)
+// Solidity: function exchangeRateStored() view returns(uint256)
 func (_Compound *CompoundSession) ExchangeRateStored() (*big.Int, error) {
 	return _Compound.Contract.ExchangeRateStored(&_Compound.CallOpts)
 }
 
 // ExchangeRateStored is a free data retrieval call binding the contract method 0x182df0f5.
 //
-// Solidity: function exchangeRateStored() constant returns(uint256)
+// Solidity: function exchangeRateStored() view returns(uint256)
 func (_Compound *CompoundCallerSession) ExchangeRateStored() (*big.Int, error) {
 	return _Compound.Contract.ExchangeRateStored(&_Compound.CallOpts)
 }
 
 // GetAccountSnapshot is a free data retrieval call binding the contract method 0xc37f68e2.
 //
-// Solidity: function getAccountSnapshot(address account) constant returns(uint256, uint256, uint256, uint256)
+// Solidity: function getAccountSnapshot(address account) view returns(uint256, uint256, uint256, uint256)
 func (_Compound *CompoundCaller) GetAccountSnapshot(opts *bind.CallOpts, account common.Address) (*big.Int, *big.Int, *big.Int, *big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -454,21 +453,21 @@ func (_Compound *CompoundCaller) GetAccountSnapshot(opts *bind.CallOpts, account
 
 // GetAccountSnapshot is a free data retrieval call binding the contract method 0xc37f68e2.
 //
-// Solidity: function getAccountSnapshot(address account) constant returns(uint256, uint256, uint256, uint256)
+// Solidity: function getAccountSnapshot(address account) view returns(uint256, uint256, uint256, uint256)
 func (_Compound *CompoundSession) GetAccountSnapshot(account common.Address) (*big.Int, *big.Int, *big.Int, *big.Int, error) {
 	return _Compound.Contract.GetAccountSnapshot(&_Compound.CallOpts, account)
 }
 
 // GetAccountSnapshot is a free data retrieval call binding the contract method 0xc37f68e2.
 //
-// Solidity: function getAccountSnapshot(address account) constant returns(uint256, uint256, uint256, uint256)
+// Solidity: function getAccountSnapshot(address account) view returns(uint256, uint256, uint256, uint256)
 func (_Compound *CompoundCallerSession) GetAccountSnapshot(account common.Address) (*big.Int, *big.Int, *big.Int, *big.Int, error) {
 	return _Compound.Contract.GetAccountSnapshot(&_Compound.CallOpts, account)
 }
 
 // GetCash is a free data retrieval call binding the contract method 0x3b1d21a2.
 //
-// Solidity: function getCash() constant returns(uint256)
+// Solidity: function getCash() view returns(uint256)
 func (_Compound *CompoundCaller) GetCash(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -480,21 +479,21 @@ func (_Compound *CompoundCaller) GetCash(opts *bind.CallOpts) (*big.Int, error) 
 
 // GetCash is a free data retrieval call binding the contract method 0x3b1d21a2.
 //
-// Solidity: function getCash() constant returns(uint256)
+// Solidity: function getCash() view returns(uint256)
 func (_Compound *CompoundSession) GetCash() (*big.Int, error) {
 	return _Compound.Contract.GetCash(&_Compound.CallOpts)
 }
 
 // GetCash is a free data retrieval call binding the contract method 0x3b1d21a2.
 //
-// Solidity: function getCash() constant returns(uint256)
+// Solidity: function getCash() view returns(uint256)
 func (_Compound *CompoundCallerSession) GetCash() (*big.Int, error) {
 	return _Compound.Contract.GetCash(&_Compound.CallOpts)
 }
 
 // InitialExchangeRateMantissa is a free data retrieval call binding the contract method 0x675d972c.
 //
-// Solidity: function initialExchangeRateMantissa() constant returns(uint256)
+// Solidity: function initialExchangeRateMantissa() view returns(uint256)
 func (_Compound *CompoundCaller) InitialExchangeRateMantissa(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -506,21 +505,21 @@ func (_Compound *CompoundCaller) InitialExchangeRateMantissa(opts *bind.CallOpts
 
 // InitialExchangeRateMantissa is a free data retrieval call binding the contract method 0x675d972c.
 //
-// Solidity: function initialExchangeRateMantissa() constant returns(uint256)
+// Solidity: function initialExchangeRateMantissa() view returns(uint256)
 func (_Compound *CompoundSession) InitialExchangeRateMantissa() (*big.Int, error) {
 	return _Compound.Contract.InitialExchangeRateMantissa(&_Compound.CallOpts)
 }
 
 // InitialExchangeRateMantissa is a free data retrieval call binding the contract method 0x675d972c.
 //
-// Solidity: function initialExchangeRateMantissa() constant returns(uint256)
+// Solidity: function initialExchangeRateMantissa() view returns(uint256)
 func (_Compound *CompoundCallerSession) InitialExchangeRateMantissa() (*big.Int, error) {
 	return _Compound.Contract.InitialExchangeRateMantissa(&_Compound.CallOpts)
 }
 
 // InterestRateModel is a free data retrieval call binding the contract method 0xf3fdb15a.
 //
-// Solidity: function interestRateModel() constant returns(address)
+// Solidity: function interestRateModel() view returns(address)
 func (_Compound *CompoundCaller) InterestRateModel(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -532,21 +531,21 @@ func (_Compound *CompoundCaller) InterestRateModel(opts *bind.CallOpts) (common.
 
 // InterestRateModel is a free data retrieval call binding the contract method 0xf3fdb15a.
 //
-// Solidity: function interestRateModel() constant returns(address)
+// Solidity: function interestRateModel() view returns(address)
 func (_Compound *CompoundSession) InterestRateModel() (common.Address, error) {
 	return _Compound.Contract.InterestRateModel(&_Compound.CallOpts)
 }
 
 // InterestRateModel is a free data retrieval call binding the contract method 0xf3fdb15a.
 //
-// Solidity: function interestRateModel() constant returns(address)
+// Solidity: function interestRateModel() view returns(address)
 func (_Compound *CompoundCallerSession) InterestRateModel() (common.Address, error) {
 	return _Compound.Contract.InterestRateModel(&_Compound.CallOpts)
 }
 
 // IsCToken is a free data retrieval call binding the contract method 0xfe9c44ae.
 //
-// Solidity: function isCToken() constant returns(bool)
+// Solidity: function isCToken() view returns(bool)
 func (_Compound *CompoundCaller) IsCToken(opts *bind.CallOpts) (bool, error) {
 	var (
 		ret0 = new(bool)
@@ -558,21 +557,21 @@ func (_Compound *CompoundCaller) IsCToken(opts *bind.CallOpts) (bool, error) {
 
 // IsCToken is a free data retrieval call binding the contract method 0xfe9c44ae.
 //
-// Solidity: function isCToken() constant returns(bool)
+// Solidity: function isCToken() view returns(bool)
 func (_Compound *CompoundSession) IsCToken() (bool, error) {
 	return _Compound.Contract.IsCToken(&_Compound.CallOpts)
 }
 
 // IsCToken is a free data retrieval call binding the contract method 0xfe9c44ae.
 //
-// Solidity: function isCToken() constant returns(bool)
+// Solidity: function isCToken() view returns(bool)
 func (_Compound *CompoundCallerSession) IsCToken() (bool, error) {
 	return _Compound.Contract.IsCToken(&_Compound.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Compound *CompoundCaller) Name(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -584,21 +583,21 @@ func (_Compound *CompoundCaller) Name(opts *bind.CallOpts) (string, error) {
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Compound *CompoundSession) Name() (string, error) {
 	return _Compound.Contract.Name(&_Compound.CallOpts)
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
 //
-// Solidity: function name() constant returns(string)
+// Solidity: function name() view returns(string)
 func (_Compound *CompoundCallerSession) Name() (string, error) {
 	return _Compound.Contract.Name(&_Compound.CallOpts)
 }
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Compound *CompoundCaller) PendingAdmin(opts *bind.CallOpts) (common.Address, error) {
 	var (
 		ret0 = new(common.Address)
@@ -610,21 +609,21 @@ func (_Compound *CompoundCaller) PendingAdmin(opts *bind.CallOpts) (common.Addre
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Compound *CompoundSession) PendingAdmin() (common.Address, error) {
 	return _Compound.Contract.PendingAdmin(&_Compound.CallOpts)
 }
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
 //
-// Solidity: function pendingAdmin() constant returns(address)
+// Solidity: function pendingAdmin() view returns(address)
 func (_Compound *CompoundCallerSession) PendingAdmin() (common.Address, error) {
 	return _Compound.Contract.PendingAdmin(&_Compound.CallOpts)
 }
 
 // ReserveFactorMantissa is a free data retrieval call binding the contract method 0x173b9904.
 //
-// Solidity: function reserveFactorMantissa() constant returns(uint256)
+// Solidity: function reserveFactorMantissa() view returns(uint256)
 func (_Compound *CompoundCaller) ReserveFactorMantissa(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -636,21 +635,21 @@ func (_Compound *CompoundCaller) ReserveFactorMantissa(opts *bind.CallOpts) (*bi
 
 // ReserveFactorMantissa is a free data retrieval call binding the contract method 0x173b9904.
 //
-// Solidity: function reserveFactorMantissa() constant returns(uint256)
+// Solidity: function reserveFactorMantissa() view returns(uint256)
 func (_Compound *CompoundSession) ReserveFactorMantissa() (*big.Int, error) {
 	return _Compound.Contract.ReserveFactorMantissa(&_Compound.CallOpts)
 }
 
 // ReserveFactorMantissa is a free data retrieval call binding the contract method 0x173b9904.
 //
-// Solidity: function reserveFactorMantissa() constant returns(uint256)
+// Solidity: function reserveFactorMantissa() view returns(uint256)
 func (_Compound *CompoundCallerSession) ReserveFactorMantissa() (*big.Int, error) {
 	return _Compound.Contract.ReserveFactorMantissa(&_Compound.CallOpts)
 }
 
 // SupplyRatePerBlock is a free data retrieval call binding the contract method 0xae9d70b0.
 //
-// Solidity: function supplyRatePerBlock() constant returns(uint256)
+// Solidity: function supplyRatePerBlock() view returns(uint256)
 func (_Compound *CompoundCaller) SupplyRatePerBlock(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -662,21 +661,21 @@ func (_Compound *CompoundCaller) SupplyRatePerBlock(opts *bind.CallOpts) (*big.I
 
 // SupplyRatePerBlock is a free data retrieval call binding the contract method 0xae9d70b0.
 //
-// Solidity: function supplyRatePerBlock() constant returns(uint256)
+// Solidity: function supplyRatePerBlock() view returns(uint256)
 func (_Compound *CompoundSession) SupplyRatePerBlock() (*big.Int, error) {
 	return _Compound.Contract.SupplyRatePerBlock(&_Compound.CallOpts)
 }
 
 // SupplyRatePerBlock is a free data retrieval call binding the contract method 0xae9d70b0.
 //
-// Solidity: function supplyRatePerBlock() constant returns(uint256)
+// Solidity: function supplyRatePerBlock() view returns(uint256)
 func (_Compound *CompoundCallerSession) SupplyRatePerBlock() (*big.Int, error) {
 	return _Compound.Contract.SupplyRatePerBlock(&_Compound.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Compound *CompoundCaller) Symbol(opts *bind.CallOpts) (string, error) {
 	var (
 		ret0 = new(string)
@@ -688,21 +687,21 @@ func (_Compound *CompoundCaller) Symbol(opts *bind.CallOpts) (string, error) {
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Compound *CompoundSession) Symbol() (string, error) {
 	return _Compound.Contract.Symbol(&_Compound.CallOpts)
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
 //
-// Solidity: function symbol() constant returns(string)
+// Solidity: function symbol() view returns(string)
 func (_Compound *CompoundCallerSession) Symbol() (string, error) {
 	return _Compound.Contract.Symbol(&_Compound.CallOpts)
 }
 
 // TotalBorrows is a free data retrieval call binding the contract method 0x47bd3718.
 //
-// Solidity: function totalBorrows() constant returns(uint256)
+// Solidity: function totalBorrows() view returns(uint256)
 func (_Compound *CompoundCaller) TotalBorrows(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -714,21 +713,21 @@ func (_Compound *CompoundCaller) TotalBorrows(opts *bind.CallOpts) (*big.Int, er
 
 // TotalBorrows is a free data retrieval call binding the contract method 0x47bd3718.
 //
-// Solidity: function totalBorrows() constant returns(uint256)
+// Solidity: function totalBorrows() view returns(uint256)
 func (_Compound *CompoundSession) TotalBorrows() (*big.Int, error) {
 	return _Compound.Contract.TotalBorrows(&_Compound.CallOpts)
 }
 
 // TotalBorrows is a free data retrieval call binding the contract method 0x47bd3718.
 //
-// Solidity: function totalBorrows() constant returns(uint256)
+// Solidity: function totalBorrows() view returns(uint256)
 func (_Compound *CompoundCallerSession) TotalBorrows() (*big.Int, error) {
 	return _Compound.Contract.TotalBorrows(&_Compound.CallOpts)
 }
 
 // TotalReserves is a free data retrieval call binding the contract method 0x8f840ddd.
 //
-// Solidity: function totalReserves() constant returns(uint256)
+// Solidity: function totalReserves() view returns(uint256)
 func (_Compound *CompoundCaller) TotalReserves(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -740,21 +739,21 @@ func (_Compound *CompoundCaller) TotalReserves(opts *bind.CallOpts) (*big.Int, e
 
 // TotalReserves is a free data retrieval call binding the contract method 0x8f840ddd.
 //
-// Solidity: function totalReserves() constant returns(uint256)
+// Solidity: function totalReserves() view returns(uint256)
 func (_Compound *CompoundSession) TotalReserves() (*big.Int, error) {
 	return _Compound.Contract.TotalReserves(&_Compound.CallOpts)
 }
 
 // TotalReserves is a free data retrieval call binding the contract method 0x8f840ddd.
 //
-// Solidity: function totalReserves() constant returns(uint256)
+// Solidity: function totalReserves() view returns(uint256)
 func (_Compound *CompoundCallerSession) TotalReserves() (*big.Int, error) {
 	return _Compound.Contract.TotalReserves(&_Compound.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Compound *CompoundCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
 	var (
 		ret0 = new(*big.Int)
@@ -766,14 +765,14 @@ func (_Compound *CompoundCaller) TotalSupply(opts *bind.CallOpts) (*big.Int, err
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Compound *CompoundSession) TotalSupply() (*big.Int, error) {
 	return _Compound.Contract.TotalSupply(&_Compound.CallOpts)
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
 //
-// Solidity: function totalSupply() constant returns(uint256)
+// Solidity: function totalSupply() view returns(uint256)
 func (_Compound *CompoundCallerSession) TotalSupply() (*big.Int, error) {
 	return _Compound.Contract.TotalSupply(&_Compound.CallOpts)
 }
@@ -1032,42 +1031,42 @@ func (_Compound *CompoundTransactorSession) ExchangeRateCurrent() (*types.Transa
 
 // LiquidateBorrow is a paid mutator transaction binding the contract method 0xaae40a2a.
 //
-// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) returns()
+// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) payable returns()
 func (_Compound *CompoundTransactor) LiquidateBorrow(opts *bind.TransactOpts, borrower common.Address, cTokenCollateral common.Address) (*types.Transaction, error) {
 	return _Compound.contract.Transact(opts, "liquidateBorrow", borrower, cTokenCollateral)
 }
 
 // LiquidateBorrow is a paid mutator transaction binding the contract method 0xaae40a2a.
 //
-// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) returns()
+// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) payable returns()
 func (_Compound *CompoundSession) LiquidateBorrow(borrower common.Address, cTokenCollateral common.Address) (*types.Transaction, error) {
 	return _Compound.Contract.LiquidateBorrow(&_Compound.TransactOpts, borrower, cTokenCollateral)
 }
 
 // LiquidateBorrow is a paid mutator transaction binding the contract method 0xaae40a2a.
 //
-// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) returns()
+// Solidity: function liquidateBorrow(address borrower, address cTokenCollateral) payable returns()
 func (_Compound *CompoundTransactorSession) LiquidateBorrow(borrower common.Address, cTokenCollateral common.Address) (*types.Transaction, error) {
 	return _Compound.Contract.LiquidateBorrow(&_Compound.TransactOpts, borrower, cTokenCollateral)
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x1249c58b.
 //
-// Solidity: function mint() returns()
+// Solidity: function mint() payable returns()
 func (_Compound *CompoundTransactor) Mint(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _Compound.contract.Transact(opts, "mint")
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x1249c58b.
 //
-// Solidity: function mint() returns()
+// Solidity: function mint() payable returns()
 func (_Compound *CompoundSession) Mint() (*types.Transaction, error) {
 	return _Compound.Contract.Mint(&_Compound.TransactOpts)
 }
 
 // Mint is a paid mutator transaction binding the contract method 0x1249c58b.
 //
-// Solidity: function mint() returns()
+// Solidity: function mint() payable returns()
 func (_Compound *CompoundTransactorSession) Mint() (*types.Transaction, error) {
 	return _Compound.Contract.Mint(&_Compound.TransactOpts)
 }
@@ -1116,42 +1115,42 @@ func (_Compound *CompoundTransactorSession) RedeemUnderlying(redeemAmount *big.I
 
 // RepayBorrow is a paid mutator transaction binding the contract method 0x4e4d9fea.
 //
-// Solidity: function repayBorrow() returns()
+// Solidity: function repayBorrow() payable returns()
 func (_Compound *CompoundTransactor) RepayBorrow(opts *bind.TransactOpts) (*types.Transaction, error) {
 	return _Compound.contract.Transact(opts, "repayBorrow")
 }
 
 // RepayBorrow is a paid mutator transaction binding the contract method 0x4e4d9fea.
 //
-// Solidity: function repayBorrow() returns()
+// Solidity: function repayBorrow() payable returns()
 func (_Compound *CompoundSession) RepayBorrow() (*types.Transaction, error) {
 	return _Compound.Contract.RepayBorrow(&_Compound.TransactOpts)
 }
 
 // RepayBorrow is a paid mutator transaction binding the contract method 0x4e4d9fea.
 //
-// Solidity: function repayBorrow() returns()
+// Solidity: function repayBorrow() payable returns()
 func (_Compound *CompoundTransactorSession) RepayBorrow() (*types.Transaction, error) {
 	return _Compound.Contract.RepayBorrow(&_Compound.TransactOpts)
 }
 
 // RepayBorrowBehalf is a paid mutator transaction binding the contract method 0xe5974619.
 //
-// Solidity: function repayBorrowBehalf(address borrower) returns()
+// Solidity: function repayBorrowBehalf(address borrower) payable returns()
 func (_Compound *CompoundTransactor) RepayBorrowBehalf(opts *bind.TransactOpts, borrower common.Address) (*types.Transaction, error) {
 	return _Compound.contract.Transact(opts, "repayBorrowBehalf", borrower)
 }
 
 // RepayBorrowBehalf is a paid mutator transaction binding the contract method 0xe5974619.
 //
-// Solidity: function repayBorrowBehalf(address borrower) returns()
+// Solidity: function repayBorrowBehalf(address borrower) payable returns()
 func (_Compound *CompoundSession) RepayBorrowBehalf(borrower common.Address) (*types.Transaction, error) {
 	return _Compound.Contract.RepayBorrowBehalf(&_Compound.TransactOpts, borrower)
 }
 
 // RepayBorrowBehalf is a paid mutator transaction binding the contract method 0xe5974619.
 //
-// Solidity: function repayBorrowBehalf(address borrower) returns()
+// Solidity: function repayBorrowBehalf(address borrower) payable returns()
 func (_Compound *CompoundTransactorSession) RepayBorrowBehalf(borrower common.Address) (*types.Transaction, error) {
 	return _Compound.Contract.RepayBorrowBehalf(&_Compound.TransactOpts, borrower)
 }
@@ -1238,6 +1237,27 @@ func (_Compound *CompoundSession) TransferFrom(src common.Address, dst common.Ad
 // Solidity: function transferFrom(address src, address dst, uint256 amount) returns(bool)
 func (_Compound *CompoundTransactorSession) TransferFrom(src common.Address, dst common.Address, amount *big.Int) (*types.Transaction, error) {
 	return _Compound.Contract.TransferFrom(&_Compound.TransactOpts, src, dst, amount)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_Compound *CompoundTransactor) Fallback(opts *bind.TransactOpts, calldata []byte) (*types.Transaction, error) {
+	return _Compound.contract.RawTransact(opts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_Compound *CompoundSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _Compound.Contract.Fallback(&_Compound.TransactOpts, calldata)
+}
+
+// Fallback is a paid mutator transaction binding the contract fallback function.
+//
+// Solidity: fallback() payable returns()
+func (_Compound *CompoundTransactorSession) Fallback(calldata []byte) (*types.Transaction, error) {
+	return _Compound.Contract.Fallback(&_Compound.TransactOpts, calldata)
 }
 
 // CompoundAccrueInterestIterator is returned from FilterAccrueInterest and is used to iterate over the raw logs and unpacked data for AccrueInterest events raised by the Compound contract.
