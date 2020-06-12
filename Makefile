@@ -1,7 +1,12 @@
+.PHONY: cli
 
 PACKAGE=github.com/lazerdye/go-eth
 
-all: token/erc20/erc20.go kyber/kyber.go zeroex/ether_token/ether_token.go zeroex/exchange/exchange.go 
+all: token/erc20/erc20.go kyber/kyber.go zeroex/ether_token/ether_token.go zeroex/exchange/exchange.go
+
+cli:
+	mkdir -p bin
+	go build -o bin/cli cli/*.go
 
 token/TokenERC20.abi:
 	solc --abi token/erc20.sol -o sol
