@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"math/big"
 
 	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -11,15 +12,23 @@ import (
 )
 
 var (
-	clientCmd    = kingpin.Command("client", "Client operations")
-	clientServer = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
+	clientCmd     = kingpin.Command("client", "Client operations")
+	clientBlockNo = clientCmd.Flag("block-number", "Override block number").Int64()
+	clientServer  = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
 )
 
 func newClient() (*client.Client, error) {
 	if *clientServer == "" {
 		return nil, errors.New("clientServer parameter required")
 	}
-	return client.Dial(*clientServer, gasstation.NewClient())
+	c, err := client.Dial(*clientServer, gasstation.NewClient())
+	if err != nil {
+		return nil, err
+	}
+	if *clientBlockNo != 0 {
+		c.SetBlockNumberOverride(big.NewInt(*clientBlockNo))
+	}
+	return c, err
 }
 
 func clientCommands(ctx context.Context, commands []string) (bool, error) {

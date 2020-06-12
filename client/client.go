@@ -5,6 +5,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
@@ -18,7 +19,8 @@ import (
 type Client struct {
 	*ethclient.Client
 
-	gasstation *gasstation.Client
+	overrideBlockNo *big.Int
+	gasstation      *gasstation.Client
 }
 
 const (
@@ -39,7 +41,7 @@ func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, gasstation}, nil
+	return &Client{client, nil, gasstation}, nil
 }
 
 func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (decimal.Decimal, float64, error) {
@@ -105,6 +107,18 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 		}
 	}
 	return txSigned, nil
+}
+
+func (c *Client) SetBlockNumberOverride(block *big.Int) {
+	c.overrideBlockNo = block
+}
+
+func (c *Client) BlockNumberOverride() *big.Int {
+	return c.overrideBlockNo
+}
+
+func (c *Client) DefaultCallOpts(ctx context.Context) *bind.CallOpts {
+	return &bind.CallOpts{Context: ctx, BlockNumber: c.overrideBlockNo}
 }
 
 func EthToWei(amount decimal.Decimal) *big.Int {

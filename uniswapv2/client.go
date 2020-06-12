@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
@@ -47,9 +46,10 @@ func NewClient(client *client.Client) (*Client, error) {
 }
 
 type PairClient struct {
-	Address common.Address
+	*client.Client
 
-	pair *Pair
+	Address common.Address
+	pair    *Pair
 }
 
 func NewPairClient(client *client.Client, address common.Address) (*PairClient, error) {
@@ -57,21 +57,21 @@ func NewPairClient(client *client.Client, address common.Address) (*PairClient, 
 	if err != nil {
 		return nil, err
 	}
-	return &PairClient{address, pairInstance}, nil
+	return &PairClient{client, address, pairInstance}, nil
 }
 
 func (p *PairClient) Token0(ctx context.Context) (common.Address, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := p.DefaultCallOpts(ctx)
 	return p.pair.Token0(opts)
 }
 
 func (p *PairClient) Token1(ctx context.Context) (common.Address, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := p.DefaultCallOpts(ctx)
 	return p.pair.Token1(opts)
 }
 
 func (p *PairClient) GetReserves(ctx context.Context) (string, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := p.DefaultCallOpts(ctx)
 	info, err := p.pair.GetReserves(opts)
 	if err != nil {
 		return "", err
@@ -84,7 +84,7 @@ func (p *PairClient) ParseSwap(log types.Log) (*PairSwap, error) {
 }
 
 func (c *Client) GetPairs(ctx context.Context) ([]*PairClient, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := c.DefaultCallOpts(ctx)
 	countBig, err := c.factory.AllPairsLength(opts)
 	if err != nil {
 		return nil, err
@@ -105,7 +105,7 @@ func (c *Client) GetPairs(ctx context.Context) ([]*PairClient, error) {
 }
 
 func (c *Client) GetPair(ctx context.Context, token0 *token2.Client, token1 *token2.Client) (*PairClient, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := c.DefaultCallOpts(ctx)
 	address, err := c.factory.GetPair(opts, token0.Address, token1.Address)
 	if err != nil {
 		return nil, err
@@ -118,7 +118,7 @@ func (c *Client) PairClient(address common.Address) (*PairClient, error) {
 }
 
 func (c *Client) GetAmountOut(ctx context.Context, amountIn decimal.Decimal, token0 *token2.Client, token1 *token2.Client) (decimal.Decimal, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := c.DefaultCallOpts(ctx)
 	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsOut(opts, token0.ToWei(amountIn), path)
 	if err != nil {
@@ -131,7 +131,7 @@ func (c *Client) GetAmountOut(ctx context.Context, amountIn decimal.Decimal, tok
 }
 
 func (c *Client) GetAmountIn(ctx context.Context, amountOut decimal.Decimal, token0 *token2.Client, token1 *token2.Client) (decimal.Decimal, error) {
-	opts := &bind.CallOpts{Context: ctx}
+	opts := c.DefaultCallOpts(ctx)
 	path := []common.Address{token0.Address, token1.Address}
 	amounts, err := c.router.GetAmountsIn(opts, token1.ToWei(amountOut), path)
 	if err != nil {
