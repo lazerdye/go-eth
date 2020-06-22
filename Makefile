@@ -1,10 +1,10 @@
-.PHONY: cli
+.PHONY: bin/cli
 
 PACKAGE=github.com/lazerdye/go-eth
 
 all: token/erc20/erc20.go kyber/kyber.go zeroex/ether_token/ether_token.go zeroex/exchange/exchange.go
 
-cli:
+bin/cli:
 	mkdir -p bin
 	go build -o bin/cli cli/*.go
 

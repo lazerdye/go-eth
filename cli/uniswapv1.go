@@ -12,7 +12,7 @@ import (
 var (
 	clientUniswap1Command                              = clientCmd.Command("uniswapv1", "Uniswap v1 operations")
 	clientUniswap1Token                                = clientUniswap1Command.Flag("token", "Token to get exchange for").Required().String()
-	clientUniswap1TokenFile                            = clientUniswap1Command.Flag("token-file", "File for token registry").Required().String()
+	clientUniswap1TokenFile                            = clientUniswap1Command.Flag("token-file", "File for token registry").Envar("TOKEN_FILE").Required().String()
 	clientUniswap1GetExchange                          = clientUniswap1Command.Command("get-exchange", "Get exchange address for token")
 	clientUniswap1GetEthToTokenInputPrice              = clientUniswap1Command.Command("eth-to-token-input", "Get eth to token input price")
 	clientUniswap1GetEthToTokenInputPriceEthSold       = clientUniswap1GetEthToTokenInputPrice.Arg("eth-sold", "Ethereum sold").Required().Float64()
