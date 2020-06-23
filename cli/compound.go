@@ -33,7 +33,7 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 		if err != nil {
 			return false, err
 		}
-		compoundClient, err = compound.NewErc20Client(client, tok)
+		compoundClient, err = compound.NewBatClient(client, tok)
 		if err != nil {
 			return false, err
 		}

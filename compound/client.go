@@ -49,7 +49,7 @@ func NewEthClient(client *client.Client) (Client, error) {
 	return &cethClient{client, ceth}, nil
 }
 
-func NewErc20Client(client *client.Client, tok *token2.Client) (Client, error) {
+func NewBatClient(client *client.Client, tok *token2.Client) (Client, error) {
 	cerc20, err := NewCErc20(CbatContractAddress, client)
 	if err != nil {
 		return nil, err
