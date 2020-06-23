@@ -5,6 +5,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -15,27 +16,34 @@ import (
 const ()
 
 var (
-	CompoundContractAddress = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
+	CethContractAddress = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
 
 	mintGasSpeed = gasstation.Average
 	mintGasLimit = uint64(150000)
 )
 
-type Client struct {
-	*client.Client
-
-	instance *Compound
+type Client interface {
+	Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
 }
 
-func NewClient(client *client.Client) (*Client, error) {
-	instance, err := NewCompound(CompoundContractAddress, client)
+type cethClient struct {
+	*client.Client
+
+	ceth *Ceth
+}
+
+func NewClient(client *client.Client, currency string) (Client, error) { 
+	if currency != "eth" {
+		return nil, errors.Errorf("Unsupported currency: %s", currency)
+	}
+	ceth, err := NewCeth(CethContractAddress, client)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, instance}, nil
+	return &cethClient{client, ceth}, nil
 }
 
-func (c *Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
+func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, _, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
@@ -45,5 +53,5 @@ func (c *Client) Mint(ctx context.Context, account *wallet.Account, amount decim
 		return nil, err
 	}
 
-	return c.instance.Mint(opts)
+	return c.ceth.Mint(opts)
 }

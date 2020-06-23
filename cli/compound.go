@@ -20,18 +20,18 @@ var (
 )
 
 func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
-	compoundClient, err := compound.NewClient(client)
-	if err != nil {
-		return false, err
-	}
 	switch commands[0] {
 	case "mint":
-		return true, compoundMint(ctx, compoundClient)
+		return true, compoundMint(ctx, client)
 	}
 	return false, nil
 }
 
-func compoundMint(ctx context.Context, client *compound.Client) error {
+func compoundMint(ctx context.Context, client *client.Client) error {
+	compoundClient, err := compound.NewClient(client, *clientMintToken)
+	if err != nil {
+		return err
+	}
 	account, opened, err := getAccount()
 	if err != nil {
 		return err
@@ -40,13 +40,9 @@ func compoundMint(ctx context.Context, client *compound.Client) error {
 		return errors.New("Account not unlocked")
 	}
 
-	tokName := *clientMintToken
-	if tokName != "eth" {
-		return errors.New("Currently only eth is supported")
-	}
 
 	amountBig := decimal.NewFromFloat(*clientMintAmount)
-	tx, err := client.Mint(ctx, account, amountBig)
+	tx, err := compoundClient.Mint(ctx, account, amountBig)
 	if err != nil {
 		return err
 	}

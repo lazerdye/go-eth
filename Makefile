@@ -41,8 +41,11 @@ uniswapv2/pair.go: uniswapv2/pair.abi
 uniswapv2/router02.go: uniswapv2/router02.abi
 	abigen --abi=uniswapv2/router02.abi --pkg=uniswapv2 --type=Router02 --out=uniswapv2/router02.go
 
-compound/compound.go: compound/compound.abi
-	abigen --abi=compound/compound.abi --pkg=compound --type=Compound --out=compound/compound.go
+compound/ceth.go: compound/cETH.abi
+	abigen --abi=compound/cETH.abi --pkg=compound --type=Ceth --out=compound/ceth.go
+
+compound/cerc20.go: compound/cERC20.abi
+	abigen --abi=compound/cERC20.abi --pkg=compound --type=CErc20 --out=compound/cerc20.go
 
 gofmt:
 	go fmt $(PACKAGE)/...
