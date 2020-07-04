@@ -60,7 +60,7 @@ func uniswapGetEthToTokenInputPrice(ctx context.Context, client *uniswapv1.Clien
 		return err
 	}
 
-	fmt.Printf("Token bought: %.18f\n", tokenBought)
+	fmt.Printf("Token bought: %s\n", tokenBought)
 
 	return nil
 }
@@ -77,7 +77,7 @@ func uniswapGetEthToTokenOutputPrice(ctx context.Context, client *uniswapv1.Clie
 		return err
 	}
 
-	fmt.Printf("Eth sold: %.18f\n", ethSold)
+	fmt.Printf("Eth sold: %s\n", ethSold)
 
 	return nil
 }
@@ -94,7 +94,7 @@ func uniswapGetTokenToEthInputPrice(ctx context.Context, client *uniswapv1.Clien
 		return err
 	}
 
-	fmt.Printf("Eth bought: %.18f\n", tokenSold)
+	fmt.Printf("Eth bought: %s\n", tokenSold)
 
 	return nil
 }
@@ -111,7 +111,7 @@ func uniswapGetTokenToEthOutputPrice(ctx context.Context, client *uniswapv1.Clie
 		return err
 	}
 
-	fmt.Printf("Token sold: %.18f\n", ethBought)
+	fmt.Printf("Token sold: %s\n", ethBought)
 
 	return nil
 }

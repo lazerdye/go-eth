@@ -80,6 +80,7 @@ func (c *Client) ToWeiCapped(ctx context.Context, f decimal.Decimal, account *wa
 	if err != nil {
 		return nil, err
 	}
+	log.Infof("Balance of %s in account %s is: %s", c.Address.Hex(), account.Address().Hex(), balance)
 	diff := f.Sub(balance).Abs()
 	if f.Cmp(balance) > 0 && diff.Cmp(minDiff) > 0 {
 		return nil, errors.Errorf("Cannot cap, too much of a difference: %s-%s=%s", f, balance, diff)
