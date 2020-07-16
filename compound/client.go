@@ -5,7 +5,7 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	//"github.com/pkg/errors"
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -17,8 +17,11 @@ import (
 const ()
 
 var (
-	CethContractAddress = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
-	CbatContractAddress = common.HexToAddress("0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e")
+	CethContractAddress       = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
+	compoundContractAddresses = map[string]common.Address{
+		"bat": common.HexToAddress("0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e"),
+		"zrx": common.HexToAddress("0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407"),
+	}
 
 	mintGasSpeed = gasstation.Fast
 	mintGasLimit = uint64(300000)
@@ -49,8 +52,12 @@ func NewEthClient(client *client.Client) (Client, error) {
 	return &cethClient{client, ceth}, nil
 }
 
-func NewBatClient(client *client.Client, tok *token2.Client) (Client, error) {
-	cerc20, err := NewCErc20(CbatContractAddress, client)
+func NewErc20Client(client *client.Client, tokName string, tok *token2.Client) (Client, error) {
+	address, ok := compoundContractAddresses[tokName]
+	if !ok {
+		return nil, errors.Errorf("Unsupported token: %s", tokName)
+	}
+	cerc20, err := NewCErc20(address, client)
 	if err != nil {
 		return nil, err
 	}

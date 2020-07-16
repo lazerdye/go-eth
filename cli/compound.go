@@ -28,12 +28,12 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 		if err != nil {
 			return false, err
 		}
-	case "bat":
+	case "bat", "zrx":
 		tok, err := reg.ByName(*clientCompoundToken)
 		if err != nil {
 			return false, err
 		}
-		compoundClient, err = compound.NewBatClient(client, tok)
+		compoundClient, err = compound.NewErc20Client(client, *clientCompoundToken, tok)
 		if err != nil {
 			return false, err
 		}
