@@ -18,8 +18,8 @@ import (
 )
 
 var (
-	approveGasLimit  = uint64(200000)
-	transferGasLimit = uint64(200000)
+	approveGasLimit  = uint64(300000)
+	transferGasLimit = uint64(300000)
 
 	minDiff, _ = decimal.NewFromString("1e-4")
 )
