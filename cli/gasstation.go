@@ -19,7 +19,7 @@ func gasstationCommand(ctx context.Context, client *gasstation.Client) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Gas: %f\n", gas)
+	fmt.Printf("Gas: %s\n", gas)
 	fmt.Printf("Speed: %fm\n", speed)
 
 	return nil
