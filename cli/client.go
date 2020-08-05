@@ -39,6 +39,8 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 	switch commands[0] {
 	case "token2":
 		return token2Commands(ctx, client, commands[1:])
+	case "augur":
+		return augurCommands(ctx, client, commands[1:])
 	}
 	return false, nil
 }

@@ -47,6 +47,9 @@ compound/ceth.go: compound/cETH.abi
 compound/cerc20.go: compound/cERC20.abi
 	abigen --abi=compound/cERC20.abi --pkg=compound --type=CErc20 --out=compound/cerc20.go
 
+augur/repv2.go: augur/repv2.abi
+	abigen --abi=augur/repv2.abi --pkg=augur --type=Repv2 --out=augur/repv2.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
