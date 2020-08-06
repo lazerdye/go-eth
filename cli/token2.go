@@ -25,6 +25,10 @@ var (
 	clientToken2ApproveToken      = clientToken2ApproveCommand.Arg("token", "Token for allowance").Required().String()
 	clientToken2ApproveContract   = clientToken2ApproveCommand.Arg("contract", "Contract to approve").Required().String()
 	clientToken2ApproveAmount     = clientToken2ApproveCommand.Arg("amount", "Amount to approve").Required().Float64()
+	clientToken2Transfer          = clientToken2Command.Command("transfer", "Transfer token to address")
+	clientToken2TransferToken     = clientToken2Transfer.Arg("token", "Token to transfer").String()
+	clientToken2TransferAddress   = clientToken2Transfer.Arg("address", "Address to transfer to").String()
+	clientToken2TransferAmount    = clientToken2Transfer.Arg("amount", "Amount to transfer").String()
 )
 
 func newTokenRegistry(ctx context.Context, ethClient *client.Client) (*token2.Registry, error) {
@@ -82,6 +86,33 @@ func doTokenApprove(ctx context.Context, reg *token2.Registry) error {
 	return nil
 }
 
+func doTokenTransfer(ctx context.Context, reg *token2.Registry) error {
+	token, err := reg.ByName(*clientToken2TransferToken)
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet locked")
+	}
+	address := common.HexToAddress(*clientToken2TransferAddress)
+	amount, err := decimal.NewFromString(*clientToken2TransferAmount)
+	if err != nil {
+		return err
+	}
+
+	transaction, err := token.Transfer(ctx, account, address, amount)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Transaction: %s\n", transaction.Hash().Hex())
+	return nil
+}
+
 func token2Commands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
 	reg, err := newTokenRegistry(ctx, client)
 	if err != nil {
@@ -92,6 +123,8 @@ func token2Commands(ctx context.Context, client *client.Client, commands []strin
 		return true, doTokenBalanceOf(ctx, reg)
 	case "allowance":
 		return true, doTokenAllowance(ctx, reg)
+	case "transfer":
+		return true, doTokenTransfer(ctx, reg)
 	case "approve":
 		return true, doTokenApprove(ctx, reg)
 	case "uniswapv2":
