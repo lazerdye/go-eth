@@ -56,6 +56,9 @@ bancor/contract_registry.go: bancor/contract_registry.abi
 bancor/converter_registry.go: bancor/converter_registry.abi
 	abigen --abi=bancor/converter_registry.abi --pkg=bancor --type=ConverterRegistry --out=bancor/converter_registry.go
 
+bancor/network.go: bancor/network.abi
+	abigen --abi=bancor/network.abi --pkg=bancor --type=Network --out=bancor/network.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
