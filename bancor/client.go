@@ -2,6 +2,7 @@ package bancor
 
 import (
 	"context"
+	"math/big"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -11,6 +12,7 @@ import (
 
 var (
 	ContractRegistryContract = common.HexToAddress("0x52Ae12ABe5D8BD778BD5397F99cA900624CfADD4")
+	EthAddress               = common.HexToAddress("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE")
 )
 
 type Client struct {
@@ -58,4 +60,8 @@ func (c *Client) GetConvertibleTokens(ctx context.Context) ([]common.Address, er
 
 func (c *Client) GetConversionPath(ctx context.Context, sourceToken, targetToken common.Address) ([]common.Address, error) {
 	return c.networkInstance.ConversionPath(c.DefaultCallOpts(ctx), sourceToken, targetToken)
+}
+
+func (c *Client) RateByPath(ctx context.Context, path []common.Address, amount *big.Int) (*big.Int, error) {
+	return c.networkInstance.RateByPath(c.DefaultCallOpts(ctx), path, amount)
 }
