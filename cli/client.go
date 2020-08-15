@@ -41,6 +41,8 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return token2Commands(ctx, client, commands[1:])
 	case "augur":
 		return augurCommands(ctx, client, commands[1:])
+	case "bancor":
+		return bancorCommands(ctx, client, commands[1:])
 	}
 	return false, nil
 }

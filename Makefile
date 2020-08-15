@@ -50,6 +50,12 @@ compound/cerc20.go: compound/cERC20.abi
 augur/repv2.go: augur/repv2.abi
 	abigen --abi=augur/repv2.abi --pkg=augur --type=Repv2 --out=augur/repv2.go
 
+bancor/contract_registry.go: bancor/contract_registry.abi
+	abigen --abi=bancor/contract_registry.abi --pkg=bancor --type=ContractRegistry --out=bancor/contract_registry.go
+
+bancor/converter_registry.go: bancor/converter_registry.abi
+	abigen --abi=bancor/converter_registry.abi --pkg=bancor --type=ConverterRegistry --out=bancor/converter_registry.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
