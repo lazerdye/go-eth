@@ -6,8 +6,10 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/token2"
 )
 
 var (
@@ -52,6 +54,28 @@ func NewClient(ctx context.Context, client *client.Client) (*Client, error) {
 		return nil, err
 	}
 	return &Client{client, contractRegistryInstance, converterRegistryInstance, networkInstance}, nil
+}
+
+func (c *Client) ToWei(reg *token2.Registry, address common.Address, amount decimal.Decimal) (*big.Int, error) {
+	if address == EthAddress {
+		return client.EthToWei(amount), nil
+	}
+	_, tokClient, err := reg.ByAddress(address)
+	if err != nil {
+		return nil, err
+	}
+	return tokClient.ToWei(amount), nil
+}
+
+func (c *Client) FromWei(reg *token2.Registry, address common.Address, amount *big.Int) (decimal.Decimal, error) {
+	if address == EthAddress {
+		return client.EthFromWei(amount), nil
+	}
+	_, tokClient, err := reg.ByAddress(address)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	return tokClient.FromWei(amount), nil
 }
 
 func (c *Client) GetConvertibleTokens(ctx context.Context) ([]common.Address, error) {

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"math/big"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -67,28 +66,6 @@ func getName(reg *token2.Registry, address common.Address) (string, error) {
 	return tokName, nil
 }
 
-func toWei(reg *token2.Registry, address common.Address, amount decimal.Decimal) (*big.Int, error) {
-	if address == bancor.EthAddress {
-		return client.EthToWei(amount), nil
-	}
-	_, tokClient, err := reg.ByAddress(address)
-	if err != nil {
-		return nil, err
-	}
-	return tokClient.ToWei(amount), nil
-}
-
-func fromWei(reg *token2.Registry, address common.Address, amount *big.Int) (decimal.Decimal, error) {
-	if address == bancor.EthAddress {
-		return client.EthFromWei(amount), nil
-	}
-	_, tokClient, err := reg.ByAddress(address)
-	if err != nil {
-		return decimal.Zero, err
-	}
-	return tokClient.FromWei(amount), nil
-}
-
 func doGetConversionPath(ctx context.Context, reg *token2.Registry, b *bancor.Client) error {
 	sourceAddress, err := getAddress(reg, *clientBancorGetConversionPathSourceToken)
 	if err != nil {
@@ -135,7 +112,7 @@ func doRatePath(ctx context.Context, reg *token2.Registry, b *bancor.Client) err
 	if err != nil {
 		return err
 	}
-	amountWei, err := toWei(reg, sourceAddress, amount)
+	amountWei, err := b.ToWei(reg, sourceAddress, amount)
 	if err != nil {
 		return err
 	}
@@ -143,7 +120,7 @@ func doRatePath(ctx context.Context, reg *token2.Registry, b *bancor.Client) err
 	if err != nil {
 		return err
 	}
-	targetAmount, err := fromWei(reg, targetAddress, targetAmountWei)
+	targetAmount, err := b.FromWei(reg, targetAddress, targetAmountWei)
 	if err != nil {
 		return err
 	}
