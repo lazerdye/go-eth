@@ -41,6 +41,9 @@ uniswapv2/pair.go: uniswapv2/pair.abi
 uniswapv2/router02.go: uniswapv2/router02.abi
 	abigen --abi=uniswapv2/router02.abi --pkg=uniswapv2 --type=Router02 --out=uniswapv2/router02.go
 
+uniswapv2/token_distributor.go: uniswapv2/token_distributor.abi
+	abigen --abi=uniswapv2/token_distributor.abi --pkg=uniswapv2 --type=TokenDistributor --out=uniswapv2/token_distributor.go
+
 compound/ceth.go: compound/cETH.abi
 	abigen --abi=compound/cETH.abi --pkg=compound --type=Ceth --out=compound/ceth.go
 

@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"strings"
 
-	//"github.com/pkg/errors"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
@@ -30,6 +32,10 @@ var (
 	clientUniswapv2GetReserves        = clientUniswapv2Command.Command("get-reserves", "Get reserves")
 	clientUniswapv2GetReservesToken0  = clientUniswapv2GetReserves.Arg("token0", "Token 0").String()
 	clientUniswapv2GetReservesToken1  = clientUniswapv2GetReserves.Arg("token1", "Token 1").String()
+	clientUniswapv2Claim              = clientUniswapv2Command.Command("claim-token", "Claim UNI token")
+	clientUniswapv2ClaimIndex         = clientUniswapv2Claim.Arg("index", "Token claim index").Int64()
+	clientUniswapv2ClaimAmount        = clientUniswapv2Claim.Arg("amount", "Token claim amount").String()
+	clientUniswapv2ClaimMerkleProof   = clientUniswapv2Claim.Arg("merkle-proof", "Token claim merkle proof - comma separated hex").String()
 )
 
 func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -48,6 +54,8 @@ func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.R
 		return true, uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
 	case "get-reserves":
 		return true, uniswapV2GetReserves(ctx, reg, uniswapv2Client)
+	case "claim-token":
+		return true, uniswapV2Claim(ctx, reg, uniswapv2Client)
 	}
 	return false, nil
 }
@@ -152,5 +160,34 @@ func uniswapV2GetReserves(ctx context.Context, registry *token2.Registry, client
 		return err
 	}
 	fmt.Printf("Reserves: %s\n", reserves)
+	return nil
+}
+
+func uniswapV2Claim(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	uniToken, err := registry.ByName("uni")
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet locked")
+	}
+	proofs := strings.Split(*clientUniswapv2ClaimMerkleProof, ",")
+	proofsByte := make([][32]byte, len(proofs))
+	for i, proof := range proofs {
+		proofsByte[i] = common.HexToHash(proof)
+	}
+	amount, err := decimal.NewFromString(*clientUniswapv2ClaimAmount)
+	if err != nil {
+		return err
+	}
+	tx, err := client.ClaimToken(ctx, account, uniToken, *clientUniswapv2ClaimIndex, amount, proofsByte)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Result: %s\n", tx.Hash().String())
 	return nil
 }

@@ -17,20 +17,24 @@ import (
 )
 
 var (
-	UniswapV2FactoryContract  = common.HexToAddress("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
-	UniswapV2Router02Contract = common.HexToAddress("0x7a250d5630b4cf539739df2c5dacb4c659f2488d")
+	UniswapV2FactoryContract          = common.HexToAddress("0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f")
+	UniswapV2Router02Contract         = common.HexToAddress("0x7a250d5630b4cf539739df2c5dacb4c659f2488d")
+	UniswapV2TokenDistributorContract = common.HexToAddress("0x090D4613473dEE047c3f2706764f49E0821D256e")
 
-	buyGasSpeed  = gasstation.Fastest
-	sellGasSpeed = gasstation.Fastest
+	buyGasSpeed   = gasstation.Fastest
+	sellGasSpeed  = gasstation.Fastest
+	claimGasSpeed = gasstation.Fastest
 
-	swapGasLimit = uint64(700000)
+	claimGasLimit = uint64(700000)
+	swapGasLimit  = uint64(700000)
 )
 
 type Client struct {
 	*client.Client
 
-	factory *Factory
-	router  *Router02
+	factory     *Factory
+	router      *Router02
+	distributor *TokenDistributor
 }
 
 func NewClient(client *client.Client) (*Client, error) {
@@ -42,7 +46,11 @@ func NewClient(client *client.Client) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, factoryInstance, routerInstance}, nil
+	distributor, err := NewTokenDistributor(UniswapV2TokenDistributorContract, client)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{client, factoryInstance, routerInstance, distributor}, nil
 }
 
 type PairClient struct {
@@ -190,6 +198,22 @@ func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Acco
 	}
 	amountOutBig := tokenPath[0].ToWei(amountOut)
 	t, err := c.router.SwapETHForExactTokens(opts, amountOutBig, path, to, big.NewInt(deadline))
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+func (c *Client) ClaimToken(ctx context.Context, account *wallet.Account, uniToken *token2.Client, index int64, amount decimal.Decimal, merkleProof [][32]byte) (*types.Transaction, error) {
+	gasPrice, _, err := c.GasPrice(ctx, buyGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, claimGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	t, err := c.distributor.Claim(opts, big.NewInt(index), account.Address(), uniToken.ToWei(amount), merkleProof)
 	if err != nil {
 		return nil, err
 	}
