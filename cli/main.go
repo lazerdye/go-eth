@@ -319,6 +319,14 @@ func main() {
 		if err := uniswapGetTokenToEthOutputPrice(context.Background(), uClient); err != nil {
 			log.Fatal(err)
 		}
+	case "client uniswapv1 graph":
+		uClient, err := newUniswapV1Client()
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := uniswapGraph(context.Background(), uClient); err != nil {
+			log.Fatal(err)
+		}
 	case "gasstation":
 		client := gasstation.NewClient()
 		if err := gasstationCommand(context.Background(), client); err != nil {

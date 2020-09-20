@@ -22,6 +22,7 @@ var (
 	clientUniswap1GetTokenToEthInputPriceEthBought     = clientUniswap1GetTokenToEthInputPrice.Arg("eth-bought", "Ethereum bought").Required().Float64()
 	clientUniswap1GetTokenToEthOutputPrice             = clientUniswap1Command.Command("token-to-eth-output", "Get token to eth output price")
 	clientUniswap1GetTokenToEthOutputPriceTokensSold   = clientUniswap1GetTokenToEthOutputPrice.Arg("tokens-sold", "Tokens sold").Required().Float64()
+	clientUniswap1Graph                                = clientUniswap1Command.Command("graph", "Query the graph")
 )
 
 func getExchange(ctx context.Context, client *uniswapv1.Client) (*uniswapv1.ExchangeClient, error) {
@@ -112,6 +113,21 @@ func uniswapGetTokenToEthOutputPrice(ctx context.Context, client *uniswapv1.Clie
 	}
 
 	fmt.Printf("Token sold: %s\n", ethBought)
+
+	return nil
+}
+
+func uniswapGraph(ctx context.Context, client *uniswapv1.Client) error {
+	graph := uniswapv1.NewGraph()
+
+	exchanges, err := graph.ExchangesByVolume(ctx)
+	if err != nil {
+		return err
+	}
+
+	for _, exchange := range exchanges {
+		fmt.Printf("Token %s (%s): %s\n", exchange.TokenName, exchange.TokenSymbol, exchange.TradeVolumeEth)
+	}
 
 	return nil
 }
