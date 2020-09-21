@@ -4,6 +4,7 @@ import (
 	"context"
 	"io/ioutil"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -14,6 +15,7 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/util"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -140,6 +142,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 }
 
 type Registry struct {
+	http   util.HttpClient
 	tokens map[string]*Client
 }
 
@@ -164,6 +167,58 @@ func RegistryFromFile(etherClient *client.Client, filename string) (*Registry, e
 		}
 	}
 	return registry, nil
+}
+
+type TokenList struct {
+	Name      string `json:"name"`
+	Timestamp string `json:"timestamp"`
+	Version   struct {
+		Major int `json:"major"`
+		Minor int `json:"minor"`
+		Patch int `json:"patch"`
+	} `json:"version"`
+	Tags     interface{} `json:"tags"` // TODO: Define
+	LogoURI  string      `json:"logoURI"`
+	Keywords []string    `json:"keywords"`
+	Tokens   []struct {
+		Name     string `json:"name"`
+		Address  string `json:"address"`
+		Symbol   string `json:"symbol"`
+		Decimals uint8  `json:"decimals"`
+		ChainID  int    `json:"chainID"`
+		LogoURI  string `json:"logoURI"`
+	} `json:"tokens"`
+}
+
+func (r *Registry) ImportTokenList(ctx context.Context, etherClient *client.Client, url string, chainID int) error {
+	var tokenList TokenList
+	err := r.http.Get(ctx, url, nil, &tokenList)
+	if err != nil {
+		return err
+	}
+	for _, token := range tokenList.Tokens {
+		if token.ChainID != chainID {
+			continue
+		}
+		name := strings.ToLower(token.Symbol)
+		addressHex := common.HexToAddress(token.Address)
+		log.Infof("%s (%s)\n", name, addressHex.String())
+		if client, ok := r.tokens[name]; ok {
+			if client.Address != addressHex {
+				log.Warnf("Token %s (%s) conflicts with pre-registered address %s", name, addressHex.String(), client.Address.String())
+			}
+			continue
+		}
+		client, err := NewClient(etherClient, addressHex, token.Decimals)
+		if err != nil {
+			return err
+		}
+		if err := r.Register(name, client); err != nil {
+			return err
+		}
+
+	}
+	return nil
 }
 
 func (r *Registry) Register(name string, client *Client) error {
