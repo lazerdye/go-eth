@@ -2,9 +2,12 @@ package etherscan
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 	"net/url"
 	"strconv"
+	"sync"
+	"time"
 
 	"github.com/pkg/errors"
 
@@ -14,6 +17,29 @@ import (
 const (
 	etherscanApi = "https://api.etherscan.io/api"
 )
+
+var (
+	lastReq *time.Time
+	limitMu sync.Mutex
+)
+
+func checkRate() {
+	limitMu.Lock()
+	defer limitMu.Unlock()
+
+	now := time.Now()
+	if lastReq != nil {
+		waitTime := 200 * time.Millisecond
+		nextReq := lastReq.Add(waitTime)
+		fmt.Printf("%s - %s\n", nextReq, now)
+		if now.Before(nextReq) {
+			sleepTime := nextReq.Sub(now)
+			fmt.Printf("Wait %s\n", sleepTime)
+			time.Sleep(sleepTime)
+		}
+	}
+	lastReq = &now
+}
 
 type Client struct {
 	apikey string
@@ -53,6 +79,8 @@ type transactionResult struct {
 }
 
 func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int, sort string) ([]Transaction, error) {
+	checkRate()
+
 	var transactionResult transactionResult
 
 	params := url.Values{}
@@ -78,6 +106,8 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 }
 
 func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, page, offset int, sort string) ([]Transaction, error) {
+	checkRate()
+
 	var transactionResult transactionResult
 
 	params := url.Values{}
@@ -115,6 +145,7 @@ type contractExecutionResult struct {
 }
 
 func (c *Client) ContractExecutionStatus(ctx context.Context, transaction string) (bool, string, error) {
+	checkRate()
 	var contractExecutionResult contractExecutionResult
 
 	params := url.Values{}
