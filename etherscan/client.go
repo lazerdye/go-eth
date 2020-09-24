@@ -2,7 +2,6 @@ package etherscan
 
 import (
 	"context"
-	"fmt"
 	"math/big"
 	"net/url"
 	"strconv"
