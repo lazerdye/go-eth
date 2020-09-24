@@ -10,12 +10,14 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/util"
 )
 
 const (
-	etherscanApi = "https://api.etherscan.io/api"
+	etherscanApi      = "https://api.etherscan.io/api"
+	etherscanWaitTime = 500 * time.Millisecond
 )
 
 var (
@@ -29,12 +31,10 @@ func checkRate() {
 
 	now := time.Now()
 	if lastReq != nil {
-		waitTime := 200 * time.Millisecond
-		nextReq := lastReq.Add(waitTime)
-		fmt.Printf("%s - %s\n", nextReq, now)
+		nextReq := lastReq.Add(etherscanWaitTime)
 		if now.Before(nextReq) {
 			sleepTime := nextReq.Sub(now)
-			fmt.Printf("Wait %s\n", sleepTime)
+			log.Infof("Etherscan wait %s", sleepTime)
 			time.Sleep(sleepTime)
 		}
 	}
