@@ -33,6 +33,7 @@ var (
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
+	statusCmd        = clientCmd.Command("status", "Get status")
 	balanceCmd       = clientCmd.Command("balance", "Get the balance of an account")
 	transferCmd      = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit = transferCmd.Flag("transmit", "Transmit transaction").Bool()
@@ -70,6 +71,19 @@ func doAccountNew(keystore string, passphrase string) error {
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func doClientStatus(ctx context.Context, server string) error {
+	c, err := client.Dial(server, gasstation.NewClient())
+	if err != nil {
+		return err
+	}
+	stat, err := c.SyncProgress(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%+v\n", stat)
 	return nil
 }
 
@@ -220,6 +234,10 @@ func main() {
 			log.Fatal("Passphrase required")
 		}
 		fmt.Printf("Unlocked %s\n", *address)
+	case "client status":
+		if err := doClientStatus(ctx, *clientServer); err != nil {
+			log.Fatal(err)
+		}
 	case "client balance":
 		if *address == "" {
 			log.Fatal("Parameter --address required")
