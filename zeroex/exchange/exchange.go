@@ -196,7 +196,7 @@ func bindExchange(address common.Address, caller bind.ContractCaller, transactor
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Exchange *ExchangeRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Exchange *ExchangeRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Exchange.Contract.ExchangeCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -215,7 +215,7 @@ func (_Exchange *ExchangeRaw) Transact(opts *bind.TransactOpts, method string, p
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Exchange *ExchangeCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Exchange *ExchangeCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Exchange.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -234,12 +234,17 @@ func (_Exchange *ExchangeTransactorRaw) Transact(opts *bind.TransactOpts, method
 //
 // Solidity: function EIP1271_MAGIC_VALUE() view returns(bytes4)
 func (_Exchange *ExchangeCaller) EIP1271MAGICVALUE(opts *bind.CallOpts) ([4]byte, error) {
-	var (
-		ret0 = new([4]byte)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "EIP1271_MAGIC_VALUE")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "EIP1271_MAGIC_VALUE")
+
+	if err != nil {
+		return *new([4]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([4]byte)).(*[4]byte)
+
+	return out0, err
+
 }
 
 // EIP1271MAGICVALUE is a free data retrieval call binding the contract method 0xdd885e2d.
@@ -260,12 +265,17 @@ func (_Exchange *ExchangeCallerSession) EIP1271MAGICVALUE() ([4]byte, error) {
 //
 // Solidity: function EIP712_EXCHANGE_DOMAIN_HASH() view returns(bytes32)
 func (_Exchange *ExchangeCaller) EIP712EXCHANGEDOMAINHASH(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "EIP712_EXCHANGE_DOMAIN_HASH")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "EIP712_EXCHANGE_DOMAIN_HASH")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // EIP712EXCHANGEDOMAINHASH is a free data retrieval call binding the contract method 0xc26cfecd.
@@ -286,12 +296,17 @@ func (_Exchange *ExchangeCallerSession) EIP712EXCHANGEDOMAINHASH() ([32]byte, er
 //
 // Solidity: function allowedValidators(address , address ) view returns(bool)
 func (_Exchange *ExchangeCaller) AllowedValidators(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "allowedValidators", arg0, arg1)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "allowedValidators", arg0, arg1)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // AllowedValidators is a free data retrieval call binding the contract method 0x7b8e3514.
@@ -312,12 +327,17 @@ func (_Exchange *ExchangeCallerSession) AllowedValidators(arg0 common.Address, a
 //
 // Solidity: function cancelled(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCaller) Cancelled(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "cancelled", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "cancelled", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // Cancelled is a free data retrieval call binding the contract method 0x2ac12622.
@@ -338,12 +358,17 @@ func (_Exchange *ExchangeCallerSession) Cancelled(arg0 [32]byte) (bool, error) {
 //
 // Solidity: function currentContextAddress() view returns(address)
 func (_Exchange *ExchangeCaller) CurrentContextAddress(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "currentContextAddress")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "currentContextAddress")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // CurrentContextAddress is a free data retrieval call binding the contract method 0xeea086ba.
@@ -364,12 +389,17 @@ func (_Exchange *ExchangeCallerSession) CurrentContextAddress() (common.Address,
 //
 // Solidity: function filled(bytes32 ) view returns(uint256)
 func (_Exchange *ExchangeCaller) Filled(opts *bind.CallOpts, arg0 [32]byte) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "filled", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "filled", arg0)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Filled is a free data retrieval call binding the contract method 0x288cdc91.
@@ -390,12 +420,17 @@ func (_Exchange *ExchangeCallerSession) Filled(arg0 [32]byte) (*big.Int, error) 
 //
 // Solidity: function getAssetProxy(bytes4 assetProxyId) view returns(address)
 func (_Exchange *ExchangeCaller) GetAssetProxy(opts *bind.CallOpts, assetProxyId [4]byte) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "getAssetProxy", assetProxyId)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "getAssetProxy", assetProxyId)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetAssetProxy is a free data retrieval call binding the contract method 0x60704108.
@@ -416,12 +451,17 @@ func (_Exchange *ExchangeCallerSession) GetAssetProxy(assetProxyId [4]byte) (com
 //
 // Solidity: function getOrderInfo((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order) view returns((uint8,bytes32,uint256) orderInfo)
 func (_Exchange *ExchangeCaller) GetOrderInfo(opts *bind.CallOpts, order LibOrderOrder) (LibOrderOrderInfo, error) {
-	var (
-		ret0 = new(LibOrderOrderInfo)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "getOrderInfo", order)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "getOrderInfo", order)
+
+	if err != nil {
+		return *new(LibOrderOrderInfo), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(LibOrderOrderInfo)).(*LibOrderOrderInfo)
+
+	return out0, err
+
 }
 
 // GetOrderInfo is a free data retrieval call binding the contract method 0x9d3fa4b9.
@@ -442,12 +482,17 @@ func (_Exchange *ExchangeCallerSession) GetOrderInfo(order LibOrderOrder) (LibOr
 //
 // Solidity: function isValidHashSignature(bytes32 hash, address signerAddress, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidHashSignature(opts *bind.CallOpts, hash [32]byte, signerAddress common.Address, signature []byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "isValidHashSignature", hash, signerAddress, signature)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "isValidHashSignature", hash, signerAddress, signature)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsValidHashSignature is a free data retrieval call binding the contract method 0x8171c407.
@@ -468,12 +513,17 @@ func (_Exchange *ExchangeCallerSession) IsValidHashSignature(hash [32]byte, sign
 //
 // Solidity: function isValidOrderSignature((address,address,address,address,uint256,uint256,uint256,uint256,uint256,uint256,bytes,bytes,bytes,bytes) order, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidOrderSignature(opts *bind.CallOpts, order LibOrderOrder, signature []byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "isValidOrderSignature", order, signature)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "isValidOrderSignature", order, signature)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsValidOrderSignature is a free data retrieval call binding the contract method 0xa12dcc6f.
@@ -494,12 +544,17 @@ func (_Exchange *ExchangeCallerSession) IsValidOrderSignature(order LibOrderOrde
 //
 // Solidity: function isValidTransactionSignature((uint256,uint256,uint256,address,bytes) transaction, bytes signature) view returns(bool isValid)
 func (_Exchange *ExchangeCaller) IsValidTransactionSignature(opts *bind.CallOpts, transaction LibZeroExTransactionZeroExTransaction, signature []byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "isValidTransactionSignature", transaction, signature)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "isValidTransactionSignature", transaction, signature)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsValidTransactionSignature is a free data retrieval call binding the contract method 0x8d45cd23.
@@ -520,12 +575,17 @@ func (_Exchange *ExchangeCallerSession) IsValidTransactionSignature(transaction 
 //
 // Solidity: function orderEpoch(address , address ) view returns(uint256)
 func (_Exchange *ExchangeCaller) OrderEpoch(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "orderEpoch", arg0, arg1)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "orderEpoch", arg0, arg1)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // OrderEpoch is a free data retrieval call binding the contract method 0xd9bfa73e.
@@ -546,12 +606,17 @@ func (_Exchange *ExchangeCallerSession) OrderEpoch(arg0 common.Address, arg1 com
 //
 // Solidity: function owner() view returns(address)
 func (_Exchange *ExchangeCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -572,12 +637,17 @@ func (_Exchange *ExchangeCallerSession) Owner() (common.Address, error) {
 //
 // Solidity: function preSigned(bytes32 , address ) view returns(bool)
 func (_Exchange *ExchangeCaller) PreSigned(opts *bind.CallOpts, arg0 [32]byte, arg1 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "preSigned", arg0, arg1)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "preSigned", arg0, arg1)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // PreSigned is a free data retrieval call binding the contract method 0x82c174d0.
@@ -598,12 +668,17 @@ func (_Exchange *ExchangeCallerSession) PreSigned(arg0 [32]byte, arg1 common.Add
 //
 // Solidity: function protocolFeeCollector() view returns(address)
 func (_Exchange *ExchangeCaller) ProtocolFeeCollector(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "protocolFeeCollector")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "protocolFeeCollector")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ProtocolFeeCollector is a free data retrieval call binding the contract method 0x850a1501.
@@ -624,12 +699,17 @@ func (_Exchange *ExchangeCallerSession) ProtocolFeeCollector() (common.Address, 
 //
 // Solidity: function protocolFeeMultiplier() view returns(uint256)
 func (_Exchange *ExchangeCaller) ProtocolFeeMultiplier(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "protocolFeeMultiplier")
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "protocolFeeMultiplier")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // ProtocolFeeMultiplier is a free data retrieval call binding the contract method 0x1ce4c78b.
@@ -650,12 +730,17 @@ func (_Exchange *ExchangeCallerSession) ProtocolFeeMultiplier() (*big.Int, error
 //
 // Solidity: function transactionsExecuted(bytes32 ) view returns(bool)
 func (_Exchange *ExchangeCaller) TransactionsExecuted(opts *bind.CallOpts, arg0 [32]byte) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Exchange.contract.Call(opts, out, "transactionsExecuted", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Exchange.contract.Call(opts, &out, "transactionsExecuted", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // TransactionsExecuted is a free data retrieval call binding the contract method 0x0228e168.

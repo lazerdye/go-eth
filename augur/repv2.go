@@ -137,7 +137,7 @@ func bindRepv2(address common.Address, caller bind.ContractCaller, transactor bi
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Repv2 *Repv2Raw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Repv2 *Repv2Raw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Repv2.Contract.Repv2Caller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_Repv2 *Repv2Raw) Transact(opts *bind.TransactOpts, method string, params 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Repv2 *Repv2CallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Repv2 *Repv2CallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Repv2.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_Repv2 *Repv2TransactorRaw) Transact(opts *bind.TransactOpts, method strin
 //
 // Solidity: function allowance(address _owner, address _spender) view returns(uint256)
 func (_Repv2 *Repv2Caller) Allowance(opts *bind.CallOpts, _owner common.Address, _spender common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "allowance", _owner, _spender)
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "allowance", _owner, _spender)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
@@ -201,12 +206,17 @@ func (_Repv2 *Repv2CallerSession) Allowance(_owner common.Address, _spender comm
 //
 // Solidity: function allowances(address , address ) view returns(uint256)
 func (_Repv2 *Repv2Caller) Allowances(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "allowances", arg0, arg1)
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "allowances", arg0, arg1)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Allowances is a free data retrieval call binding the contract method 0x55b6ed5c.
@@ -227,12 +237,17 @@ func (_Repv2 *Repv2CallerSession) Allowances(arg0 common.Address, arg1 common.Ad
 //
 // Solidity: function augur() view returns(address)
 func (_Repv2 *Repv2Caller) Augur(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "augur")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "augur")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Augur is a free data retrieval call binding the contract method 0x7a0d8f8a.
@@ -253,12 +268,17 @@ func (_Repv2 *Repv2CallerSession) Augur() (common.Address, error) {
 //
 // Solidity: function balanceOf(address _account) view returns(uint256)
 func (_Repv2 *Repv2Caller) BalanceOf(opts *bind.CallOpts, _account common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "balanceOf", _account)
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "balanceOf", _account)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
@@ -279,12 +299,17 @@ func (_Repv2 *Repv2CallerSession) BalanceOf(_account common.Address) (*big.Int, 
 //
 // Solidity: function balances(address ) view returns(uint256)
 func (_Repv2 *Repv2Caller) Balances(opts *bind.CallOpts, arg0 common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "balances", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "balances", arg0)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Balances is a free data retrieval call binding the contract method 0x27e235e3.
@@ -305,12 +330,17 @@ func (_Repv2 *Repv2CallerSession) Balances(arg0 common.Address) (*big.Int, error
 //
 // Solidity: function decimals() view returns(uint8)
 func (_Repv2 *Repv2Caller) Decimals(opts *bind.CallOpts) (uint8, error) {
-	var (
-		ret0 = new(uint8)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "decimals")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "decimals")
+
+	if err != nil {
+		return *new(uint8), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(uint8)).(*uint8)
+
+	return out0, err
+
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
@@ -331,12 +361,17 @@ func (_Repv2 *Repv2CallerSession) Decimals() (uint8, error) {
 //
 // Solidity: function getLegacyRepToken() view returns(address)
 func (_Repv2 *Repv2Caller) GetLegacyRepToken(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "getLegacyRepToken")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "getLegacyRepToken")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetLegacyRepToken is a free data retrieval call binding the contract method 0x77469275.
@@ -357,12 +392,17 @@ func (_Repv2 *Repv2CallerSession) GetLegacyRepToken() (common.Address, error) {
 //
 // Solidity: function getTotalMigrated() view returns(uint256)
 func (_Repv2 *Repv2Caller) GetTotalMigrated(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "getTotalMigrated")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "getTotalMigrated")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetTotalMigrated is a free data retrieval call binding the contract method 0x91d76bbb.
@@ -383,12 +423,17 @@ func (_Repv2 *Repv2CallerSession) GetTotalMigrated() (*big.Int, error) {
 //
 // Solidity: function getTotalTheoreticalSupply() view returns(uint256)
 func (_Repv2 *Repv2Caller) GetTotalTheoreticalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "getTotalTheoreticalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "getTotalTheoreticalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetTotalTheoreticalSupply is a free data retrieval call binding the contract method 0x238d3590.
@@ -409,12 +454,17 @@ func (_Repv2 *Repv2CallerSession) GetTotalTheoreticalSupply() (*big.Int, error) 
 //
 // Solidity: function getUniverse() view returns(address)
 func (_Repv2 *Repv2Caller) GetUniverse(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "getUniverse")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "getUniverse")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetUniverse is a free data retrieval call binding the contract method 0x870c426d.
@@ -435,12 +485,17 @@ func (_Repv2 *Repv2CallerSession) GetUniverse() (common.Address, error) {
 //
 // Solidity: function legacyRepToken() view returns(address)
 func (_Repv2 *Repv2Caller) LegacyRepToken(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "legacyRepToken")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "legacyRepToken")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // LegacyRepToken is a free data retrieval call binding the contract method 0xd5466777.
@@ -461,12 +516,17 @@ func (_Repv2 *Repv2CallerSession) LegacyRepToken() (common.Address, error) {
 //
 // Solidity: function name() view returns(string)
 func (_Repv2 *Repv2Caller) Name(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "name")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "name")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
@@ -487,12 +547,17 @@ func (_Repv2 *Repv2CallerSession) Name() (string, error) {
 //
 // Solidity: function parentUniverse() view returns(address)
 func (_Repv2 *Repv2Caller) ParentUniverse(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "parentUniverse")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "parentUniverse")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ParentUniverse is a free data retrieval call binding the contract method 0x183636c5.
@@ -513,12 +578,17 @@ func (_Repv2 *Repv2CallerSession) ParentUniverse() (common.Address, error) {
 //
 // Solidity: function symbol() view returns(string)
 func (_Repv2 *Repv2Caller) Symbol(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "symbol")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "symbol")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
@@ -539,12 +609,17 @@ func (_Repv2 *Repv2CallerSession) Symbol() (string, error) {
 //
 // Solidity: function totalSupply() view returns(uint256)
 func (_Repv2 *Repv2Caller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "totalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "totalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
@@ -565,12 +640,17 @@ func (_Repv2 *Repv2CallerSession) TotalSupply() (*big.Int, error) {
 //
 // Solidity: function warpSync() view returns(address)
 func (_Repv2 *Repv2Caller) WarpSync(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Repv2.contract.Call(opts, out, "warpSync")
-	return *ret0, err
+	var out []interface{}
+	err := _Repv2.contract.Call(opts, &out, "warpSync")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // WarpSync is a free data retrieval call binding the contract method 0x5bd5ea71.

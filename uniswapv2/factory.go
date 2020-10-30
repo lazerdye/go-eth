@@ -137,7 +137,7 @@ func bindFactory(address common.Address, caller bind.ContractCaller, transactor 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Factory *FactoryRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Factory *FactoryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Factory.Contract.FactoryCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_Factory *FactoryRaw) Transact(opts *bind.TransactOpts, method string, par
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Factory *FactoryCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Factory *FactoryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Factory.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_Factory *FactoryTransactorRaw) Transact(opts *bind.TransactOpts, method s
 //
 // Solidity: function allPairs(uint256 ) view returns(address)
 func (_Factory *FactoryCaller) AllPairs(opts *bind.CallOpts, arg0 *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "allPairs", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "allPairs", arg0)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // AllPairs is a free data retrieval call binding the contract method 0x1e3dd18b.
@@ -201,12 +206,17 @@ func (_Factory *FactoryCallerSession) AllPairs(arg0 *big.Int) (common.Address, e
 //
 // Solidity: function allPairsLength() view returns(uint256)
 func (_Factory *FactoryCaller) AllPairsLength(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "allPairsLength")
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "allPairsLength")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // AllPairsLength is a free data retrieval call binding the contract method 0x574f2ba3.
@@ -227,12 +237,17 @@ func (_Factory *FactoryCallerSession) AllPairsLength() (*big.Int, error) {
 //
 // Solidity: function feeTo() view returns(address)
 func (_Factory *FactoryCaller) FeeTo(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "feeTo")
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "feeTo")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // FeeTo is a free data retrieval call binding the contract method 0x017e7e58.
@@ -253,12 +268,17 @@ func (_Factory *FactoryCallerSession) FeeTo() (common.Address, error) {
 //
 // Solidity: function feeToSetter() view returns(address)
 func (_Factory *FactoryCaller) FeeToSetter(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "feeToSetter")
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "feeToSetter")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // FeeToSetter is a free data retrieval call binding the contract method 0x094b7415.
@@ -279,12 +299,17 @@ func (_Factory *FactoryCallerSession) FeeToSetter() (common.Address, error) {
 //
 // Solidity: function getPair(address , address ) view returns(address)
 func (_Factory *FactoryCaller) GetPair(opts *bind.CallOpts, arg0 common.Address, arg1 common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "getPair", arg0, arg1)
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "getPair", arg0, arg1)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetPair is a free data retrieval call binding the contract method 0xe6a43905.

@@ -137,7 +137,7 @@ func bindCErc20(address common.Address, caller bind.ContractCaller, transactor b
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_CErc20 *CErc20Raw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_CErc20 *CErc20Raw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _CErc20.Contract.CErc20Caller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_CErc20 *CErc20Raw) Transact(opts *bind.TransactOpts, method string, param
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_CErc20 *CErc20CallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_CErc20 *CErc20CallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _CErc20.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_CErc20 *CErc20TransactorRaw) Transact(opts *bind.TransactOpts, method str
 //
 // Solidity: function accrualBlockNumber() view returns(uint256)
 func (_CErc20 *CErc20Caller) AccrualBlockNumber(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "accrualBlockNumber")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "accrualBlockNumber")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // AccrualBlockNumber is a free data retrieval call binding the contract method 0x6c540baf.
@@ -201,12 +206,17 @@ func (_CErc20 *CErc20CallerSession) AccrualBlockNumber() (*big.Int, error) {
 //
 // Solidity: function admin() view returns(address)
 func (_CErc20 *CErc20Caller) Admin(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "admin")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "admin")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Admin is a free data retrieval call binding the contract method 0xf851a440.
@@ -227,12 +237,17 @@ func (_CErc20 *CErc20CallerSession) Admin() (common.Address, error) {
 //
 // Solidity: function allowance(address owner, address spender) view returns(uint256)
 func (_CErc20 *CErc20Caller) Allowance(opts *bind.CallOpts, owner common.Address, spender common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "allowance", owner, spender)
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "allowance", owner, spender)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Allowance is a free data retrieval call binding the contract method 0xdd62ed3e.
@@ -253,12 +268,17 @@ func (_CErc20 *CErc20CallerSession) Allowance(owner common.Address, spender comm
 //
 // Solidity: function balanceOf(address owner) view returns(uint256)
 func (_CErc20 *CErc20Caller) BalanceOf(opts *bind.CallOpts, owner common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "balanceOf", owner)
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "balanceOf", owner)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BalanceOf is a free data retrieval call binding the contract method 0x70a08231.
@@ -279,12 +299,17 @@ func (_CErc20 *CErc20CallerSession) BalanceOf(owner common.Address) (*big.Int, e
 //
 // Solidity: function borrowBalanceStored(address account) view returns(uint256)
 func (_CErc20 *CErc20Caller) BorrowBalanceStored(opts *bind.CallOpts, account common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "borrowBalanceStored", account)
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "borrowBalanceStored", account)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BorrowBalanceStored is a free data retrieval call binding the contract method 0x95dd9193.
@@ -305,12 +330,17 @@ func (_CErc20 *CErc20CallerSession) BorrowBalanceStored(account common.Address) 
 //
 // Solidity: function borrowIndex() view returns(uint256)
 func (_CErc20 *CErc20Caller) BorrowIndex(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "borrowIndex")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "borrowIndex")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BorrowIndex is a free data retrieval call binding the contract method 0xaa5af0fd.
@@ -331,12 +361,17 @@ func (_CErc20 *CErc20CallerSession) BorrowIndex() (*big.Int, error) {
 //
 // Solidity: function borrowRatePerBlock() view returns(uint256)
 func (_CErc20 *CErc20Caller) BorrowRatePerBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "borrowRatePerBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "borrowRatePerBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // BorrowRatePerBlock is a free data retrieval call binding the contract method 0xf8f9da28.
@@ -357,12 +392,17 @@ func (_CErc20 *CErc20CallerSession) BorrowRatePerBlock() (*big.Int, error) {
 //
 // Solidity: function comptroller() view returns(address)
 func (_CErc20 *CErc20Caller) Comptroller(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "comptroller")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "comptroller")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Comptroller is a free data retrieval call binding the contract method 0x5fe3b567.
@@ -383,12 +423,17 @@ func (_CErc20 *CErc20CallerSession) Comptroller() (common.Address, error) {
 //
 // Solidity: function decimals() view returns(uint256)
 func (_CErc20 *CErc20Caller) Decimals(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "decimals")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "decimals")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Decimals is a free data retrieval call binding the contract method 0x313ce567.
@@ -409,12 +454,17 @@ func (_CErc20 *CErc20CallerSession) Decimals() (*big.Int, error) {
 //
 // Solidity: function exchangeRateStored() view returns(uint256)
 func (_CErc20 *CErc20Caller) ExchangeRateStored(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "exchangeRateStored")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "exchangeRateStored")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // ExchangeRateStored is a free data retrieval call binding the contract method 0x182df0f5.
@@ -435,20 +485,20 @@ func (_CErc20 *CErc20CallerSession) ExchangeRateStored() (*big.Int, error) {
 //
 // Solidity: function getAccountSnapshot(address account) view returns(uint256, uint256, uint256, uint256)
 func (_CErc20 *CErc20Caller) GetAccountSnapshot(opts *bind.CallOpts, account common.Address) (*big.Int, *big.Int, *big.Int, *big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-		ret1 = new(*big.Int)
-		ret2 = new(*big.Int)
-		ret3 = new(*big.Int)
-	)
-	out := &[]interface{}{
-		ret0,
-		ret1,
-		ret2,
-		ret3,
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "getAccountSnapshot", account)
+
+	if err != nil {
+		return *new(*big.Int), *new(*big.Int), *new(*big.Int), *new(*big.Int), err
 	}
-	err := _CErc20.contract.Call(opts, out, "getAccountSnapshot", account)
-	return *ret0, *ret1, *ret2, *ret3, err
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	out1 := *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+	out2 := *abi.ConvertType(out[2], new(*big.Int)).(**big.Int)
+	out3 := *abi.ConvertType(out[3], new(*big.Int)).(**big.Int)
+
+	return out0, out1, out2, out3, err
+
 }
 
 // GetAccountSnapshot is a free data retrieval call binding the contract method 0xc37f68e2.
@@ -469,12 +519,17 @@ func (_CErc20 *CErc20CallerSession) GetAccountSnapshot(account common.Address) (
 //
 // Solidity: function getCash() view returns(uint256)
 func (_CErc20 *CErc20Caller) GetCash(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "getCash")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "getCash")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetCash is a free data retrieval call binding the contract method 0x3b1d21a2.
@@ -495,12 +550,17 @@ func (_CErc20 *CErc20CallerSession) GetCash() (*big.Int, error) {
 //
 // Solidity: function initialExchangeRateMantissa() view returns(uint256)
 func (_CErc20 *CErc20Caller) InitialExchangeRateMantissa(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "initialExchangeRateMantissa")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "initialExchangeRateMantissa")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // InitialExchangeRateMantissa is a free data retrieval call binding the contract method 0x675d972c.
@@ -521,12 +581,17 @@ func (_CErc20 *CErc20CallerSession) InitialExchangeRateMantissa() (*big.Int, err
 //
 // Solidity: function interestRateModel() view returns(address)
 func (_CErc20 *CErc20Caller) InterestRateModel(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "interestRateModel")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "interestRateModel")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // InterestRateModel is a free data retrieval call binding the contract method 0xf3fdb15a.
@@ -547,12 +612,17 @@ func (_CErc20 *CErc20CallerSession) InterestRateModel() (common.Address, error) 
 //
 // Solidity: function isCToken() view returns(bool)
 func (_CErc20 *CErc20Caller) IsCToken(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "isCToken")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "isCToken")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsCToken is a free data retrieval call binding the contract method 0xfe9c44ae.
@@ -573,12 +643,17 @@ func (_CErc20 *CErc20CallerSession) IsCToken() (bool, error) {
 //
 // Solidity: function name() view returns(string)
 func (_CErc20 *CErc20Caller) Name(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "name")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "name")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Name is a free data retrieval call binding the contract method 0x06fdde03.
@@ -599,12 +674,17 @@ func (_CErc20 *CErc20CallerSession) Name() (string, error) {
 //
 // Solidity: function pendingAdmin() view returns(address)
 func (_CErc20 *CErc20Caller) PendingAdmin(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "pendingAdmin")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "pendingAdmin")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // PendingAdmin is a free data retrieval call binding the contract method 0x26782247.
@@ -625,12 +705,17 @@ func (_CErc20 *CErc20CallerSession) PendingAdmin() (common.Address, error) {
 //
 // Solidity: function reserveFactorMantissa() view returns(uint256)
 func (_CErc20 *CErc20Caller) ReserveFactorMantissa(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "reserveFactorMantissa")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "reserveFactorMantissa")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // ReserveFactorMantissa is a free data retrieval call binding the contract method 0x173b9904.
@@ -651,12 +736,17 @@ func (_CErc20 *CErc20CallerSession) ReserveFactorMantissa() (*big.Int, error) {
 //
 // Solidity: function supplyRatePerBlock() view returns(uint256)
 func (_CErc20 *CErc20Caller) SupplyRatePerBlock(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "supplyRatePerBlock")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "supplyRatePerBlock")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // SupplyRatePerBlock is a free data retrieval call binding the contract method 0xae9d70b0.
@@ -677,12 +767,17 @@ func (_CErc20 *CErc20CallerSession) SupplyRatePerBlock() (*big.Int, error) {
 //
 // Solidity: function symbol() view returns(string)
 func (_CErc20 *CErc20Caller) Symbol(opts *bind.CallOpts) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "symbol")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "symbol")
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // Symbol is a free data retrieval call binding the contract method 0x95d89b41.
@@ -703,12 +798,17 @@ func (_CErc20 *CErc20CallerSession) Symbol() (string, error) {
 //
 // Solidity: function totalBorrows() view returns(uint256)
 func (_CErc20 *CErc20Caller) TotalBorrows(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "totalBorrows")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "totalBorrows")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalBorrows is a free data retrieval call binding the contract method 0x47bd3718.
@@ -729,12 +829,17 @@ func (_CErc20 *CErc20CallerSession) TotalBorrows() (*big.Int, error) {
 //
 // Solidity: function totalReserves() view returns(uint256)
 func (_CErc20 *CErc20Caller) TotalReserves(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "totalReserves")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "totalReserves")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalReserves is a free data retrieval call binding the contract method 0x8f840ddd.
@@ -755,12 +860,17 @@ func (_CErc20 *CErc20CallerSession) TotalReserves() (*big.Int, error) {
 //
 // Solidity: function totalSupply() view returns(uint256)
 func (_CErc20 *CErc20Caller) TotalSupply(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "totalSupply")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "totalSupply")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TotalSupply is a free data retrieval call binding the contract method 0x18160ddd.
@@ -781,12 +891,17 @@ func (_CErc20 *CErc20CallerSession) TotalSupply() (*big.Int, error) {
 //
 // Solidity: function underlying() view returns(address)
 func (_CErc20 *CErc20Caller) Underlying(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _CErc20.contract.Call(opts, out, "underlying")
-	return *ret0, err
+	var out []interface{}
+	err := _CErc20.contract.Call(opts, &out, "underlying")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Underlying is a free data retrieval call binding the contract method 0x6f307dc3.

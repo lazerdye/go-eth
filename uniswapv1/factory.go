@@ -137,7 +137,7 @@ func bindFactory(address common.Address, caller bind.ContractCaller, transactor 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Factory *FactoryRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Factory *FactoryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Factory.Contract.FactoryCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_Factory *FactoryRaw) Transact(opts *bind.TransactOpts, method string, par
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Factory *FactoryCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Factory *FactoryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Factory.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_Factory *FactoryTransactorRaw) Transact(opts *bind.TransactOpts, method s
 //
 // Solidity: function exchangeTemplate() returns(address out)
 func (_Factory *FactoryCaller) ExchangeTemplate(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "exchangeTemplate")
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "exchangeTemplate")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // ExchangeTemplate is a free data retrieval call binding the contract method 0x1c2bbd18.
@@ -201,12 +206,17 @@ func (_Factory *FactoryCallerSession) ExchangeTemplate() (common.Address, error)
 //
 // Solidity: function getExchange(address token) returns(address out)
 func (_Factory *FactoryCaller) GetExchange(opts *bind.CallOpts, token common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "getExchange", token)
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "getExchange", token)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetExchange is a free data retrieval call binding the contract method 0x06f2bf62.
@@ -227,12 +237,17 @@ func (_Factory *FactoryCallerSession) GetExchange(token common.Address) (common.
 //
 // Solidity: function getToken(address exchange) returns(address out)
 func (_Factory *FactoryCaller) GetToken(opts *bind.CallOpts, exchange common.Address) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "getToken", exchange)
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "getToken", exchange)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetToken is a free data retrieval call binding the contract method 0x59770438.
@@ -253,12 +268,17 @@ func (_Factory *FactoryCallerSession) GetToken(exchange common.Address) (common.
 //
 // Solidity: function getTokenWithId(uint256 token_id) returns(address out)
 func (_Factory *FactoryCaller) GetTokenWithId(opts *bind.CallOpts, token_id *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "getTokenWithId", token_id)
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "getTokenWithId", token_id)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetTokenWithId is a free data retrieval call binding the contract method 0xaa65a6c0.
@@ -279,12 +299,17 @@ func (_Factory *FactoryCallerSession) GetTokenWithId(token_id *big.Int) (common.
 //
 // Solidity: function tokenCount() returns(uint256 out)
 func (_Factory *FactoryCaller) TokenCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Factory.contract.Call(opts, out, "tokenCount")
-	return *ret0, err
+	var out []interface{}
+	err := _Factory.contract.Call(opts, &out, "tokenCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // TokenCount is a free data retrieval call binding the contract method 0x9f181b5e.

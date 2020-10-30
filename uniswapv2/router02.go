@@ -137,7 +137,7 @@ func bindRouter02(address common.Address, caller bind.ContractCaller, transactor
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Router02 *Router02Raw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Router02 *Router02Raw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Router02.Contract.Router02Caller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_Router02 *Router02Raw) Transact(opts *bind.TransactOpts, method string, p
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Router02 *Router02CallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Router02 *Router02CallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Router02.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_Router02 *Router02TransactorRaw) Transact(opts *bind.TransactOpts, method
 //
 // Solidity: function WETH() view returns(address)
 func (_Router02 *Router02Caller) WETH(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "WETH")
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "WETH")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // WETH is a free data retrieval call binding the contract method 0xad5c4648.
@@ -201,12 +206,17 @@ func (_Router02 *Router02CallerSession) WETH() (common.Address, error) {
 //
 // Solidity: function factory() view returns(address)
 func (_Router02 *Router02Caller) Factory(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "factory")
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "factory")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Factory is a free data retrieval call binding the contract method 0xc45a0155.
@@ -227,12 +237,17 @@ func (_Router02 *Router02CallerSession) Factory() (common.Address, error) {
 //
 // Solidity: function getAmountIn(uint256 amountOut, uint256 reserveIn, uint256 reserveOut) pure returns(uint256 amountIn)
 func (_Router02 *Router02Caller) GetAmountIn(opts *bind.CallOpts, amountOut *big.Int, reserveIn *big.Int, reserveOut *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "getAmountIn", amountOut, reserveIn, reserveOut)
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "getAmountIn", amountOut, reserveIn, reserveOut)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetAmountIn is a free data retrieval call binding the contract method 0x85f8c259.
@@ -253,12 +268,17 @@ func (_Router02 *Router02CallerSession) GetAmountIn(amountOut *big.Int, reserveI
 //
 // Solidity: function getAmountOut(uint256 amountIn, uint256 reserveIn, uint256 reserveOut) pure returns(uint256 amountOut)
 func (_Router02 *Router02Caller) GetAmountOut(opts *bind.CallOpts, amountIn *big.Int, reserveIn *big.Int, reserveOut *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "getAmountOut", amountIn, reserveIn, reserveOut)
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "getAmountOut", amountIn, reserveIn, reserveOut)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetAmountOut is a free data retrieval call binding the contract method 0x054d50d4.
@@ -279,12 +299,17 @@ func (_Router02 *Router02CallerSession) GetAmountOut(amountIn *big.Int, reserveI
 //
 // Solidity: function getAmountsIn(uint256 amountOut, address[] path) view returns(uint256[] amounts)
 func (_Router02 *Router02Caller) GetAmountsIn(opts *bind.CallOpts, amountOut *big.Int, path []common.Address) ([]*big.Int, error) {
-	var (
-		ret0 = new([]*big.Int)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "getAmountsIn", amountOut, path)
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "getAmountsIn", amountOut, path)
+
+	if err != nil {
+		return *new([]*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
+
+	return out0, err
+
 }
 
 // GetAmountsIn is a free data retrieval call binding the contract method 0x1f00ca74.
@@ -305,12 +330,17 @@ func (_Router02 *Router02CallerSession) GetAmountsIn(amountOut *big.Int, path []
 //
 // Solidity: function getAmountsOut(uint256 amountIn, address[] path) view returns(uint256[] amounts)
 func (_Router02 *Router02Caller) GetAmountsOut(opts *bind.CallOpts, amountIn *big.Int, path []common.Address) ([]*big.Int, error) {
-	var (
-		ret0 = new([]*big.Int)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "getAmountsOut", amountIn, path)
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "getAmountsOut", amountIn, path)
+
+	if err != nil {
+		return *new([]*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]*big.Int)).(*[]*big.Int)
+
+	return out0, err
+
 }
 
 // GetAmountsOut is a free data retrieval call binding the contract method 0xd06ca61f.
@@ -331,12 +361,17 @@ func (_Router02 *Router02CallerSession) GetAmountsOut(amountIn *big.Int, path []
 //
 // Solidity: function quote(uint256 amountA, uint256 reserveA, uint256 reserveB) pure returns(uint256 amountB)
 func (_Router02 *Router02Caller) Quote(opts *bind.CallOpts, amountA *big.Int, reserveA *big.Int, reserveB *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Router02.contract.Call(opts, out, "quote", amountA, reserveA, reserveB)
-	return *ret0, err
+	var out []interface{}
+	err := _Router02.contract.Call(opts, &out, "quote", amountA, reserveA, reserveB)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // Quote is a free data retrieval call binding the contract method 0xad615dec.

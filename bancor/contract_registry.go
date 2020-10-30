@@ -137,7 +137,7 @@ func bindContractRegistry(address common.Address, caller bind.ContractCaller, tr
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ContractRegistry *ContractRegistryRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ContractRegistry *ContractRegistryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ContractRegistry.Contract.ContractRegistryCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_ContractRegistry *ContractRegistryRaw) Transact(opts *bind.TransactOpts, 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ContractRegistry *ContractRegistryCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ContractRegistry *ContractRegistryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ContractRegistry.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_ContractRegistry *ContractRegistryTransactorRaw) Transact(opts *bind.Tran
 //
 // Solidity: function BANCOR_CONVERTER_FACTORY() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORCONVERTERFACTORY(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_CONVERTER_FACTORY")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_CONVERTER_FACTORY")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORCONVERTERFACTORY is a free data retrieval call binding the contract method 0x5a46f06c.
@@ -201,12 +206,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORCONVERTERFACTORY()
 //
 // Solidity: function BANCOR_CONVERTER_UPGRADER() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORCONVERTERUPGRADER(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_CONVERTER_UPGRADER")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_CONVERTER_UPGRADER")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORCONVERTERUPGRADER is a free data retrieval call binding the contract method 0x0c87355e.
@@ -227,12 +237,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORCONVERTERUPGRADER(
 //
 // Solidity: function BANCOR_FORMULA() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORFORMULA(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_FORMULA")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_FORMULA")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORFORMULA is a free data retrieval call binding the contract method 0x6d7bd3fc.
@@ -253,12 +268,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORFORMULA() ([32]byt
 //
 // Solidity: function BANCOR_GAS_PRICE_LIMIT() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORGASPRICELIMIT(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_GAS_PRICE_LIMIT")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_GAS_PRICE_LIMIT")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORGASPRICELIMIT is a free data retrieval call binding the contract method 0x9249993a.
@@ -279,12 +299,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORGASPRICELIMIT() ([
 //
 // Solidity: function BANCOR_NETWORK() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORNETWORK(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_NETWORK")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_NETWORK")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORNETWORK is a free data retrieval call binding the contract method 0x9232494e.
@@ -305,12 +330,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORNETWORK() ([32]byt
 //
 // Solidity: function BANCOR_X() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BANCORX(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BANCOR_X")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BANCOR_X")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BANCORX is a free data retrieval call binding the contract method 0xc4a8598e.
@@ -331,12 +361,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BANCORX() ([32]byte, err
 //
 // Solidity: function BNT_CONVERTER() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BNTCONVERTER(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BNT_CONVERTER")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BNT_CONVERTER")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BNTCONVERTER is a free data retrieval call binding the contract method 0x62614ae6.
@@ -357,12 +392,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BNTCONVERTER() ([32]byte
 //
 // Solidity: function BNT_TOKEN() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) BNTTOKEN(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "BNT_TOKEN")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "BNT_TOKEN")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // BNTTOKEN is a free data retrieval call binding the contract method 0x1d000b61.
@@ -383,12 +423,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) BNTTOKEN() ([32]byte, er
 //
 // Solidity: function CONTRACT_FEATURES() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) CONTRACTFEATURES(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "CONTRACT_FEATURES")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "CONTRACT_FEATURES")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // CONTRACTFEATURES is a free data retrieval call binding the contract method 0x83315b6e.
@@ -409,12 +454,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) CONTRACTFEATURES() ([32]
 //
 // Solidity: function CONTRACT_REGISTRY() view returns(bytes32)
 func (_ContractRegistry *ContractRegistryCaller) CONTRACTREGISTRY(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "CONTRACT_REGISTRY")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "CONTRACT_REGISTRY")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // CONTRACTREGISTRY is a free data retrieval call binding the contract method 0x25f9bfef.
@@ -435,12 +485,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) CONTRACTREGISTRY() ([32]
 //
 // Solidity: function addressOf(bytes32 _contractName) view returns(address)
 func (_ContractRegistry *ContractRegistryCaller) AddressOf(opts *bind.CallOpts, _contractName [32]byte) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "addressOf", _contractName)
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "addressOf", _contractName)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // AddressOf is a free data retrieval call binding the contract method 0xbb34534c.
@@ -461,12 +516,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) AddressOf(_contractName 
 //
 // Solidity: function contractNames(uint256 ) view returns(string)
 func (_ContractRegistry *ContractRegistryCaller) ContractNames(opts *bind.CallOpts, arg0 *big.Int) (string, error) {
-	var (
-		ret0 = new(string)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "contractNames", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "contractNames", arg0)
+
+	if err != nil {
+		return *new(string), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(string)).(*string)
+
+	return out0, err
+
 }
 
 // ContractNames is a free data retrieval call binding the contract method 0x3ca6bb92.
@@ -487,12 +547,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) ContractNames(arg0 *big.
 //
 // Solidity: function getAddress(bytes32 _contractName) view returns(address)
 func (_ContractRegistry *ContractRegistryCaller) GetAddress(opts *bind.CallOpts, _contractName [32]byte) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "getAddress", _contractName)
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "getAddress", _contractName)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetAddress is a free data retrieval call binding the contract method 0x21f8a721.
@@ -513,12 +578,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) GetAddress(_contractName
 //
 // Solidity: function itemCount() view returns(uint256)
 func (_ContractRegistry *ContractRegistryCaller) ItemCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "itemCount")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "itemCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // ItemCount is a free data retrieval call binding the contract method 0x6bfb0d01.
@@ -539,12 +609,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) ItemCount() (*big.Int, e
 //
 // Solidity: function newOwner() view returns(address)
 func (_ContractRegistry *ContractRegistryCaller) NewOwner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "newOwner")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "newOwner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // NewOwner is a free data retrieval call binding the contract method 0xd4ee1d90.
@@ -565,12 +640,17 @@ func (_ContractRegistry *ContractRegistryCallerSession) NewOwner() (common.Addre
 //
 // Solidity: function owner() view returns(address)
 func (_ContractRegistry *ContractRegistryCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ContractRegistry.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _ContractRegistry.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.

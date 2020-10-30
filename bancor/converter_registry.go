@@ -137,7 +137,7 @@ func bindConverterRegistry(address common.Address, caller bind.ContractCaller, t
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ConverterRegistry *ConverterRegistryRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ConverterRegistry *ConverterRegistryRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ConverterRegistry.Contract.ConverterRegistryCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_ConverterRegistry *ConverterRegistryRaw) Transact(opts *bind.TransactOpts
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_ConverterRegistry *ConverterRegistryCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_ConverterRegistry *ConverterRegistryCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _ConverterRegistry.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_ConverterRegistry *ConverterRegistryTransactorRaw) Transact(opts *bind.Tr
 //
 // Solidity: function getAnchor(uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetAnchor(opts *bind.CallOpts, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getAnchor", _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getAnchor", _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetAnchor is a free data retrieval call binding the contract method 0x4c7df18f.
@@ -201,12 +206,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetAnchor(_index *big.
 //
 // Solidity: function getAnchorCount() view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetAnchorCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getAnchorCount")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getAnchorCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetAnchorCount is a free data retrieval call binding the contract method 0xd3182bed.
@@ -227,12 +237,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetAnchorCount() (*big
 //
 // Solidity: function getAnchors() view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetAnchors(opts *bind.CallOpts) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getAnchors")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getAnchors")
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetAnchors is a free data retrieval call binding the contract method 0xeffb3c6e.
@@ -253,12 +268,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetAnchors() ([]common
 //
 // Solidity: function getConvertersByAnchors(address[] _anchors) view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertersByAnchors(opts *bind.CallOpts, _anchors []common.Address) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertersByAnchors", _anchors)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertersByAnchors", _anchors)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertersByAnchors is a free data retrieval call binding the contract method 0x610c0b05.
@@ -279,12 +299,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertersByAnchors
 //
 // Solidity: function getConvertersBySmartTokens(address[] _smartTokens) view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertersBySmartTokens(opts *bind.CallOpts, _smartTokens []common.Address) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertersBySmartTokens", _smartTokens)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertersBySmartTokens", _smartTokens)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertersBySmartTokens is a free data retrieval call binding the contract method 0x1f8e2620.
@@ -305,12 +330,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertersBySmartTo
 //
 // Solidity: function getConvertibleToken(uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleToken(opts *bind.CallOpts, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleToken", _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleToken", _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleToken is a free data retrieval call binding the contract method 0x865cf194.
@@ -331,12 +361,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleToken(_i
 //
 // Solidity: function getConvertibleTokenAnchor(address _convertibleToken, uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenAnchor(opts *bind.CallOpts, _convertibleToken common.Address, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenAnchor", _convertibleToken, _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenAnchor", _convertibleToken, _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenAnchor is a free data retrieval call binding the contract method 0x603f51e4.
@@ -357,12 +392,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenAnc
 //
 // Solidity: function getConvertibleTokenAnchorCount(address _convertibleToken) view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenAnchorCount(opts *bind.CallOpts, _convertibleToken common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenAnchorCount", _convertibleToken)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenAnchorCount", _convertibleToken)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenAnchorCount is a free data retrieval call binding the contract method 0x49c5f32b.
@@ -383,12 +423,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenAnc
 //
 // Solidity: function getConvertibleTokenAnchors(address _convertibleToken) view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenAnchors(opts *bind.CallOpts, _convertibleToken common.Address) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenAnchors", _convertibleToken)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenAnchors", _convertibleToken)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenAnchors is a free data retrieval call binding the contract method 0x11839064.
@@ -409,12 +454,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenAnc
 //
 // Solidity: function getConvertibleTokenCount() view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenCount")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenCount is a free data retrieval call binding the contract method 0x69be4784.
@@ -435,12 +485,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenCou
 //
 // Solidity: function getConvertibleTokenSmartToken(address _convertibleToken, uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenSmartToken(opts *bind.CallOpts, _convertibleToken common.Address, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenSmartToken", _convertibleToken, _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenSmartToken", _convertibleToken, _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenSmartToken is a free data retrieval call binding the contract method 0xd6c4b5b2.
@@ -461,12 +516,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenSma
 //
 // Solidity: function getConvertibleTokenSmartTokenCount(address _convertibleToken) view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenSmartTokenCount(opts *bind.CallOpts, _convertibleToken common.Address) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenSmartTokenCount", _convertibleToken)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenSmartTokenCount", _convertibleToken)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenSmartTokenCount is a free data retrieval call binding the contract method 0xa43d5e94.
@@ -487,12 +547,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenSma
 //
 // Solidity: function getConvertibleTokenSmartTokens(address _convertibleToken) view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokenSmartTokens(opts *bind.CallOpts, _convertibleToken common.Address) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokenSmartTokens", _convertibleToken)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokenSmartTokens", _convertibleToken)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokenSmartTokens is a free data retrieval call binding the contract method 0xf4fb86c0.
@@ -513,12 +578,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokenSma
 //
 // Solidity: function getConvertibleTokens() view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetConvertibleTokens(opts *bind.CallOpts) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getConvertibleTokens")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getConvertibleTokens")
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetConvertibleTokens is a free data retrieval call binding the contract method 0x5f1b50fe.
@@ -539,12 +609,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetConvertibleTokens()
 //
 // Solidity: function getLiquidityPool(uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetLiquidityPool(opts *bind.CallOpts, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getLiquidityPool", _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getLiquidityPool", _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetLiquidityPool is a free data retrieval call binding the contract method 0xa74498aa.
@@ -565,12 +640,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetLiquidityPool(_inde
 //
 // Solidity: function getLiquidityPoolByConfig(uint16 _type, address[] _reserveTokens, uint32[] _reserveWeights) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetLiquidityPoolByConfig(opts *bind.CallOpts, _type uint16, _reserveTokens []common.Address, _reserveWeights []uint32) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getLiquidityPoolByConfig", _type, _reserveTokens, _reserveWeights)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getLiquidityPoolByConfig", _type, _reserveTokens, _reserveWeights)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetLiquidityPoolByConfig is a free data retrieval call binding the contract method 0x1d3fccd5.
@@ -591,12 +671,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetLiquidityPoolByConf
 //
 // Solidity: function getLiquidityPoolByReserveConfig(address[] _reserveTokens, uint32[] _reserveWeights) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetLiquidityPoolByReserveConfig(opts *bind.CallOpts, _reserveTokens []common.Address, _reserveWeights []uint32) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getLiquidityPoolByReserveConfig", _reserveTokens, _reserveWeights)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getLiquidityPoolByReserveConfig", _reserveTokens, _reserveWeights)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetLiquidityPoolByReserveConfig is a free data retrieval call binding the contract method 0xc22b82f0.
@@ -617,12 +702,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetLiquidityPoolByRese
 //
 // Solidity: function getLiquidityPoolCount() view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetLiquidityPoolCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getLiquidityPoolCount")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getLiquidityPoolCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetLiquidityPoolCount is a free data retrieval call binding the contract method 0x7a5f0ffd.
@@ -643,12 +733,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetLiquidityPoolCount(
 //
 // Solidity: function getLiquidityPools() view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetLiquidityPools(opts *bind.CallOpts) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getLiquidityPools")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getLiquidityPools")
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetLiquidityPools is a free data retrieval call binding the contract method 0x7f45c4c3.
@@ -669,12 +764,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetLiquidityPools() ([
 //
 // Solidity: function getSmartToken(uint256 _index) view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) GetSmartToken(opts *bind.CallOpts, _index *big.Int) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getSmartToken", _index)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getSmartToken", _index)
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // GetSmartToken is a free data retrieval call binding the contract method 0xa109d214.
@@ -695,12 +795,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetSmartToken(_index *
 //
 // Solidity: function getSmartTokenCount() view returns(uint256)
 func (_ConverterRegistry *ConverterRegistryCaller) GetSmartTokenCount(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getSmartTokenCount")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getSmartTokenCount")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // GetSmartTokenCount is a free data retrieval call binding the contract method 0xe571049b.
@@ -721,12 +826,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetSmartTokenCount() (
 //
 // Solidity: function getSmartTokens() view returns(address[])
 func (_ConverterRegistry *ConverterRegistryCaller) GetSmartTokens(opts *bind.CallOpts) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "getSmartTokens")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "getSmartTokens")
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // GetSmartTokens is a free data retrieval call binding the contract method 0x04ceaf41.
@@ -747,12 +857,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) GetSmartTokens() ([]co
 //
 // Solidity: function isAnchor(address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsAnchor(opts *bind.CallOpts, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isAnchor", _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isAnchor", _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsAnchor is a free data retrieval call binding the contract method 0xd8cced2a.
@@ -773,12 +888,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsAnchor(_value common
 //
 // Solidity: function isConverterValid(address _converter) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsConverterValid(opts *bind.CallOpts, _converter common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isConverterValid", _converter)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isConverterValid", _converter)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsConverterValid is a free data retrieval call binding the contract method 0x954254f5.
@@ -799,12 +919,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsConverterValid(_conv
 //
 // Solidity: function isConvertibleToken(address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsConvertibleToken(opts *bind.CallOpts, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isConvertibleToken", _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isConvertibleToken", _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsConvertibleToken is a free data retrieval call binding the contract method 0x3ab8857c.
@@ -825,12 +950,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsConvertibleToken(_va
 //
 // Solidity: function isConvertibleTokenAnchor(address _convertibleToken, address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsConvertibleTokenAnchor(opts *bind.CallOpts, _convertibleToken common.Address, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isConvertibleTokenAnchor", _convertibleToken, _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isConvertibleTokenAnchor", _convertibleToken, _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsConvertibleTokenAnchor is a free data retrieval call binding the contract method 0xb4c4197a.
@@ -851,12 +981,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsConvertibleTokenAnch
 //
 // Solidity: function isConvertibleTokenSmartToken(address _convertibleToken, address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsConvertibleTokenSmartToken(opts *bind.CallOpts, _convertibleToken common.Address, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isConvertibleTokenSmartToken", _convertibleToken, _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isConvertibleTokenSmartToken", _convertibleToken, _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsConvertibleTokenSmartToken is a free data retrieval call binding the contract method 0x725b8786.
@@ -877,12 +1012,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsConvertibleTokenSmar
 //
 // Solidity: function isLiquidityPool(address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsLiquidityPool(opts *bind.CallOpts, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isLiquidityPool", _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isLiquidityPool", _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsLiquidityPool is a free data retrieval call binding the contract method 0xe85455d7.
@@ -903,12 +1043,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsLiquidityPool(_value
 //
 // Solidity: function isSimilarLiquidityPoolRegistered(address _converter) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsSimilarLiquidityPoolRegistered(opts *bind.CallOpts, _converter common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isSimilarLiquidityPoolRegistered", _converter)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isSimilarLiquidityPoolRegistered", _converter)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsSimilarLiquidityPoolRegistered is a free data retrieval call binding the contract method 0x8f1d0e1a.
@@ -929,12 +1074,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsSimilarLiquidityPool
 //
 // Solidity: function isSmartToken(address _value) view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) IsSmartToken(opts *bind.CallOpts, _value common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "isSmartToken", _value)
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "isSmartToken", _value)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsSmartToken is a free data retrieval call binding the contract method 0x4123ef60.
@@ -955,12 +1105,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) IsSmartToken(_value co
 //
 // Solidity: function newOwner() view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) NewOwner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "newOwner")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "newOwner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // NewOwner is a free data retrieval call binding the contract method 0xd4ee1d90.
@@ -981,12 +1136,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) NewOwner() (common.Add
 //
 // Solidity: function onlyOwnerCanUpdateRegistry() view returns(bool)
 func (_ConverterRegistry *ConverterRegistryCaller) OnlyOwnerCanUpdateRegistry(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "onlyOwnerCanUpdateRegistry")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "onlyOwnerCanUpdateRegistry")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // OnlyOwnerCanUpdateRegistry is a free data retrieval call binding the contract method 0x2fe8a6ad.
@@ -1007,12 +1167,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) OnlyOwnerCanUpdateRegi
 //
 // Solidity: function owner() view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -1033,12 +1198,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) Owner() (common.Addres
 //
 // Solidity: function prevRegistry() view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) PrevRegistry(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "prevRegistry")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "prevRegistry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // PrevRegistry is a free data retrieval call binding the contract method 0x61cd756e.
@@ -1059,12 +1229,17 @@ func (_ConverterRegistry *ConverterRegistryCallerSession) PrevRegistry() (common
 //
 // Solidity: function registry() view returns(address)
 func (_ConverterRegistry *ConverterRegistryCaller) Registry(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _ConverterRegistry.contract.Call(opts, out, "registry")
-	return *ret0, err
+	var out []interface{}
+	err := _ConverterRegistry.contract.Call(opts, &out, "registry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Registry is a free data retrieval call binding the contract method 0x7b103999.

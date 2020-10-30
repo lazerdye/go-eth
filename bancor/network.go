@@ -137,7 +137,7 @@ func bindNetwork(address common.Address, caller bind.ContractCaller, transactor 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Network *NetworkRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Network *NetworkRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Network.Contract.NetworkCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_Network *NetworkRaw) Transact(opts *bind.TransactOpts, method string, par
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_Network *NetworkCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_Network *NetworkCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _Network.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_Network *NetworkTransactorRaw) Transact(opts *bind.TransactOpts, method s
 //
 // Solidity: function conversionPath(address _sourceToken, address _targetToken) view returns(address[])
 func (_Network *NetworkCaller) ConversionPath(opts *bind.CallOpts, _sourceToken common.Address, _targetToken common.Address) ([]common.Address, error) {
-	var (
-		ret0 = new([]common.Address)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "conversionPath", _sourceToken, _targetToken)
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "conversionPath", _sourceToken, _targetToken)
+
+	if err != nil {
+		return *new([]common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([]common.Address)).(*[]common.Address)
+
+	return out0, err
+
 }
 
 // ConversionPath is a free data retrieval call binding the contract method 0xd734fa19.
@@ -201,12 +206,17 @@ func (_Network *NetworkCallerSession) ConversionPath(_sourceToken common.Address
 //
 // Solidity: function etherTokens(address ) view returns(bool)
 func (_Network *NetworkCaller) EtherTokens(opts *bind.CallOpts, arg0 common.Address) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "etherTokens", arg0)
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "etherTokens", arg0)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // EtherTokens is a free data retrieval call binding the contract method 0x8077ccf7.
@@ -227,16 +237,18 @@ func (_Network *NetworkCallerSession) EtherTokens(arg0 common.Address) (bool, er
 //
 // Solidity: function getReturnByPath(address[] _path, uint256 _amount) view returns(uint256, uint256)
 func (_Network *NetworkCaller) GetReturnByPath(opts *bind.CallOpts, _path []common.Address, _amount *big.Int) (*big.Int, *big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-		ret1 = new(*big.Int)
-	)
-	out := &[]interface{}{
-		ret0,
-		ret1,
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "getReturnByPath", _path, _amount)
+
+	if err != nil {
+		return *new(*big.Int), *new(*big.Int), err
 	}
-	err := _Network.contract.Call(opts, out, "getReturnByPath", _path, _amount)
-	return *ret0, *ret1, err
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+	out1 := *abi.ConvertType(out[1], new(*big.Int)).(**big.Int)
+
+	return out0, out1, err
+
 }
 
 // GetReturnByPath is a free data retrieval call binding the contract method 0x0c8496cc.
@@ -257,12 +269,17 @@ func (_Network *NetworkCallerSession) GetReturnByPath(_path []common.Address, _a
 //
 // Solidity: function maxAffiliateFee() view returns(uint256)
 func (_Network *NetworkCaller) MaxAffiliateFee(opts *bind.CallOpts) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "maxAffiliateFee")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "maxAffiliateFee")
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // MaxAffiliateFee is a free data retrieval call binding the contract method 0x5d732ff2.
@@ -283,12 +300,17 @@ func (_Network *NetworkCallerSession) MaxAffiliateFee() (*big.Int, error) {
 //
 // Solidity: function newOwner() view returns(address)
 func (_Network *NetworkCaller) NewOwner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "newOwner")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "newOwner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // NewOwner is a free data retrieval call binding the contract method 0xd4ee1d90.
@@ -309,12 +331,17 @@ func (_Network *NetworkCallerSession) NewOwner() (common.Address, error) {
 //
 // Solidity: function onlyOwnerCanUpdateRegistry() view returns(bool)
 func (_Network *NetworkCaller) OnlyOwnerCanUpdateRegistry(opts *bind.CallOpts) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "onlyOwnerCanUpdateRegistry")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "onlyOwnerCanUpdateRegistry")
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // OnlyOwnerCanUpdateRegistry is a free data retrieval call binding the contract method 0x2fe8a6ad.
@@ -335,12 +362,17 @@ func (_Network *NetworkCallerSession) OnlyOwnerCanUpdateRegistry() (bool, error)
 //
 // Solidity: function owner() view returns(address)
 func (_Network *NetworkCaller) Owner(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "owner")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "owner")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -361,12 +393,17 @@ func (_Network *NetworkCallerSession) Owner() (common.Address, error) {
 //
 // Solidity: function prevRegistry() view returns(address)
 func (_Network *NetworkCaller) PrevRegistry(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "prevRegistry")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "prevRegistry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // PrevRegistry is a free data retrieval call binding the contract method 0x61cd756e.
@@ -387,12 +424,17 @@ func (_Network *NetworkCallerSession) PrevRegistry() (common.Address, error) {
 //
 // Solidity: function rateByPath(address[] _path, uint256 _amount) view returns(uint256)
 func (_Network *NetworkCaller) RateByPath(opts *bind.CallOpts, _path []common.Address, _amount *big.Int) (*big.Int, error) {
-	var (
-		ret0 = new(*big.Int)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "rateByPath", _path, _amount)
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "rateByPath", _path, _amount)
+
+	if err != nil {
+		return *new(*big.Int), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(*big.Int)).(**big.Int)
+
+	return out0, err
+
 }
 
 // RateByPath is a free data retrieval call binding the contract method 0x7f9c0ecd.
@@ -413,12 +455,17 @@ func (_Network *NetworkCallerSession) RateByPath(_path []common.Address, _amount
 //
 // Solidity: function registry() view returns(address)
 func (_Network *NetworkCaller) Registry(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _Network.contract.Call(opts, out, "registry")
-	return *ret0, err
+	var out []interface{}
+	err := _Network.contract.Call(opts, &out, "registry")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Registry is a free data retrieval call binding the contract method 0x7b103999.

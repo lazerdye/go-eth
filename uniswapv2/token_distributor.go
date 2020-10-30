@@ -137,7 +137,7 @@ func bindTokenDistributor(address common.Address, caller bind.ContractCaller, tr
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_TokenDistributor *TokenDistributorRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_TokenDistributor *TokenDistributorRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _TokenDistributor.Contract.TokenDistributorCaller.contract.Call(opts, result, method, params...)
 }
 
@@ -156,7 +156,7 @@ func (_TokenDistributor *TokenDistributorRaw) Transact(opts *bind.TransactOpts, 
 // sets the output to result. The result type might be a single field for simple
 // returns, a slice of interfaces for anonymous returns and a struct for named
 // returns.
-func (_TokenDistributor *TokenDistributorCallerRaw) Call(opts *bind.CallOpts, result interface{}, method string, params ...interface{}) error {
+func (_TokenDistributor *TokenDistributorCallerRaw) Call(opts *bind.CallOpts, result *[]interface{}, method string, params ...interface{}) error {
 	return _TokenDistributor.Contract.contract.Call(opts, result, method, params...)
 }
 
@@ -175,12 +175,17 @@ func (_TokenDistributor *TokenDistributorTransactorRaw) Transact(opts *bind.Tran
 //
 // Solidity: function isClaimed(uint256 index) view returns(bool)
 func (_TokenDistributor *TokenDistributorCaller) IsClaimed(opts *bind.CallOpts, index *big.Int) (bool, error) {
-	var (
-		ret0 = new(bool)
-	)
-	out := ret0
-	err := _TokenDistributor.contract.Call(opts, out, "isClaimed", index)
-	return *ret0, err
+	var out []interface{}
+	err := _TokenDistributor.contract.Call(opts, &out, "isClaimed", index)
+
+	if err != nil {
+		return *new(bool), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(bool)).(*bool)
+
+	return out0, err
+
 }
 
 // IsClaimed is a free data retrieval call binding the contract method 0x9e34070f.
@@ -201,12 +206,17 @@ func (_TokenDistributor *TokenDistributorCallerSession) IsClaimed(index *big.Int
 //
 // Solidity: function merkleRoot() view returns(bytes32)
 func (_TokenDistributor *TokenDistributorCaller) MerkleRoot(opts *bind.CallOpts) ([32]byte, error) {
-	var (
-		ret0 = new([32]byte)
-	)
-	out := ret0
-	err := _TokenDistributor.contract.Call(opts, out, "merkleRoot")
-	return *ret0, err
+	var out []interface{}
+	err := _TokenDistributor.contract.Call(opts, &out, "merkleRoot")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
 }
 
 // MerkleRoot is a free data retrieval call binding the contract method 0x2eb4a7ab.
@@ -227,12 +237,17 @@ func (_TokenDistributor *TokenDistributorCallerSession) MerkleRoot() ([32]byte, 
 //
 // Solidity: function token() view returns(address)
 func (_TokenDistributor *TokenDistributorCaller) Token(opts *bind.CallOpts) (common.Address, error) {
-	var (
-		ret0 = new(common.Address)
-	)
-	out := ret0
-	err := _TokenDistributor.contract.Call(opts, out, "token")
-	return *ret0, err
+	var out []interface{}
+	err := _TokenDistributor.contract.Call(opts, &out, "token")
+
+	if err != nil {
+		return *new(common.Address), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new(common.Address)).(*common.Address)
+
+	return out0, err
+
 }
 
 // Token is a free data retrieval call binding the contract method 0xfc0c546a.
