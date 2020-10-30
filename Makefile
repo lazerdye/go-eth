@@ -6,7 +6,7 @@ all: token/erc20/erc20.go kyber/kyber.go zeroex/ether_token/ether_token.go zeroe
 
 bin/cli:
 	mkdir -p bin
-	go build -o bin/cli cli/*.go
+	CGO_ENABLED=0 GOOS=linux go build -a -tags netgo -ldflags '-w' -o bin/cli cli/*.go
 
 token/TokenERC20.abi:
 	solc --abi token/erc20.sol -o sol
@@ -61,6 +61,9 @@ bancor/converter_registry.go: bancor/converter_registry.abi
 
 bancor/network.go: bancor/network.abi
 	abigen --abi=bancor/network.abi --pkg=bancor --type=Network --out=bancor/network.go
+
+opyn/options_factory.go: opyn/options_factory.abi
+	abigen --abi=opyn/options_factory.abi --pkg=opyn --type=OptionsFactory --out=opyn/options_factory.go
 
 gofmt:
 	go fmt $(PACKAGE)/...
