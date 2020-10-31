@@ -127,6 +127,8 @@ func token2Commands(ctx context.Context, client *client.Client, commands []strin
 		return true, doTokenTransfer(ctx, reg)
 	case "approve":
 		return true, doTokenApprove(ctx, reg)
+	case "uniswapv1":
+		return uniswapV1Commands(ctx, client, reg, commands[1:])
 	case "uniswapv2":
 		return uniswapV2Commands(ctx, client, reg, commands[1:])
 	case "compound":

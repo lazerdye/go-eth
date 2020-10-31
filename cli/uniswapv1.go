@@ -4,15 +4,20 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
+
+	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/uniswapv1"
-	"github.com/shopspring/decimal"
 )
 
 var (
-	clientUniswap1Command                              = clientCmd.Command("uniswapv1", "Uniswap v1 operations")
-	clientUniswap1Token                                = clientUniswap1Command.Flag("token", "Token to get exchange for").Required().String()
-	clientUniswap1TokenFile                            = clientUniswap1Command.Flag("token-file", "File for token registry").Envar("TOKEN_FILE").Required().String()
+	clientUniswap1Command                              = clientToken2Command.Command("uniswapv1", "Uniswap v1 operations")
+	clientUniswap1Address                              = clientUniswap1Command.Flag("token-address", "Token to get exchange for").String()
+	clientUniswap1Decimals                             = clientUniswap1Command.Flag("token-decimals", "Token to get exchange for").Uint8()
+	clientUniswap1Token                                = clientUniswap1Command.Flag("token", "Token to get exchange for").String()
 	clientUniswap1GetExchange                          = clientUniswap1Command.Command("get-exchange", "Get exchange address for token")
 	clientUniswap1GetEthToTokenInputPrice              = clientUniswap1Command.Command("eth-to-token-input", "Get eth to token input price")
 	clientUniswap1GetEthToTokenInputPriceEthSold       = clientUniswap1GetEthToTokenInputPrice.Arg("eth-sold", "Ethereum sold").Required().Float64()
@@ -25,21 +30,54 @@ var (
 	clientUniswap1Graph                                = clientUniswap1Command.Command("graph", "Query the graph")
 )
 
-func getExchange(ctx context.Context, client *uniswapv1.Client) (*uniswapv1.ExchangeClient, error) {
-	registry, err := token2.RegistryFromFile(client.Client, *clientUniswap1TokenFile)
+func uniswapV1Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+	uniswapv1Client, err := uniswapv1.NewClient(client)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
-	tok, err := registry.ByName(*clientUniswap1Token)
-	if err != nil {
-		return nil, err
+	switch commands[0] {
+	case "get-exchange":
+		return true, uniswapGetExchange(ctx, reg, uniswapv1Client)
+	case "eth-to-token-input":
+		return true, uniswapGetEthToTokenInputPrice(ctx, reg, uniswapv1Client)
+	case "eth-to-token-output":
+		return true, uniswapGetEthToTokenOutputPrice(ctx, reg, uniswapv1Client)
+	case "token-to-eth-input":
+		return true, uniswapGetTokenToEthInputPrice(ctx, reg, uniswapv1Client)
+	case "token-to-eth-output":
+		return true, uniswapGetTokenToEthOutputPrice(ctx, reg, uniswapv1Client)
+	case "graph":
+		return true, uniswapGraph(ctx, uniswapv1Client)
+	}
+	return false, nil
+}
+
+func getExchange(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) (*uniswapv1.ExchangeClient, error) {
+	if *clientUniswap1Token == "" && *clientUniswap1Address == "" {
+		return nil, errors.New("Either --token-address/--token-decimals or --token is required")
+	}
+	var tok *token2.Client
+	var err error
+	if *clientUniswap1Token != "" {
+		tok, err = reg.ByName(*clientUniswap1Token)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		if *clientUniswap1Decimals == 0 {
+			return nil, errors.New("--decimals is required")
+		}
+		tok, err = token2.NewClient(client.Client, common.HexToAddress(*clientUniswap1Address), *clientUniswap1Decimals)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return client.GetExchange(ctx, tok)
 }
 
-func uniswapGetExchange(ctx context.Context, client *uniswapv1.Client) error {
-	ex, err := getExchange(ctx, client)
+func uniswapGetExchange(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
 	if err != nil {
 		return err
 	}
@@ -49,8 +87,8 @@ func uniswapGetExchange(ctx context.Context, client *uniswapv1.Client) error {
 	return nil
 }
 
-func uniswapGetEthToTokenInputPrice(ctx context.Context, client *uniswapv1.Client) error {
-	ex, err := getExchange(ctx, client)
+func uniswapGetEthToTokenInputPrice(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
 	if err != nil {
 		return err
 	}
@@ -66,8 +104,8 @@ func uniswapGetEthToTokenInputPrice(ctx context.Context, client *uniswapv1.Clien
 	return nil
 }
 
-func uniswapGetEthToTokenOutputPrice(ctx context.Context, client *uniswapv1.Client) error {
-	ex, err := getExchange(ctx, client)
+func uniswapGetEthToTokenOutputPrice(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
 	if err != nil {
 		return err
 	}
@@ -83,8 +121,8 @@ func uniswapGetEthToTokenOutputPrice(ctx context.Context, client *uniswapv1.Clie
 	return nil
 }
 
-func uniswapGetTokenToEthInputPrice(ctx context.Context, client *uniswapv1.Client) error {
-	ex, err := getExchange(ctx, client)
+func uniswapGetTokenToEthInputPrice(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
 	if err != nil {
 		return err
 	}
@@ -100,8 +138,8 @@ func uniswapGetTokenToEthInputPrice(ctx context.Context, client *uniswapv1.Clien
 	return nil
 }
 
-func uniswapGetTokenToEthOutputPrice(ctx context.Context, client *uniswapv1.Client) error {
-	ex, err := getExchange(ctx, client)
+func uniswapGetTokenToEthOutputPrice(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
 	if err != nil {
 		return err
 	}

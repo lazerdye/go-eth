@@ -54,7 +54,7 @@ func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg 
 		if err != nil {
 			return err
 		}
-		digits, err := otoken.Decimals(ctx)
+		decimals, err := otoken.Decimals(ctx)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg 
 		if hasExpired {
 			expiredStr = " expired"
 		}
-		fmt.Printf("%d: %s (%v)%s\n", i, name, optionsContractAddress.Hex(), expiredStr)
+		fmt.Printf("%d: %s (%v %d)%s\n", i, name, optionsContractAddress.Hex(), decimals, expiredStr)
 		underlying, err := otoken.Underlying(ctx)
 		if err != nil {
 			return err
@@ -103,7 +103,7 @@ func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg 
 		}
 
 		fmt.Printf("    %s %d -> %s %d (%s)\n",
-			underlyingName, underlyingExp, collateralName, collateralExp, strikePrice.Shift(int32(digits)))
+			underlyingName, underlyingExp, collateralName, collateralExp, strikePrice.Shift(int32(decimals)))
 	}
 	return nil
 }
