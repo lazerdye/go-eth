@@ -65,6 +65,9 @@ bancor/network.go: bancor/network.abi
 opyn/options_factory.go: opyn/options_factory.abi
 	abigen --abi=opyn/options_factory.abi --pkg=opyn --type=OptionsFactory --out=opyn/options_factory.go
 
+opyn/otoken.go: opyn/otoken.abi
+	abigen --abi=opyn/otoken.abi --pkg=opyn --type=OToken --out=opyn/otoken.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
