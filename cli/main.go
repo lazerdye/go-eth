@@ -96,7 +96,7 @@ func doClientBalance(server, addressStr string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Balance of %s: %g\n", address.String(), eth)
+	fmt.Printf("Balance of %s: %s\n", address.String(), eth)
 
 	return nil
 }

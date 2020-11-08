@@ -5,15 +5,23 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
 	OptionsFactoryContract = common.HexToAddress("0xcc5d905b9c2c8c9329eb4e25dc086369d6c7777c")
 
 	EthContract = common.HexToAddress("0x0")
+)
+
+const (
+	opynGasSpeed      = gasstation.Fast
+	openVaultGasLimit = 0
 )
 
 type Client struct {
@@ -88,4 +96,22 @@ func (t *OTokenClient) StrikePrice(ctx context.Context) (decimal.Decimal, error)
 		return decimal.Zero, nil
 	}
 	return decimal.NewFromBigInt(strikePrice.Value, strikePrice.Exponent), nil
+}
+
+func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
+	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, openVaultGasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	tx, err := t.otoken.OpenVault(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return tx, nil
 }
