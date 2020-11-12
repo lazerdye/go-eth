@@ -90,6 +90,10 @@ func (t *OTokenClient) CollateralExp(ctx context.Context) (int32, error) {
 	return t.otoken.CollateralExp(t.DefaultCallOpts(ctx))
 }
 
+func (t *OTokenClient) Expiry(ctx context.Context) (*big.Int, error) {
+	return t.otoken.Expiry(t.DefaultCallOpts(ctx))
+}
+
 func (t *OTokenClient) StrikePrice(ctx context.Context) (decimal.Decimal, error) {
 	strikePrice, err := t.otoken.StrikePrice(t.DefaultCallOpts(ctx))
 	if err != nil {
