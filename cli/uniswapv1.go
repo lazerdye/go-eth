@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
@@ -27,7 +28,14 @@ var (
 	clientUniswap1GetTokenToEthInputPriceEthBought     = clientUniswap1GetTokenToEthInputPrice.Arg("eth-bought", "Ethereum bought").Required().Float64()
 	clientUniswap1GetTokenToEthOutputPrice             = clientUniswap1Command.Command("token-to-eth-output", "Get token to eth output price")
 	clientUniswap1GetTokenToEthOutputPriceTokensSold   = clientUniswap1GetTokenToEthOutputPrice.Arg("tokens-sold", "Tokens sold").Required().Float64()
+	clientUniswap1TokenToEthSwapInput                  = clientUniswap1Command.Command("token-to-eth-swap-input", "Swap to eth the number of tokens")
+	clientUniswap1TokenToEthSwapInputTokensSold        = clientUniswap1TokenToEthSwapInput.Arg("tokens-sold", "Tokens sold").Required().Float64()
+	clientUniswap1TokenToEthSwapInputMinEth            = clientUniswap1TokenToEthSwapInput.Arg("min-eth", "Minimum eth received").Required().Float64()
 	clientUniswap1Graph                                = clientUniswap1Command.Command("graph", "Query the graph")
+)
+
+const (
+	deadlineOffset = 1200 // 20 minutes
 )
 
 func uniswapV1Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -48,6 +56,8 @@ func uniswapV1Commands(ctx context.Context, client *client.Client, reg *token2.R
 		return true, uniswapGetTokenToEthOutputPrice(ctx, reg, uniswapv1Client)
 	case "graph":
 		return true, uniswapGraph(ctx, uniswapv1Client)
+	case "token-to-eth-swap-input":
+		return true, uniswapTokenToEthSwapInput(ctx, reg, uniswapv1Client)
 	}
 	return false, nil
 }
@@ -166,6 +176,33 @@ func uniswapGraph(ctx context.Context, client *uniswapv1.Client) error {
 	for _, exchange := range exchanges {
 		fmt.Printf("Token %s (%s): %s\n", exchange.TokenName, exchange.TokenSymbol, exchange.TradeVolumeEth)
 	}
+
+	return nil
+}
+
+func uniswapTokenToEthSwapInput(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) error {
+	ex, err := getExchange(ctx, reg, client)
+	if err != nil {
+		return err
+	}
+	tokensSold := decimal.NewFromFloat(*clientUniswap1TokenToEthSwapInputTokensSold)
+	minEth := decimal.NewFromFloat(*clientUniswap1TokenToEthSwapInputMinEth)
+
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet is locked")
+	}
+
+	deadline := int(time.Now().Unix() + deadlineOffset)
+
+	tx, err := ex.TokenToEthSwapInput(ctx, account, tokensSold, minEth, deadline)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", tx.Hash().Hex())
 
 	return nil
 }
