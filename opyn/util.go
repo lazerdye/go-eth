@@ -36,10 +36,6 @@ func (t *OTokenClient) ContractInfo(ctx context.Context) (*ContractInfo, error) 
 	if err != nil {
 		return nil, err
 	}
-	decimals, err := t.Decimals(ctx)
-	if err != nil {
-		return nil, err
-	}
 	collateral, err := t.Collateral(ctx)
 	if err != nil {
 		return nil, err
@@ -52,7 +48,7 @@ func (t *OTokenClient) ContractInfo(ctx context.Context) (*ContractInfo, error) 
 	if err != nil {
 		return nil, err
 	}
-	strikePrice = strikePrice.Shift(int32(decimals))
+	strikePrice = strikePrice.Shift(int32(t.Decimals))
 
 	var typ string
 	var currency common.Address
