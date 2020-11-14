@@ -51,7 +51,8 @@ func (o *Client) OptionsContract(ctx context.Context, index *big.Int) (common.Ad
 type OTokenClient struct {
 	*client.Client
 
-	otoken *OToken
+	Contract common.Address
+	otoken   *OToken
 }
 
 func (o *Client) GetOToken(ctx context.Context, contract common.Address) (*OTokenClient, error) {
@@ -59,7 +60,7 @@ func (o *Client) GetOToken(ctx context.Context, contract common.Address) (*OToke
 	if err != nil {
 		return nil, err
 	}
-	return &OTokenClient{o.Client, otoken}, nil
+	return &OTokenClient{o.Client, contract, otoken}, nil
 }
 
 func (t *OTokenClient) Name(ctx context.Context) (string, error) {

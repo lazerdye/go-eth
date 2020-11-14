@@ -54,63 +54,27 @@ func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg 
 		if err != nil {
 			return err
 		}
-		if *clientOpynListOptionsContractsActive && hasExpired {
-			continue
-		}
 		name, err := otoken.Name(ctx)
 		if err != nil {
 			return err
 		}
-		decimals, err := otoken.Decimals(ctx)
+		if *clientOpynListOptionsContractsActive && (hasExpired || name == "") {
+			continue
+		}
+		info, err := otoken.ContractInfo(ctx)
 		if err != nil {
 			return err
 		}
-		expiredStr := ""
-		if hasExpired {
-			expiredStr = " expired"
-		}
-		fmt.Printf("%d: %s (%v %d)%s\n", i, name, optionsContractAddress.Hex(), decimals, expiredStr)
-		underlying, err := otoken.Underlying(ctx)
-		if err != nil {
-			return err
-		}
-		underlyingExp, err := otoken.UnderlyingExp(ctx)
-		if err != nil {
-			return err
-		}
-		underlyingName := underlying.Hex()
-		if underlying == opyn.EthContract {
-			underlyingName = "eth"
+		currencyName := info.Currency.Hex()
+		if info.Currency == opyn.EthContract {
+			currencyName = "eth"
 		} else {
-			name, _, err := reg.ByAddress(underlying)
+			name, _, err := reg.ByAddress(info.Currency)
 			if err == nil {
-				underlyingName = name
+				currencyName = name
 			}
 		}
-		collateral, err := otoken.Collateral(ctx)
-		if err != nil {
-			return err
-		}
-		collateralExp, err := otoken.CollateralExp(ctx)
-		if err != nil {
-			return err
-		}
-		collateralName := collateral.Hex()
-		if collateral == opyn.EthContract {
-			collateralName = "eth"
-		} else {
-			name, _, err := reg.ByAddress(collateral)
-			if err == nil {
-				collateralName = name
-			}
-		}
-		strikePrice, err := otoken.StrikePrice(ctx)
-		if err != nil {
-			return err
-		}
-
-		fmt.Printf("    %s %d -> %s %d (%s)\n",
-			underlyingName, underlyingExp, collateralName, collateralExp, strikePrice.Shift(int32(decimals)))
+		fmt.Printf("%d %s: %s %s %s (%s)\n", i, info.Type, info.Name, info.StrikePrice, info.Expiry, currencyName)
 	}
 	return nil
 }
