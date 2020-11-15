@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"math/big"
 	"strconv"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
@@ -23,7 +24,6 @@ var (
 	clientOpynListOptionsContractsActive = clientOpynListOptionsContracts.Flag("active", "Only show active contracts").Bool()
 	clientOpynOpenVaultCommand           = clientOpynCommand.Command("open-vault", "Open a vault")
 	clientOpynEstimateCommand            = clientOpynCommand.Command("estimate", "Estimate contract operation")
-	clientOpynEstimateContractId         = clientOpynEstimateCommand.Arg("contract-id", "Contract ID").Required().String()
 	clientOpynEstimateAmount             = clientOpynEstimateCommand.Arg("amount", "Amount of collateral").Required().String()
 	clientOpynAddCollateralOption        = clientOpynCommand.Command("add-collateral-option", "Add collateral Option")
 	clientOpynAddCollateralContractId    = clientOpynAddCollateralOption.Arg("contract-id", "Contract ID").Required().String()
@@ -31,7 +31,6 @@ var (
 	clientOpynAddCollateralCollateralAmt = clientOpynAddCollateralOption.Arg("collateral-amt", "Collateral amount").Required().String()
 	clientOpynAddCollateralReceiver      = clientOpynAddCollateralOption.Arg("receiver", "Address of receiver").Required().String()
 	clientOpynGetVault                   = clientOpynCommand.Command("get-vault", "Get info about the given vault")
-	clientOpynGetVaultContractId         = clientOpynGetVault.Arg("contract-id", "Contract ID").Required().String()
 )
 
 func opynCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -49,9 +48,36 @@ func opynCommands(ctx context.Context, client *client.Client, reg *token2.Regist
 	case "add-collateral-option":
 		return true, opynAddCollateralOption(ctx, opynClient, reg)
 	case "get-vault":
-		return true, opynGetVault(ctx, opynClient)
+		return true, opynGetVault(ctx, opynClient, reg)
 	}
 	return false, nil
+}
+
+func getOToken(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) (*opyn.OTokenClient, error) {
+	if *clientOpynOTokenAddress == "" {
+		return nil, errors.New("--otoken flag is required")
+	}
+	var optionsContractAddress common.Address
+	if strings.HasPrefix(*clientOpynOTokenAddress, "0x") {
+		// Contract address.
+		optionsContractAddress = common.HexToAddress(*clientOpynOTokenAddress)
+	} else {
+		val, err := strconv.ParseInt(*clientOpynOTokenAddress, 10, 64)
+		if err == nil {
+			// Contract index.
+			optionsContractAddress, err = opynClient.OptionsContract(ctx, big.NewInt(val))
+			if err != nil {
+				return nil, err
+			}
+		} else {
+			tok, err := reg.ByName(*clientOpynOTokenAddress)
+			if err != nil {
+				return nil, err
+			}
+			optionsContractAddress = tok.Address
+		}
+	}
+	return opynClient.GetOToken(ctx, optionsContractAddress)
 }
 
 func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
@@ -122,19 +148,11 @@ func opynOpenVault(ctx context.Context, opynClient *opyn.Client) error {
 }
 
 func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
-	contractId, err := strconv.ParseInt(*clientOpynEstimateContractId, 10, 32)
+	otoken, err := getOToken(ctx, opynClient, reg)
 	if err != nil {
 		return err
 	}
 	amount, err := decimal.NewFromString(*clientOpynEstimateAmount)
-	if err != nil {
-		return err
-	}
-	optionsContractAddress, err := opynClient.OptionsContract(ctx, big.NewInt(contractId))
-	if err != nil {
-		return err
-	}
-	otoken, err := opynClient.GetOToken(ctx, optionsContractAddress)
 	if err != nil {
 		return err
 	}
@@ -163,7 +181,7 @@ func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *tok
 		// XXX currency buys XX contracts
 		fmt.Printf("%s %s mints %s contracts\n", amount, currencyName, tokensIssuable)
 	default:
-		return errors.Errorf("Contract id %s with type %s not supported", optionsContractAddress.Hex(), info.Type)
+		return errors.Errorf("Contract id %s with type %s not supported", otoken.Contract.Hex(), info.Type)
 	}
 
 	uniswapv1Client, err := uniswapv1.NewClient(opynClient.Client)
@@ -239,22 +257,12 @@ func opynAddCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *
 	return nil
 }
 
-func opynGetVault(ctx context.Context, opynClient *opyn.Client) error {
-	contractId, err := strconv.ParseInt(*clientOpynGetVaultContractId, 10, 32)
+func opynGetVault(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
 	if err != nil {
 		return err
 	}
 	account, _, err := getAccount()
-	if err != nil {
-		return err
-	}
-
-	optionsContractAddress, err := opynClient.OptionsContract(ctx, big.NewInt(contractId))
-	if err != nil {
-		return err
-	}
-
-	otoken, err := opynClient.GetOToken(ctx, optionsContractAddress)
 	if err != nil {
 		return err
 	}
