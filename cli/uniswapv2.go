@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
@@ -16,26 +17,30 @@ import (
 )
 
 var (
-	clientUniswapv2Command            = clientToken2Command.Command("uniswapv2", "Uniswap V2 operations")
-	clientUniswapv2GetPairs           = clientUniswapv2Command.Command("get-pairs", "Get Pairs")
-	clientUniswapv2GetPair            = clientUniswapv2Command.Command("get-pair", "Get Pairs")
-	clientUniswapv2GetPairToken0      = clientUniswapv2GetPair.Arg("token0", "Token 0").String()
-	clientUniswapv2GetPairToken1      = clientUniswapv2GetPair.Arg("token1", "Token 1").String()
-	clientUniswapv2GetAmountOut       = clientUniswapv2Command.Command("get-amount-out", "Get output amount")
-	clientUniswapv2GetAmountOutToken0 = clientUniswapv2GetAmountOut.Arg("token0", "Token 0").String()
-	clientUniswapv2GetAmountOutToken1 = clientUniswapv2GetAmountOut.Arg("token1", "Token 1").String()
-	clientUniswapv2GetAmountOutAmount = clientUniswapv2GetAmountOut.Arg("amount", "Token 1").Float64()
-	clientUniswapv2GetAmountIn        = clientUniswapv2Command.Command("get-amount-in", "Get input amount")
-	clientUniswapv2GetAmountInToken0  = clientUniswapv2GetAmountIn.Arg("token0", "Token 0").String()
-	clientUniswapv2GetAmountInToken1  = clientUniswapv2GetAmountIn.Arg("token1", "Token 1").String()
-	clientUniswapv2GetAmountInAmount  = clientUniswapv2GetAmountIn.Arg("amount", "Token 0").Float64()
-	clientUniswapv2GetReserves        = clientUniswapv2Command.Command("get-reserves", "Get reserves")
-	clientUniswapv2GetReservesToken0  = clientUniswapv2GetReserves.Arg("token0", "Token 0").String()
-	clientUniswapv2GetReservesToken1  = clientUniswapv2GetReserves.Arg("token1", "Token 1").String()
-	clientUniswapv2Claim              = clientUniswapv2Command.Command("claim-token", "Claim UNI token")
-	clientUniswapv2ClaimIndex         = clientUniswapv2Claim.Arg("index", "Token claim index").Int64()
-	clientUniswapv2ClaimAmount        = clientUniswapv2Claim.Arg("amount", "Token claim amount").String()
-	clientUniswapv2ClaimMerkleProof   = clientUniswapv2Claim.Arg("merkle-proof", "Token claim merkle proof - comma separated hex").String()
+	clientUniswapv2Command                          = clientToken2Command.Command("uniswapv2", "Uniswap V2 operations")
+	clientUniswapv2GetPairs                         = clientUniswapv2Command.Command("get-pairs", "Get Pairs")
+	clientUniswapv2GetPair                          = clientUniswapv2Command.Command("get-pair", "Get Pairs")
+	clientUniswapv2GetPairToken0                    = clientUniswapv2GetPair.Arg("token0", "Token 0").String()
+	clientUniswapv2GetPairToken1                    = clientUniswapv2GetPair.Arg("token1", "Token 1").String()
+	clientUniswapv2GetAmountOut                     = clientUniswapv2Command.Command("get-amount-out", "Get output amount")
+	clientUniswapv2GetAmountOutToken0               = clientUniswapv2GetAmountOut.Arg("token0", "Token 0").String()
+	clientUniswapv2GetAmountOutToken1               = clientUniswapv2GetAmountOut.Arg("token1", "Token 1").String()
+	clientUniswapv2GetAmountOutAmount               = clientUniswapv2GetAmountOut.Arg("amount", "Token 1").Float64()
+	clientUniswapv2GetAmountIn                      = clientUniswapv2Command.Command("get-amount-in", "Get input amount")
+	clientUniswapv2GetAmountInToken0                = clientUniswapv2GetAmountIn.Arg("token0", "Token 0").String()
+	clientUniswapv2GetAmountInToken1                = clientUniswapv2GetAmountIn.Arg("token1", "Token 1").String()
+	clientUniswapv2GetAmountInAmount                = clientUniswapv2GetAmountIn.Arg("amount", "Token 0").Float64()
+	clientUniswapv2SwapETHForExactTokens            = clientUniswapv2Command.Command("swap-eth-for-exact-tokens", "Swap eth to exact tokens")
+	clientUniswapv2SwapETHForExactTokensToken0      = clientUniswapv2SwapETHForExactTokens.Arg("token0", "Token to swap").String()
+	clientUniswapv2SwapETHForExactTokensMaxAmountIn = clientUniswapv2SwapETHForExactTokens.Arg("max-amount-in", "Max tokens in").String()
+	clientUniswapv2SwapETHForExactTokensAmountOut   = clientUniswapv2SwapETHForExactTokens.Arg("amount-out", "Eth amount out").String()
+	clientUniswapv2GetReserves                      = clientUniswapv2Command.Command("get-reserves", "Get reserves")
+	clientUniswapv2GetReservesToken0                = clientUniswapv2GetReserves.Arg("token0", "Token 0").String()
+	clientUniswapv2GetReservesToken1                = clientUniswapv2GetReserves.Arg("token1", "Token 1").String()
+	clientUniswapv2Claim                            = clientUniswapv2Command.Command("claim-token", "Claim UNI token")
+	clientUniswapv2ClaimIndex                       = clientUniswapv2Claim.Arg("index", "Token claim index").Int64()
+	clientUniswapv2ClaimAmount                      = clientUniswapv2Claim.Arg("amount", "Token claim amount").String()
+	clientUniswapv2ClaimMerkleProof                 = clientUniswapv2Claim.Arg("merkle-proof", "Token claim merkle proof - comma separated hex").String()
 )
 
 func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -54,6 +59,8 @@ func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.R
 		return true, uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
 	case "get-reserves":
 		return true, uniswapV2GetReserves(ctx, reg, uniswapv2Client)
+	case "swap-eth-for-exact-tokens":
+		return true, uniswapV2SwapETHForExactTokens(ctx, reg, uniswapv2Client)
 	case "claim-token":
 		return true, uniswapV2Claim(ctx, reg, uniswapv2Client)
 	}
@@ -160,6 +167,39 @@ func uniswapV2GetReserves(ctx context.Context, registry *token2.Registry, client
 		return err
 	}
 	fmt.Printf("Reserves: %s\n", reserves)
+	return nil
+}
+
+func uniswapV2SwapETHForExactTokens(ctx context.Context, registry *token2.Registry, client *uniswapv2.Client) error {
+	wethToken, err := registry.ByName("weth")
+	if err != nil {
+		return err
+	}
+	token0, err := registry.ByName(*clientUniswapv2SwapETHForExactTokensToken0)
+	if err != nil {
+		return err
+	}
+	maxAmountIn, err := decimal.NewFromString(*clientUniswapv2SwapETHForExactTokensMaxAmountIn)
+	if err != nil {
+		return err
+	}
+	amountOut, err := decimal.NewFromString(*clientUniswapv2SwapETHForExactTokensAmountOut)
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet locked")
+	}
+	deadline := int64(time.Now().Unix() + deadlineOffset)
+	tx, err := client.SwapETHForExactTokens(ctx, account, maxAmountIn, amountOut, []*token2.Client{token0, wethToken}, account.Address(), deadline)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Result: %s\n", tx.Hash().Hex())
 	return nil
 }
 

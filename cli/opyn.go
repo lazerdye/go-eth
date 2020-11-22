@@ -18,19 +18,23 @@ import (
 )
 
 var (
-	clientOpynCommand                    = clientToken2Command.Command("opyn", "Opyn operations")
-	clientOpynOTokenAddress              = clientToken2Command.Flag("otoken", "OToken Address").String()
-	clientOpynListOptionsContracts       = clientOpynCommand.Command("list-options-contracts", "List options contracts")
-	clientOpynListOptionsContractsActive = clientOpynListOptionsContracts.Flag("active", "Only show active contracts").Bool()
-	clientOpynOpenVaultCommand           = clientOpynCommand.Command("open-vault", "Open a vault")
-	clientOpynEstimateCommand            = clientOpynCommand.Command("estimate", "Estimate contract operation")
-	clientOpynEstimateAmount             = clientOpynEstimateCommand.Arg("amount", "Amount of collateral").Required().String()
-	clientOpynAddCollateralOption        = clientOpynCommand.Command("add-collateral-option", "Add collateral Option")
-	clientOpynAddCollateralContractId    = clientOpynAddCollateralOption.Arg("contract-id", "Contract ID").Required().String()
-	clientOpynAddCollateralAmtToCreate   = clientOpynAddCollateralOption.Arg("amt-to-create", "Amount of otoken to create").Required().String()
-	clientOpynAddCollateralCollateralAmt = clientOpynAddCollateralOption.Arg("collateral-amt", "Collateral amount").Required().String()
-	clientOpynAddCollateralReceiver      = clientOpynAddCollateralOption.Arg("receiver", "Address of receiver").Required().String()
-	clientOpynGetVault                   = clientOpynCommand.Command("get-vault", "Get info about the given vault")
+	clientOpynCommand                           = clientToken2Command.Command("opyn", "Opyn operations")
+	clientOpynOTokenAddress                     = clientToken2Command.Flag("otoken", "OToken Address").String()
+	clientOpynListOptionsContracts              = clientOpynCommand.Command("list-options-contracts", "List options contracts")
+	clientOpynListOptionsContractsActive        = clientOpynListOptionsContracts.Flag("active", "Only show active contracts").Bool()
+	clientOpynOpenVaultCommand                  = clientOpynCommand.Command("open-vault", "Open a vault")
+	clientOpynRedeemVaultBalanceCommand         = clientOpynCommand.Command("redeem-vault-balance", "Redeem vault balance")
+	clientOpynEstimateCommand                   = clientOpynCommand.Command("estimate", "Estimate contract operation")
+	clientOpynEstimateAmount                    = clientOpynEstimateCommand.Arg("amount", "Amount of collateral").Required().String()
+	clientOpynAddCollateralOption               = clientOpynCommand.Command("add-collateral-option", "Add collateral Option")
+	clientOpynAddCollateralAmtToCreate          = clientOpynAddCollateralOption.Arg("amt-to-create", "Amount of otoken to create").Required().String()
+	clientOpynAddCollateralCollateralAmt        = clientOpynAddCollateralOption.Arg("collateral-amt", "Collateral amount").Required().String()
+	clientOpynAddCollateralReceiver             = clientOpynAddCollateralOption.Arg("receiver", "Address of receiver").Required().String()
+	clientOpynAddAndSellCollateralOption        = clientOpynCommand.Command("add-and-sell-collateral-option", "Add and sell collateral Option")
+	clientOpynAddAndSellCollateralAmtToCreate   = clientOpynAddAndSellCollateralOption.Arg("amt-to-create", "Amount of otoken to create").Required().String()
+	clientOpynAddAndSellCollateralCollateralAmt = clientOpynAddAndSellCollateralOption.Arg("collateral-amt", "Collateral amount").Required().String()
+	clientOpynAddAndSellCollateralReceiver      = clientOpynAddAndSellCollateralOption.Arg("receiver", "Address of receiver").Required().String()
+	clientOpynGetVault                          = clientOpynCommand.Command("get-vault", "Get info about the given vault")
 )
 
 func opynCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -42,11 +46,15 @@ func opynCommands(ctx context.Context, client *client.Client, reg *token2.Regist
 	case "list-options-contracts":
 		return true, opynListOptionsContracts(ctx, opynClient, reg)
 	case "open-vault":
-		return true, opynOpenVault(ctx, opynClient)
+		return true, opynOpenVault(ctx, opynClient, reg)
+	case "redeem-vault-balance":
+		return true, opynRedeemVaultBalance(ctx, opynClient, reg)
 	case "estimate":
 		return true, opynEstimateContract(ctx, opynClient, reg)
 	case "add-collateral-option":
 		return true, opynAddCollateralOption(ctx, opynClient, reg)
+	case "add-and-sell-collateral-option":
+		return true, opynAddAndSellCollateralOption(ctx, opynClient, reg)
 	case "get-vault":
 		return true, opynGetVault(ctx, opynClient, reg)
 	}
@@ -119,14 +127,19 @@ func opynListOptionsContracts(ctx context.Context, opynClient *opyn.Client, reg 
 				currencyName = name
 			}
 		}
-		fmt.Printf("%d %s %s %s: %s %s (%s)\n", i, currencyName, info.Type, info.StrikePrice, info.Name, info.Expiry, info.Address.Hex())
+		status := ""
+		if hasExpired {
+			status = " EXPIRED"
+		}
+		fmt.Printf("%d %s %s %s: %s %s (%s)%s\n", i, currencyName, info.Type, info.StrikePrice, info.Name, info.Expiry, info.Address.Hex(), status)
 	}
 	return nil
 }
 
-func opynOpenVault(ctx context.Context, opynClient *opyn.Client) error {
-	if *clientOpynOTokenAddress == "" {
-		return errors.New("Flag --otoken required")
+func opynOpenVault(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
+	if err != nil {
+		return err
 	}
 	account, unlocked, err := getAccount()
 	if err != nil {
@@ -135,11 +148,27 @@ func opynOpenVault(ctx context.Context, opynClient *opyn.Client) error {
 	if !unlocked {
 		return errors.New("Wallet is locked")
 	}
-	otoken, err := opynClient.GetOToken(ctx, common.HexToAddress(*clientOpynOTokenAddress))
+	tx, err := otoken.OpenVault(ctx, account)
 	if err != nil {
 		return err
 	}
-	tx, err := otoken.OpenVault(ctx, account)
+	fmt.Printf("Transaction: %s\n", tx.Hash().Hex())
+	return nil
+}
+
+func opynRedeemVaultBalance(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet is locked")
+	}
+	tx, err := otoken.RedeemVaultBalance(ctx, account)
 	if err != nil {
 		return err
 	}
@@ -199,7 +228,7 @@ func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *tok
 		return err
 	}
 
-	fmt.Printf("Uniswapv1 exchange: %s\n", uniswapv1Exchange.Address.Hex())
+	fmt.Printf("Uniswapv1 exchange: %s\n", uniswapv1Exchange.ContractAddress().Hex())
 
 	sellEth, err := uniswapv1Exchange.GetTokenToEthInputPrice(ctx, tokensIssuable)
 	if err != nil {
@@ -207,11 +236,17 @@ func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *tok
 	}
 	fmt.Printf("%s contracts sell for %s eth\n", tokensIssuable, sellEth)
 
+	buyEth, err := uniswapv1Exchange.GetEthToTokenOutputPrice(ctx, tokensIssuable)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s contracts cost %s eth to buy\n", tokensIssuable, buyEth)
+
 	return nil
 }
 
 func opynAddCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
-	contractId, err := strconv.ParseInt(*clientOpynAddCollateralContractId, 10, 32)
+	otoken, err := getOToken(ctx, opynClient, reg)
 	if err != nil {
 		return err
 	}
@@ -232,14 +267,6 @@ func opynAddCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *
 	}
 
 	receiver := common.HexToAddress(*clientOpynAddCollateralReceiver)
-	optionsContractAddress, err := opynClient.OptionsContract(ctx, big.NewInt(contractId))
-	if err != nil {
-		return err
-	}
-	otoken, err := opynClient.GetOToken(ctx, optionsContractAddress)
-	if err != nil {
-		return err
-	}
 	collateral, err := otoken.Collateral(ctx)
 	if err != nil {
 		return err
@@ -249,6 +276,45 @@ func opynAddCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *
 	}
 
 	tx, err := otoken.AddERC20CollateralOption(ctx, account, amountToCreate, collateralAmount, receiver)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", tx.Hash().Hex())
+
+	return nil
+}
+
+func opynAddAndSellCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
+	if err != nil {
+		return err
+	}
+	amountToCreate, err := decimal.NewFromString(*clientOpynAddAndSellCollateralAmtToCreate)
+	if err != nil {
+		return err
+	}
+	collateralAmount, err := decimal.NewFromString(*clientOpynAddAndSellCollateralCollateralAmt)
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet is locked")
+	}
+
+	receiver := common.HexToAddress(*clientOpynAddAndSellCollateralReceiver)
+	collateral, err := otoken.Collateral(ctx)
+	if err != nil {
+		return err
+	}
+	if collateral == opyn.EthContract {
+		return errors.New("ETH as collateral not yet supported")
+	}
+
+	tx, err := otoken.AddAndSellERC20CollateralOption(ctx, account, amountToCreate, collateralAmount, receiver)
 	if err != nil {
 		return err
 	}

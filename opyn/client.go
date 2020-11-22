@@ -22,8 +22,9 @@ var (
 )
 
 const (
-	opynGasSpeed      = gasstation.Fast
-	openVaultGasLimit = 0
+	opynGasSpeed        = gasstation.Fast
+	openVaultGasLimit   = 0
+	redeemVaultGasLimit = 0
 )
 
 type Client struct {
@@ -143,6 +144,23 @@ func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (
 	return tx, nil
 }
 
+func (t *OTokenClient) RedeemVaultBalance(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
+	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, redeemVaultGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	tx, err := t.otoken.RedeemVaultBalance(opts)
+	if err != nil {
+		return nil, err
+	}
+
+	return tx, nil
+}
+
 func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
 	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
@@ -164,6 +182,29 @@ func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wa
 	fmt.Printf("addErc20(%s,%s,%s)", amtToCreateWei, amtCollateralWei, receiver.Hex())
 
 	return t.otoken.AddERC20CollateralOption(opts, amtToCreateWei, amtCollateralWei, receiver)
+}
+
+func (t *OTokenClient) AddAndSellERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
+	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, openVaultGasLimit)
+	if err != nil {
+		return nil, err
+	}
+
+	amtToCreateWei := amtToCreate.Shift(int32(t.Decimals)).BigInt()
+
+	collateralExp, err := t.CollateralExp(ctx)
+	if err != nil {
+		return nil, err
+	}
+	amtCollateralWei := amtCollateral.Shift(-collateralExp).BigInt()
+
+	fmt.Printf("addAndSellErc20(%s,%s,%s)", amtToCreateWei, amtCollateralWei, receiver.Hex())
+
+	return t.otoken.AddAndSellERC20CollateralOption(opts, amtToCreateWei, amtCollateralWei, receiver)
 }
 
 func (t *OTokenClient) GetVault(ctx context.Context, address common.Address) (*big.Int, *big.Int, *big.Int, bool, error) {
