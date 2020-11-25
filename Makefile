@@ -68,6 +68,9 @@ opyn/options_factory.go: opyn/options_factory.abi
 opyn/otoken.go: opyn/otoken.abi
 	abigen --abi=opyn/otoken.abi --pkg=opyn --type=OToken --out=opyn/otoken.go
 
+eth2/deposit.go: eth2/deposit.abi
+	abigen --abi=eth2/deposit.abi --pkg=eth2 --type=Deposit --out=eth2/deposit.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
