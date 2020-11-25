@@ -15,6 +15,7 @@ import (
 	"github.com/lazerdye/go-eth/opyn"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/uniswapv1"
+	"github.com/lazerdye/go-eth/uniswapv2"
 )
 
 var (
@@ -241,6 +242,45 @@ func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *tok
 		return err
 	}
 	fmt.Printf("%s contracts cost %s eth to buy\n", tokensIssuable, buyEth)
+
+	if info.Type == opyn.CallType {
+		wethToken, err := reg.ByName("weth")
+		if err != nil {
+			return err
+		}
+		usdcToken, err := reg.ByName("usdc")
+		if err != nil {
+			return err
+		}
+
+		uniswapv2Client, err := uniswapv2.NewClient(opynClient.Client)
+		if err != nil {
+			return err
+		}
+
+		amountOut, err := uniswapv2Client.GetAmountOut(ctx, sellEth, wethToken, usdcToken)
+		if err != nil {
+			return err
+		}
+
+		totalSell := tokensIssuable.Add(amountOut)
+		fmt.Printf("Uniswapv2: %s eth converts to %s usdc (%s total sell)\n", sellEth, amountOut, totalSell)
+
+		currencyToken := wethToken
+		if info.Currency != opyn.EthContract {
+			_, currencyToken, err = reg.ByAddress(info.Currency)
+			if err != nil {
+				return err
+			}
+		}
+
+		usdcIn, err := uniswapv2Client.GetAmountIn(ctx, amount, usdcToken, currencyToken)
+		if err != nil {
+			return err
+		}
+
+		fmt.Printf("Uniswapv2: %s usdc to buy %s %s\n", usdcIn, amount, currencyName)
+	}
 
 	return nil
 }
