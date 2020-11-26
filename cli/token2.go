@@ -137,6 +137,8 @@ func token2Commands(ctx context.Context, client *client.Client, commands []strin
 		return bancorCommands(ctx, client, reg, commands[1:])
 	case "opyn":
 		return opynCommands(ctx, client, reg, commands[1:])
+	case "eth2":
+		return eth2Commands(ctx, client, reg, commands[1:])
 	}
 
 	return false, nil
