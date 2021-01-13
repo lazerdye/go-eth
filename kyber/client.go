@@ -52,6 +52,7 @@ func NewClient(client *client.Client) (*Client, error) {
 func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Client, quantity decimal.Decimal) (decimal.Decimal, decimal.Decimal, error) {
 	quantityInt := source.ToWei(quantity)
 	log.Infof("GetExpectedRate input %s %s %s", source.Address.String(), dest.Address.String(), quantityInt.String())
+
 	rate, err := c.instance.GetExpectedRate(&bind.CallOpts{Context: ctx}, source.Address, dest.Address, quantityInt)
 	if err != nil {
 		return dnil, dnil, err

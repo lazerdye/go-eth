@@ -181,6 +181,33 @@ func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Acco
 	return t, nil
 }
 
+func (c *Client) SwapExactETHForTokens(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
+	gasPrice, _, err := c.GasPrice(ctx, sellGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	path := make([]common.Address, len(tokenPath))
+	for i, token := range tokenPath {
+		path[i] = token.Address
+	}
+	amountInBig := tokenPath[0].ToWei(amountIn)
+	opts, err := account.NewTransactor(ctx, amountInBig, gasPrice, swapGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	amountOutMinBig := tokenPath[len(tokenPath)-1].ToWei(amountOutMin)
+	fmt.Printf("amountInBig: %d - amountOutMinBig: %d - opts: %+v\n", amountInBig, amountOutMinBig, opts)
+	if false {
+		return nil, errors.New("Not Implemented")
+	}
+	t, err := c.router.SwapExactETHForTokens(opts, amountOutMinBig, path, to, big.NewInt(deadline))
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
 func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Account, maxAmountIn decimal.Decimal, amountOut decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath) - 1] == weth
 	gasPrice, _, err := c.GasPrice(ctx, buyGasSpeed)
