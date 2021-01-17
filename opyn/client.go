@@ -210,3 +210,17 @@ func (t *OTokenClient) AddAndSellERC20CollateralOption(ctx context.Context, acco
 func (t *OTokenClient) GetVault(ctx context.Context, address common.Address) (*big.Int, *big.Int, *big.Int, bool, error) {
 	return t.otoken.GetVault(t.DefaultCallOpts(ctx), address)
 }
+
+func (t *OTokenClient) Exercise(ctx context.Context, account *wallet.Account, amount decimal.Decimal, vaults []common.Address) (*types.Transaction, error) {
+	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	amountWei := amount.Shift(int32(t.Decimals)).BigInt()
+
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, 0)
+	if err != nil {
+		return nil, err
+	}
+	return t.otoken.Exercise(opts, amountWei, vaults)
+}

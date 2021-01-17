@@ -36,6 +36,10 @@ var (
 	clientOpynAddAndSellCollateralCollateralAmt = clientOpynAddAndSellCollateralOption.Arg("collateral-amt", "Collateral amount").Required().String()
 	clientOpynAddAndSellCollateralReceiver      = clientOpynAddAndSellCollateralOption.Arg("receiver", "Address of receiver").Required().String()
 	clientOpynGetVault                          = clientOpynCommand.Command("get-vault", "Get info about the given vault")
+	clientOpynListVaults                        = clientOpynCommand.Command("list-vaults", "List vaults")
+	clientOpynExerciseCommand                   = clientOpynCommand.Command("exercise", "Exercise token")
+	clientOpynExerciseAmount                    = clientOpynExerciseCommand.Arg("amount", "Amount of token to exercise").Required().String()
+	clientOpynExerciseVaults                    = clientOpynExerciseCommand.Arg("vualts", "List of vaults to exercise").Required().String()
 )
 
 func opynCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -58,6 +62,10 @@ func opynCommands(ctx context.Context, client *client.Client, reg *token2.Regist
 		return true, opynAddAndSellCollateralOption(ctx, opynClient, reg)
 	case "get-vault":
 		return true, opynGetVault(ctx, opynClient, reg)
+	case "list-vaults":
+		return true, opynListVaults(ctx, opynClient, reg)
+	case "exercise":
+		return true, opynExercise(ctx, opynClient, reg)
 	}
 	return false, nil
 }
@@ -378,7 +386,79 @@ func opynGetVault(ctx context.Context, opynClient *opyn.Client, reg *token2.Regi
 		return err
 	}
 
-	fmt.Printf("%s %s %s %t\n", a, b, c, d)
+	collateralExp, err := otoken.CollateralExp(ctx)
+	if err != nil {
+		return err
+	}
+	//underlyingExp, err := otoken.UnderlyingExp(ctx)
+	//if err != nil {
+	//	return err
+	//}
 
+	fmt.Printf("%s %s %s %t\n", decimal.NewFromBigInt(a, collateralExp), decimal.NewFromBigInt(b, -int32(otoken.Decimals)), c, d)
+
+	return nil
+}
+
+func opynListVaults(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
+	if err != nil {
+		return err
+	}
+	collateralExp, err := otoken.CollateralExp(ctx)
+	if err != nil {
+		return err
+	}
+	underlyingExp, err := otoken.UnderlyingExp(ctx)
+	if err != nil {
+		return err
+	}
+	graph := opyn.NewGraph()
+	opened, err := graph.OpenedVaults(ctx, otoken.Contract.Hex())
+	if err != nil {
+		return err
+	}
+	for _, vaultInfo := range opened {
+		fmt.Printf("Vault Owner: %s\n", vaultInfo.Owner)
+		collateralAmtWei, tokenAmtWei, underlyingAmtWei, d, err := otoken.GetVault(ctx, common.HexToAddress(vaultInfo.Owner))
+		if err != nil {
+			return err
+		}
+		collateralAmt := decimal.NewFromBigInt(collateralAmtWei, collateralExp)
+		tokenAmt := decimal.NewFromBigInt(tokenAmtWei, -int32(otoken.Decimals))
+		underlyingAmt := decimal.NewFromBigInt(underlyingAmtWei, underlyingExp)
+
+		fmt.Printf("%s - %s / %s / %s / %t\n", vaultInfo.Owner, collateralAmt, tokenAmt, underlyingAmt, d)
+	}
+
+	return errors.New("Not Implemented")
+}
+
+func opynExercise(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) error {
+	otoken, err := getOToken(ctx, opynClient, reg)
+	if err != nil {
+		return err
+	}
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet is locked")
+	}
+	amount, err := decimal.NewFromString(*clientOpynExerciseAmount)
+	if err != nil {
+		return err
+	}
+	vaults := strings.Split(*clientOpynExerciseVaults, ",")
+	vaultAddresses := make([]common.Address, len(vaults))
+	for i, vault := range vaults {
+		vaultAddresses[i] = common.HexToAddress(vault)
+	}
+	tx, err := otoken.Exercise(ctx, account, amount, vaultAddresses)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Transaction: %s\n", tx.Hash().Hex())
 	return nil
 }
