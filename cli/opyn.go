@@ -251,20 +251,28 @@ func opynEstimateContract(ctx context.Context, opynClient *opyn.Client, reg *tok
 	}
 	fmt.Printf("%s contracts cost %s eth to buy\n", tokensIssuable, buyEth)
 
-	if info.Type == opyn.CallType {
-		wethToken, err := reg.ByName("weth")
-		if err != nil {
-			return err
-		}
-		usdcToken, err := reg.ByName("usdc")
+	wethToken, err := reg.ByName("weth")
+	if err != nil {
+		return err
+	}
+	usdcToken, err := reg.ByName("usdc")
+	if err != nil {
+		return err
+	}
+
+	uniswapv2Client, err := uniswapv2.NewClient(opynClient.Client)
+	if err != nil {
+		return err
+	}
+
+	if info.Type == opyn.PutType {
+		amountOut, err := uniswapv2Client.GetAmountOut(ctx, buyEth, wethToken, usdcToken)
 		if err != nil {
 			return err
 		}
 
-		uniswapv2Client, err := uniswapv2.NewClient(opynClient.Client)
-		if err != nil {
-			return err
-		}
+		fmt.Printf("Uniswapv2: %s eth converts to %s usdc\n", buyEth, amountOut)
+	} else if info.Type == opyn.CallType {
 
 		amountOut, err := uniswapv2Client.GetAmountOut(ctx, sellEth, wethToken, usdcToken)
 		if err != nil {
