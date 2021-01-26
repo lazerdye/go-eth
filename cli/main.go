@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"math/big"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -32,10 +33,13 @@ var (
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
-	statusCmd        = clientCmd.Command("status", "Get status")
-	balanceCmd       = clientCmd.Command("balance", "Get the balance of an account")
-	transferCmd      = clientCmd.Command("transfer", "Transfer ethereum")
-	transferTransmit = transferCmd.Flag("transmit", "Transmit transaction").Bool()
+	statusCmd                 = clientCmd.Command("status", "Get status")
+	balanceCmd                = clientCmd.Command("balance", "Get the balance of an account")
+	transferCmd               = clientCmd.Command("transfer", "Transfer ethereum")
+	transferTransmit          = transferCmd.Flag("transmit", "Transmit transaction").Bool()
+	filterLogsCmd             = clientCmd.Command("filterLogs", "Filter Logs")
+	filterLogsFromBlockNumber = filterLogsCmd.Flag("from", "From Block Number").Int64()
+	filterLogsToBlockNumber   = filterLogsCmd.Flag("to", "From Block Number").Int64()
 
 	tokenKyberCmd          = clientCmd.Command("kyber", "Kyber Network")
 	tokenKyberTokenFile    = tokenKyberCmd.Flag("token-file", "Token file").Required().String()
@@ -112,6 +116,27 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 		return err
 	}
 	fmt.Printf("Transaction(unsent): %+v\n", tx)
+	return nil
+}
+
+func doClientFilterLogs(server string) error {
+	ctx := context.Background()
+	c, err := client.Dial(server, gasstation.NewClient())
+	if err != nil {
+		return err
+	}
+	var fromBlockNumber *big.Int
+	if *filterLogsFromBlockNumber != 0 {
+		fromBlockNumber = big.NewInt(*filterLogsFromBlockNumber)
+	}
+	var toBlockNumber *big.Int
+	if *filterLogsToBlockNumber != 0 {
+		toBlockNumber = big.NewInt(*filterLogsToBlockNumber)
+	}
+
+	if err := c.FilterTransferLogs(ctx, fromBlockNumber, toBlockNumber); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -242,6 +267,13 @@ func main() {
 			log.Fatal("Parameter --address required")
 		}
 		if err := doClientBalance(*clientServer, *address); err != nil {
+			log.Fatal(err)
+		}
+	case "client filterLogs":
+		if *address == "" {
+			log.Fatal("Parameter --address required")
+		}
+		if err := doClientFilterLogs(*clientServer); err != nil {
 			log.Fatal(err)
 		}
 	case "client transfer":

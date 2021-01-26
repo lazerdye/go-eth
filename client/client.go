@@ -121,6 +121,26 @@ func (c *Client) DefaultCallOpts(ctx context.Context) *bind.CallOpts {
 	return &bind.CallOpts{Context: ctx, BlockNumber: c.overrideBlockNo}
 }
 
+func (c *Client) FilterTransferLogs(ctx context.Context, fromBlockNumber *big.Int, toBlockNumber *big.Int) error {
+	log.Infof("XXX FilterTransferLogs %s -> %s", fromBlockNumber, toBlockNumber)
+	logs, err := c.FilterLogs(ctx, ethereum.FilterQuery{
+		FromBlock: fromBlockNumber,
+		ToBlock:   toBlockNumber,
+		//Addresses: []common.Address{common.HexToAddress("0x2a563f94d39966d6d24fa08e84633948b92ec3d9")},
+	})
+	if err != nil {
+		return err
+	}
+	for _, l := range logs {
+		log.Infof("Log: %+v", l)
+		log.Infof("Address: %s", l.Address.String())
+		for _, t := range l.Topics {
+			log.Infof("%s", t.String())
+		}
+	}
+	return nil
+}
+
 func EthToWei(amount decimal.Decimal) *big.Int {
 	return amount.Shift(ethDecimals).BigInt()
 }
