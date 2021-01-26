@@ -99,6 +99,6 @@ func doEtherscanGas(ctx context.Context, c *etherscan.Client) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%s: Safe: %s\tPropose: %s\tFast: %s\n", gasOracle.LastBlock, gasOracle.SafeGasPrice, gasOracle.ProposeGasPrice, gasOracle.FastGasPrice)
+	fmt.Printf("%s: Safe: %s\tProposed: %s\tFast: %s\n", gasOracle.LastBlock, gasOracle.SafeGasPrice, gasOracle.ProposeGasPrice, gasOracle.FastGasPrice)
 	return nil
 }
