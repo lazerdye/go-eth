@@ -14,23 +14,38 @@ import (
 )
 
 var (
-	etherscanApikey   = kingpin.Flag("etherscan-apikey", "Key for etherscan api").Envar("ETHERSCAN_APIKEY").String()
-	etherscanCmd      = kingpin.Command("etherscan", "Etherscan operations")
-	etherscanList     = etherscanCmd.Command("list", "List transactions for account")
-	etherscanToken    = etherscanCmd.Flag("token", "List for given token").String()
-	etherscanDecimals = etherscanCmd.Flag("decimals", "Adjust value by given decimal value").Int()
-	etherscanSort     = etherscanList.Arg("sort", "Sort").Default("asc").String()
-	etherscanPage     = etherscanList.Arg("page", "Page number").Default("1").Int()
-	etherscanOffset   = etherscanList.Arg("offset", "Page offset").Default("20").Int()
+	etherscanApikey    = kingpin.Flag("etherscan-apikey", "Key for etherscan api").Envar("ETHERSCAN_APIKEY").String()
+	etherscanCmd       = kingpin.Command("etherscan", "Etherscan operations")
+	etherscanList      = etherscanCmd.Command("list", "List transactions for account")
+	etherscanToken     = etherscanCmd.Flag("token", "List for given token").String()
+	etherscanDecimals  = etherscanCmd.Flag("decimals", "Adjust value by given decimal value").Int()
+	etherscanSort      = etherscanList.Arg("sort", "Sort").Default("asc").String()
+	etherscanPage      = etherscanList.Arg("page", "Page number").Default("1").Int()
+	etherscanOffset    = etherscanList.Arg("offset", "Page offset").Default("20").Int()
+	etherscanGasOracle = etherscanCmd.Command("gas", "Etherscan gas oracle")
 )
 
-func doEtherscanList(ctx context.Context, address string) error {
+func etherscanCommands(ctx context.Context, commands []string) (bool, error) {
 	if *etherscanApikey == "" {
-		return errors.New("--etherscan-apikey required")
+		return false, errors.New("--etherscan-apikey required")
 	}
-	c := etherscan.NewClient(*etherscanApikey)
+	client := etherscan.NewClient(*etherscanApikey)
+	switch commands[0] {
+	case "list":
+		return true, doEtherscanList(ctx, client)
+	case "gas":
+		return true, doEtherscanGas(ctx, client)
+	}
+	return false, nil
+}
+
+func doEtherscanList(ctx context.Context, c *etherscan.Client) error {
+	account, _, err := getAccount()
+	if err != nil {
+		return err
+	}
+	address := account.Address().Hex()
 	var transactions []etherscan.Transaction
-	var err error
 	if *etherscanToken == "" {
 		transactions, err = c.NormalTransactionsByAddress(ctx, address, *etherscanPage, *etherscanOffset, *etherscanSort)
 		if err != nil {
@@ -76,5 +91,14 @@ func doEtherscanList(ctx context.Context, address string) error {
 		fmt.Println()
 	}
 
+	return nil
+}
+
+func doEtherscanGas(ctx context.Context, c *etherscan.Client) error {
+	gasOracle, err := c.GasOracle(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%s: Safe: %s\tPropose: %s\tFast: %s\n", gasOracle.LastBlock, gasOracle.SafeGasPrice, gasOracle.ProposeGasPrice, gasOracle.FastGasPrice)
 	return nil
 }

@@ -164,6 +164,39 @@ func (c *Client) ContractExecutionStatus(ctx context.Context, transaction string
 	return contractExecutionResult.Result.IsError != "0", contractExecutionResult.Result.ErrDescription, nil
 }
 
+type GasOracle struct {
+	LastBlock       string
+	SafeGasPrice    string
+	ProposeGasPrice string
+	FastGasPrice    string
+}
+
+type gasOracleResponse struct {
+	Status  string    `json:"status"`
+	Message string    `json:"message"`
+	Result  GasOracle `json:"result"`
+}
+
+func (c *Client) GasOracle(ctx context.Context) (*GasOracle, error) {
+	checkRate()
+	var gasOracleResponse gasOracleResponse
+
+	params := url.Values{}
+	params.Set("module", "gastracker")
+	params.Set("action", "gasoracle")
+	params.Set("apikey", c.apikey)
+
+	if err := c.httpClient.Get(ctx, etherscanApi, params, &gasOracleResponse); err != nil {
+		return nil, err
+	}
+
+	if gasOracleResponse.Status != "1" {
+		return nil, errors.Errorf("Error with transaction list: %+v", gasOracleResponse)
+	}
+
+	return &gasOracleResponse.Result, nil
+}
+
 func CalculateFee(t *Transaction) *big.Int {
 	gasPriceInt, _ := new(big.Int).SetString(t.GasPrice, 10)
 	gasUsedInt, _ := new(big.Int).SetString(t.GasUsed, 10)

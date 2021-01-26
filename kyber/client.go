@@ -3,16 +3,16 @@ package kyber
 import (
 	"context"
 
-	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/gasstation"
-	"github.com/lazerdye/go-eth/token2"
-	"github.com/lazerdye/go-eth/wallet"
-	"github.com/shopspring/decimal"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
+
+	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
+	"github.com/lazerdye/go-eth/token2"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 const (
@@ -27,25 +27,27 @@ var (
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
 
-	tradeGasSpeed = gasstation.Fastest
+	tradeGasSpeed = gasoracle.Fastest
 
 	dnil = decimal.Decimal{}
 )
 
 type Client struct {
 	*client.Client
+	gasoracle gasoracle.GasOracle
 
 	instance *Kyber
 }
 
-func NewClient(client *client.Client) (*Client, error) {
+func NewClient(client *client.Client, oracle gasoracle.GasOracle) (*Client, error) {
 	instance, err := NewKyber(KyberNetworkProxyAddress, client)
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
-		Client:   client,
-		instance: instance,
+		Client:    client,
+		gasoracle: oracle,
+		instance:  instance,
 	}, nil
 }
 
@@ -65,11 +67,11 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Clien
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, minRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, waitTime, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, err := c.gasoracle(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Gas price: %f - wait time: %fs", gasPrice, waitTime)
+	log.Infof("Gas price: %f", gasPrice)
 
 	amountInt := client.EthToWei(amount)
 	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, tradeGasLimit)
@@ -87,7 +89,7 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 }
 
 func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, maxRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, err := c.gasoracle(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}

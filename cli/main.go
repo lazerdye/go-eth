@@ -195,6 +195,14 @@ func main() {
 		if done {
 			return
 		}
+	case "etherscan":
+		done, err := etherscanCommands(ctx, commandsSplit[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if done {
+			return
+		}
 	}
 
 	// WIP
@@ -252,13 +260,6 @@ func main() {
 			log.Fatal("Both --source and --dest flags required")
 		}
 		if err := doClientKyberExpectedRate(*clientServer, *tokenKyberSource, *tokenKyberDest, *tokenKyberQuantity); err != nil {
-			log.Fatal(err)
-		}
-	case "etherscan list":
-		if *address == "" {
-			log.Fatal("--address required")
-		}
-		if err := doEtherscanList(context.Background(), *address); err != nil {
 			log.Fatal(err)
 		}
 	case "client zeroex deposit":
