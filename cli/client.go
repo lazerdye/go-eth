@@ -8,6 +8,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/gasstation"
 )
 
@@ -21,7 +22,8 @@ func newClient() (*client.Client, error) {
 	if *clientServer == "" {
 		return nil, errors.New("clientServer parameter required")
 	}
-	c, err := client.Dial(*clientServer, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(*clientServer, o)
 	if err != nil {
 		return nil, err
 	}

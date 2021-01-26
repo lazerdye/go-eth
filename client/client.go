@@ -12,7 +12,7 @@ import (
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
-	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -20,32 +20,32 @@ type Client struct {
 	*ethclient.Client
 
 	overrideBlockNo *big.Int
-	gasstation      *gasstation.Client
+	gasoracle       gasoracle.GasOracle
 }
 
 const (
 	ethDecimals = 18
 
 	GasLimit         = uint64(7800000)
-	TransferGasSpeed = gasstation.Fastest // TODO: Make this configurable.
-	BuyGasSpeed      = gasstation.Fastest
-	SellGasSpeed     = gasstation.Fast
+	TransferGasSpeed = gasoracle.Fastest // TODO: Make this configurable.
+	BuyGasSpeed      = gasoracle.Fastest
+	SellGasSpeed     = gasoracle.Fast
 )
 
 var (
 	dnil = decimal.Decimal{}
 )
 
-func Dial(url string, gasstation *gasstation.Client) (*Client, error) {
+func Dial(url string, gasoracle gasoracle.GasOracle) (*Client, error) {
 	client, err := ethclient.Dial(url)
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, nil, gasstation}, nil
+	return &Client{client, nil, gasoracle}, nil
 }
 
-func (c *Client) GasPrice(ctx context.Context, speed gasstation.Speed) (decimal.Decimal, float64, error) {
-	return c.gasstation.GasPrice(ctx, speed)
+func (c *Client) GasPrice(ctx context.Context, speed gasoracle.GasSpeed) (decimal.Decimal, error) {
+	return c.gasoracle(ctx, speed)
 }
 
 func (c *Client) BalanceOf(ctx context.Context, address common.Address) (decimal.Decimal, error) {
@@ -81,7 +81,7 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	log.Infof("Gas limit: %d", gasLimit)
 
-	gasPrice, _, err := c.GasPrice(ctx, TransferGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}

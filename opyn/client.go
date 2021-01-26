@@ -11,7 +11,7 @@ import (
 	//"github.com/pkg/errors"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -22,7 +22,7 @@ var (
 )
 
 const (
-	opynGasSpeed        = gasstation.Fast
+	opynGasSpeed        = gasoracle.Fast
 	openVaultGasLimit   = 0
 	redeemVaultGasLimit = 0
 )
@@ -127,7 +127,7 @@ func (t *OTokenClient) MaxOTokensIssuable(ctx context.Context, collateralAmount 
 }
 
 func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +145,7 @@ func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (
 }
 
 func (t *OTokenClient) RedeemVaultBalance(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +162,7 @@ func (t *OTokenClient) RedeemVaultBalance(ctx context.Context, account *wallet.A
 }
 
 func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
-	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +185,7 @@ func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wa
 }
 
 func (t *OTokenClient) AddAndSellERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
-	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -212,7 +212,7 @@ func (t *OTokenClient) GetVault(ctx context.Context, address common.Address) (*b
 }
 
 func (t *OTokenClient) Exercise(ctx context.Context, account *wallet.Account, amount decimal.Decimal, vaults []common.Address) (*types.Transaction, error) {
-	gasPrice, _, err := t.GasPrice(ctx, opynGasSpeed)
+	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}

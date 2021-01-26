@@ -13,6 +13,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token2"
@@ -78,7 +79,8 @@ func doAccountNew(keystore string, passphrase string) error {
 }
 
 func doClientStatus(ctx context.Context, server string) error {
-	c, err := client.Dial(server, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
 	}
@@ -92,7 +94,8 @@ func doClientStatus(ctx context.Context, server string) error {
 
 func doClientBalance(server, addressStr string) error {
 	address := common.HexToAddress(addressStr)
-	c, err := client.Dial(server, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
 	}
@@ -107,7 +110,8 @@ func doClientBalance(server, addressStr string) error {
 
 func doClientTransfer(server string, account *wallet.Account, destAddress string, amount float64) error {
 	ctx := context.Background()
-	c, err := client.Dial(server, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
 	}
@@ -121,7 +125,8 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 
 func doClientFilterLogs(server string) error {
 	ctx := context.Background()
-	c, err := client.Dial(server, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
 	}
@@ -141,7 +146,8 @@ func doClientFilterLogs(server string) error {
 }
 
 func doClientKyberExpectedRate(server string, source, dest string, quantity float64) error {
-	c, err := client.Dial(server, gasstation.NewClient())
+	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
 	}

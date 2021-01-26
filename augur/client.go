@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
@@ -15,7 +15,7 @@ var (
 	Repv2Contract = common.HexToAddress("0x221657776846890989a759BA2973e427DfF5C9bB")
 
 	tradeGasLimit = uint64(900000)
-	tradeGasSpeed = gasstation.Fast
+	tradeGasSpeed = gasoracle.Fast
 )
 
 type Client struct {
@@ -34,7 +34,7 @@ func NewClient(client *client.Client) (*Client, error) {
 }
 
 func (c *Client) MigrateFromLegacyReputationToken(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}

@@ -34,20 +34,18 @@ var (
 
 type Client struct {
 	*client.Client
-	gasoracle gasoracle.GasOracle
 
 	instance *Kyber
 }
 
-func NewClient(client *client.Client, oracle gasoracle.GasOracle) (*Client, error) {
+func NewClient(client *client.Client) (*Client, error) {
 	instance, err := NewKyber(KyberNetworkProxyAddress, client)
 	if err != nil {
 		return nil, err
 	}
 	return &Client{
-		Client:    client,
-		gasoracle: oracle,
-		instance:  instance,
+		Client:   client,
+		instance: instance,
 	}, nil
 }
 
@@ -67,7 +65,7 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Clien
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, minRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.gasoracle(ctx, tradeGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +87,7 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 }
 
 func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, maxRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.gasoracle(ctx, tradeGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}

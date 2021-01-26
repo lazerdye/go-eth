@@ -9,7 +9,7 @@ import (
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
 )
@@ -23,7 +23,7 @@ var (
 		"zrx": common.HexToAddress("0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407"),
 	}
 
-	mintGasSpeed = gasstation.Fast
+	mintGasSpeed = gasoracle.Fast
 	mintGasLimit = uint64(300000)
 )
 
@@ -65,7 +65,7 @@ func NewErc20Client(client *client.Client, tokName string, tok *token2.Client) (
 }
 
 func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, mintGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount d
 }
 
 func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, mintGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}

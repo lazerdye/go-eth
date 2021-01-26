@@ -13,13 +13,13 @@ import (
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/gasstation"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
 )
 
 const (
-	depositGasSpeed = gasstation.Fast
+	depositGasSpeed = gasoracle.Fast
 	depositGasLimit = 0
 )
 
@@ -52,7 +52,7 @@ type deposit struct {
 
 func (c *Client) Deposit(ctx context.Context, account *wallet.Account, depositFile string) ([]*types.Transaction, error) {
 
-	gasPrice, _, err := c.GasPrice(ctx, depositGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, depositGasSpeed)
 	if err != nil {
 		return nil, err
 	}

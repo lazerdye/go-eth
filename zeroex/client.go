@@ -47,7 +47,7 @@ func NewClient(tokenClient *client.Client) (*Client, error) {
 }
 
 func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -69,7 +69,7 @@ func (c *Client) EtherTokenBalanceOf(ctx context.Context, account *wallet.Accoun
 }
 
 func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order e
 }
 
 func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, o
 }
 
 func (c *Client) FillOrKillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +107,7 @@ func (c *Client) FillOrKillOrder(ctx context.Context, account *wallet.Account, o
 }
 
 func (c *Client) BatchFillOrKillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
-	gasPrice, _, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
