@@ -211,7 +211,7 @@ func getAccount() (*wallet.Account, bool, error) {
 }
 
 func main() {
-	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Terence Haddock")
+	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Lazerdye")
 	kingpin.CommandLine.Help = "Ethereum test client"
 
 	commands := kingpin.Parse()
