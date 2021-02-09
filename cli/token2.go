@@ -40,7 +40,16 @@ func doTokenBalanceOf(ctx context.Context, reg *token2.Registry) error {
 	if err != nil {
 		return err
 	}
-	address := common.HexToAddress(*clientToken2BalanceOfAddress)
+	var address common.Address
+	if *clientToken2BalanceOfAddress == "" {
+		account, _, err := getAccount()
+		if err != nil {
+			return err
+		}
+		address = account.Address()
+	} else {
+		address = common.HexToAddress(*clientToken2BalanceOfAddress)
+	}
 	balance, err := token.BalanceOf(ctx, address)
 	if err != nil {
 		return err

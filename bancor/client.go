@@ -6,15 +6,23 @@ import (
 
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
 	ContractRegistryContract = common.HexToAddress("0x52Ae12ABe5D8BD778BD5397F99cA900624CfADD4")
 	EthAddress               = common.HexToAddress("0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE")
+)
+
+const (
+	convertGasSpeed = gasoracle.Fastest
+	convertGasLimit = uint64(700000)
 )
 
 type Client struct {
@@ -88,4 +96,16 @@ func (c *Client) GetConversionPath(ctx context.Context, sourceToken, targetToken
 
 func (c *Client) RateByPath(ctx context.Context, path []common.Address, amount *big.Int) (*big.Int, error) {
 	return c.networkInstance.RateByPath(c.DefaultCallOpts(ctx), path, amount)
+}
+
+func (c *Client) ConvertByPath(ctx context.Context, account *wallet.Account, path []common.Address, amount *big.Int, minReturn *big.Int) (*types.Transaction, error) {
+	gasPrice, err := c.GasPrice(ctx, convertGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, convertGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	return c.networkInstance.ConvertByPath(opts, path, amount, minReturn, common.HexToAddress(""), common.HexToAddress(""), nil)
 }
