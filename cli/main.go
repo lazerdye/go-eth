@@ -34,8 +34,6 @@ var (
 	newAccount       = accountCmd.Command("new", "Create new account")
 	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
 
-	statusCmd                 = clientCmd.Command("status", "Get status")
-	balanceCmd                = clientCmd.Command("balance", "Get the balance of an account")
 	transferCmd               = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit          = transferCmd.Flag("transmit", "Transmit transaction").Bool()
 	filterLogsCmd             = clientCmd.Command("filterLogs", "Filter Logs")
@@ -75,36 +73,6 @@ func doAccountNew(keystore string, passphrase string) error {
 	if err != nil {
 		return err
 	}
-	return nil
-}
-
-func doClientStatus(ctx context.Context, server string) error {
-	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
-	c, err := client.Dial(server, o)
-	if err != nil {
-		return err
-	}
-	stat, err := c.SyncProgress(ctx)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("%+v\n", stat)
-	return nil
-}
-
-func doClientBalance(server, addressStr string) error {
-	address := common.HexToAddress(addressStr)
-	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
-	c, err := client.Dial(server, o)
-	if err != nil {
-		return err
-	}
-	eth, err := c.BalanceOf(context.Background(), address)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Balance of %s: %s\n", address.String(), eth)
-
 	return nil
 }
 
@@ -264,17 +232,6 @@ func main() {
 			log.Fatal("Passphrase required")
 		}
 		fmt.Printf("Unlocked %s\n", *address)
-	case "client status":
-		if err := doClientStatus(ctx, *clientServer); err != nil {
-			log.Fatal(err)
-		}
-	case "client balance":
-		if *address == "" {
-			log.Fatal("Parameter --address required")
-		}
-		if err := doClientBalance(*clientServer, *address); err != nil {
-			log.Fatal(err)
-		}
 	case "client filterLogs":
 		if *address == "" {
 			log.Fatal("Parameter --address required")

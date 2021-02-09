@@ -2,8 +2,10 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"math/big"
 
+	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
 
@@ -16,6 +18,11 @@ var (
 	clientCmd     = kingpin.Command("client", "Client operations")
 	clientBlockNo = clientCmd.Flag("block-number", "Override block number").Int64()
 	clientServer  = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
+
+	statusCmd             = clientCmd.Command("status", "Get status")
+	balanceCmd            = clientCmd.Command("balance", "Get the balance of an account")
+	getTransactionCmd     = clientCmd.Command("get-transaction", "Get info about the given transaction hash")
+	getTransactionTransId = getTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
 )
 
 func newClient() (*client.Client, error) {
@@ -39,10 +46,52 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return false, err
 	}
 	switch commands[0] {
+	case "status":
+		return true, doClientStatus(ctx, client)
+	case "balance":
+		return true, doClientBalance(ctx, client)
+	case "get-transaction":
+		return true, doClientGetTransaction(ctx, client)
 	case "token2":
 		return token2Commands(ctx, client, commands[1:])
 	case "augur":
 		return augurCommands(ctx, client, commands[1:])
 	}
 	return false, nil
+}
+
+func doClientStatus(ctx context.Context, c *client.Client) error {
+	stat, err := c.SyncProgress(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("%+v\n", stat)
+	return nil
+}
+
+func doClientBalance(ctx context.Context, c *client.Client) error {
+	if *address == "" {
+		return errors.New("--address parameter required")
+	}
+	queryAddress := common.HexToAddress(*address)
+	eth, err := c.BalanceOf(ctx, queryAddress)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Balance of %s: %s\n", queryAddress.String(), eth)
+	return nil
+}
+
+func doClientGetTransaction(ctx context.Context, c *client.Client) error {
+	hash := common.HexToHash(*getTransactionTransId)
+	tx, isPending, err := c.TransactionByHash(ctx, hash)
+	if err != nil {
+		return err
+	}
+	if isPending {
+		fmt.Printf("PENDING Transaction: %+v\n", tx)
+	} else {
+		fmt.Printf("Transaction: %+v\n", tx)
+	}
+	return nil
 }
