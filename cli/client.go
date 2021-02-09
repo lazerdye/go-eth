@@ -88,10 +88,14 @@ func doClientGetTransaction(ctx context.Context, c *client.Client) error {
 	if err != nil {
 		return err
 	}
+	json, err := tx.MarshalJSON()
+	if err != nil {
+		return err
+	}
 	if isPending {
-		fmt.Printf("PENDING Transaction: %+v\n", tx)
+		fmt.Printf("PENDING Transaction: %s\n", string(json))
 	} else {
-		fmt.Printf("Transaction: %+v\n", tx)
+		fmt.Printf("Transaction: %s\n", string(json))
 	}
 	return nil
 }
