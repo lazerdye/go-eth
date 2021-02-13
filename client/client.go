@@ -48,8 +48,8 @@ func (c *Client) GasPrice(ctx context.Context, speed gasoracle.GasSpeed) (decima
 	return c.gasoracle(ctx, speed)
 }
 
-func (c *Client) BalanceOf(ctx context.Context, address common.Address) (decimal.Decimal, error) {
-	balance, err := c.Client.BalanceAt(ctx, address, nil)
+func (c *Client) BalanceAt(ctx context.Context, address common.Address, blockNumber *big.Int) (decimal.Decimal, error) {
+	balance, err := c.Client.BalanceAt(ctx, address, blockNumber)
 	if err != nil {
 		return dnil, err
 	}
@@ -126,7 +126,6 @@ func (c *Client) FilterTransferLogs(ctx context.Context, fromBlockNumber *big.In
 	logs, err := c.FilterLogs(ctx, ethereum.FilterQuery{
 		FromBlock: fromBlockNumber,
 		ToBlock:   toBlockNumber,
-		//Addresses: []common.Address{common.HexToAddress("0x2a563f94d39966d6d24fa08e84633948b92ec3d9")},
 	})
 	if err != nil {
 		return err

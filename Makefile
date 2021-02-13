@@ -71,6 +71,9 @@ opyn/otoken.go: opyn/otoken.abi
 eth2/deposit.go: eth2/deposit.abi
 	abigen --abi=eth2/deposit.abi --pkg=eth2 --type=Deposit --out=eth2/deposit.go
 
+digixdao/dgdinterface.go: digixdao/dgdinterface.abi
+	abigen --abi=digixdao/dgdinterface.abi --pkg=digixdao --type=DGDInterface --out=digixdao/dgdinterface.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
