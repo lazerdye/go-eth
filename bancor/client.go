@@ -8,6 +8,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
@@ -23,6 +24,9 @@ var (
 const (
 	convertGasSpeed = gasoracle.Fastest
 	convertGasLimit = uint64(700000)
+
+	tradeGasSpeed = gasoracle.Fastest
+	tradeGasLimit = uint64(300000)
 )
 
 type Client struct {
@@ -62,6 +66,20 @@ func NewClient(ctx context.Context, client *client.Client) (*Client, error) {
 		return nil, err
 	}
 	return &Client{client, contractRegistryInstance, converterRegistryInstance, networkInstance}, nil
+}
+
+func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
+	// Get gas price for trade.
+	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	log.Infof("Gas price: %s", gasPrice)
+	// Multiply by gas limit.
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(tradeGasLimit)))
+	log.Infof("Trade fee: %s", fee)
+
+	return fee.Shift(-18), nil
 }
 
 func (c *Client) ToWei(reg *token2.Registry, address common.Address, amount decimal.Decimal) (*big.Int, error) {

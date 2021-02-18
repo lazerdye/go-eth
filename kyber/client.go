@@ -22,7 +22,7 @@ const (
 )
 
 var (
-	tradeGasLimit            = uint64(900000)
+	tradeGasLimit            = uint64(400000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
 	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
@@ -47,6 +47,20 @@ func NewClient(client *client.Client) (*Client, error) {
 		Client:   client,
 		instance: instance,
 	}, nil
+}
+
+func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
+	// Get gas price for trade.
+	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	log.Infof("Gas price: %s", gasPrice)
+	// Multiply by gas limit.
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(tradeGasLimit)))
+	log.Infof("Trade fee: %s", fee)
+
+	return fee.Shift(-18), nil
 }
 
 func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Client, quantity decimal.Decimal) (decimal.Decimal, decimal.Decimal, error) {
