@@ -83,7 +83,11 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Transaction(unsent): %+v\n", tx)
+	if *transferTransmit {
+		fmt.Printf("Transaction: %s\n", tx.Hash().Hex())
+	} else {
+		fmt.Printf("Transaction(unsent): %s\n", tx.Hash().Hex())
+	}
 	return nil
 }
 
