@@ -50,6 +50,33 @@ func NewClient(apikey string) *Client {
 	return &Client{apikey: apikey, httpClient: util.NewHttpClient()}
 }
 
+type blockNumberResult struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Result  string `json:"result"`
+}
+
+func (c *Client) BlockNumberByTimestamp(ctx context.Context, timestamp string, closest string) (string, error) {
+	var blockNumberResult blockNumberResult
+
+	params := url.Values{}
+	params.Set("module", "block")
+	params.Set("action", "getblocknobytime")
+	params.Set("timestamp", timestamp)
+	params.Set("closest", closest)
+	params.Set("apikey", c.apikey)
+
+	if err := c.httpClient.Get(ctx, etherscanApi, params, &blockNumberResult); err != nil {
+		return "", err
+	}
+
+	if blockNumberResult.Status != "1" {
+		return "", errors.Errorf("Error with BlockNumberByTimestamp: %+v", blockNumberResult)
+	}
+
+	return blockNumberResult.Result, nil
+}
+
 type Transaction struct {
 	BlockNumber       string `json:"blockNumber"`
 	Timestamp         string `json:"timeStamp"`
@@ -77,7 +104,7 @@ type transactionResult struct {
 	Result  []Transaction `json:"result"`
 }
 
-func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, page, offset int, sort string) ([]Transaction, error) {
+func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string, startBlock, endBlock *string, page, offset int, sort string) ([]Transaction, error) {
 	checkRate()
 
 	var transactionResult transactionResult
@@ -86,6 +113,12 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	params.Set("module", "account")
 	params.Set("action", "txlist")
 	params.Set("address", address)
+	if startBlock != nil {
+		params.Set("startblock", *startBlock)
+	}
+	if endBlock != nil {
+		params.Set("endblock", *endBlock)
+	}
 	params.Set("page", strconv.Itoa(page))
 	params.Set("offset", strconv.Itoa(offset))
 	params.Set("sort", sort)
@@ -104,7 +137,7 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	return transactionResult.Result, nil
 }
 
-func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, page, offset int, sort string) ([]Transaction, error) {
+func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, sinceBlockNo, untilBlockNo *string, page, offset int, sort string) ([]Transaction, error) {
 	checkRate()
 
 	var transactionResult transactionResult
@@ -114,6 +147,12 @@ func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contra
 	params.Set("action", "tokentx")
 	params.Set("address", address)
 	params.Set("contractaddress", contractaddress)
+	if sinceBlockNo != nil {
+		params.Set("sinceblockno", *sinceBlockNo)
+	}
+	if untilBlockNo != nil {
+		params.Set("untilblockno", *untilBlockNo)
+	}
 	params.Set("page", strconv.Itoa(page))
 	params.Set("offset", strconv.Itoa(offset))
 	params.Set("sort", sort)

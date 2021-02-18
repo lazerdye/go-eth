@@ -47,12 +47,12 @@ func doEtherscanList(ctx context.Context, c *etherscan.Client) error {
 	address := account.Address().Hex()
 	var transactions []etherscan.Transaction
 	if *etherscanToken == "" {
-		transactions, err = c.NormalTransactionsByAddress(ctx, address, *etherscanPage, *etherscanOffset, *etherscanSort)
+		transactions, err = c.NormalTransactionsByAddress(ctx, address, nil, nil, *etherscanPage, *etherscanOffset, *etherscanSort)
 		if err != nil {
 			return err
 		}
 	} else {
-		transactions, err = c.TokenTransactionsByAddress(ctx, address, *etherscanToken, *etherscanPage, *etherscanOffset, *etherscanSort)
+		transactions, err = c.TokenTransactionsByAddress(ctx, address, *etherscanToken, nil, nil, *etherscanPage, *etherscanOffset, *etherscanSort)
 		if err != nil {
 			return err
 		}
