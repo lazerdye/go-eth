@@ -9,6 +9,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
@@ -21,8 +22,7 @@ var (
 	UniswapV2Router02Contract         = common.HexToAddress("0x7a250d5630b4cf539739df2c5dacb4c659f2488d")
 	UniswapV2TokenDistributorContract = common.HexToAddress("0x090D4613473dEE047c3f2706764f49E0821D256e")
 
-	buyGasSpeed   = gasoracle.Fastest
-	sellGasSpeed  = gasoracle.Fastest
+	swapGasSpeed  = gasoracle.Fastest
 	claimGasSpeed = gasoracle.Fastest
 
 	claimGasLimit = uint64(700000)
@@ -125,6 +125,20 @@ func (c *Client) PairClient(address common.Address) (*PairClient, error) {
 	return NewPairClient(c.Client, address)
 }
 
+func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
+	// Get gas price for trade.
+	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	log.Infof("Gas price: %s", gasPrice)
+	// Multiply by gas limit.
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(swapGasLimit)))
+	log.Infof("Trade fee: %s", fee)
+
+	return fee.Shift(-18), nil
+}
+
 func (c *Client) GetAmountOut(ctx context.Context, amountIn decimal.Decimal, token0 *token2.Client, token1 *token2.Client) (decimal.Decimal, error) {
 	opts := c.DefaultCallOpts(ctx)
 	path := []common.Address{token0.Address, token1.Address}
@@ -153,7 +167,7 @@ func (c *Client) GetAmountIn(ctx context.Context, amountOut decimal.Decimal, tok
 
 func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
-	gasPrice, err := c.GasPrice(ctx, sellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +197,7 @@ func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Acco
 
 func (c *Client) SwapExactETHForTokens(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
-	gasPrice, err := c.GasPrice(ctx, sellGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +224,7 @@ func (c *Client) SwapExactETHForTokens(ctx context.Context, account *wallet.Acco
 
 func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Account, maxAmountIn decimal.Decimal, amountOut decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
 	// TODO: Verify tokenPath[len(tokenPath) - 1] == weth
-	gasPrice, err := c.GasPrice(ctx, buyGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -232,7 +246,7 @@ func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Acco
 }
 
 func (c *Client) ClaimToken(ctx context.Context, account *wallet.Account, uniToken *token2.Client, index int64, amount decimal.Decimal, merkleProof [][32]byte) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, buyGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
