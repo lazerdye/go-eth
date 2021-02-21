@@ -117,13 +117,26 @@ func (c *Client) RateByPath(ctx context.Context, path []common.Address, amount *
 }
 
 func (c *Client) ConvertByPath(ctx context.Context, account *wallet.Account, path []common.Address, amount *big.Int, minReturn *big.Int) (*types.Transaction, error) {
+	var ethAmount *big.Int
+	if path[0] == EthAddress {
+		ethAmount = amount
+	}
 	gasPrice, err := c.GasPrice(ctx, convertGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, convertGasLimit)
+	opts, err := account.NewTransactor(ctx, ethAmount, gasPrice, convertGasLimit)
 	if err != nil {
 		return nil, err
 	}
-	return c.networkInstance.ConvertByPath(opts, path, amount, minReturn, common.HexToAddress(""), common.HexToAddress(""), nil)
+	return c.networkInstance.ConvertByPath(opts, path, amount, minReturn, common.HexToAddress(""), common.HexToAddress(""), big.NewInt(0))
+}
+
+func (c *Client) ParseNetworkConversion(log types.Log) (*NetworkConversion, error) {
+	return c.networkInstance.ParseConversion(log)
+}
+
+func (c *Client) FilterConversion(ctx context.Context, fromBlock uint64, toBlock *uint64, smartToken, fromToken, toToken []common.Address) (*NetworkConversionIterator, error) {
+	opts := bind.FilterOpts{Start: fromBlock, End: toBlock, Context: ctx}
+	return c.networkInstance.FilterConversion(&opts, smartToken, fromToken, toToken)
 }
