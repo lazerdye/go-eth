@@ -21,18 +21,21 @@ var (
 	clientBlockNo = clientCmd.Flag("block-number", "Override block number").Int64()
 	clientServer  = clientCmd.Flag("server", "URL of the server to connect to").Envar("ETHEREUM_SERVER").Required().String()
 
-	statusCmd                  = clientCmd.Command("status", "Get status")
-	balanceCmd                 = clientCmd.Command("balance", "Get the balance of an account")
-	balanceAtCmd               = clientCmd.Command("balance-at", "Get the balance of an account")
-	balanceAtBlock             = balanceAtCmd.Arg("block-number", "Block Number").Required().Int64()
-	getTransactionCmd          = clientCmd.Command("get-transaction", "Get info about the given transaction hash")
-	getTransactionTransId      = getTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
-	resubmitTransactionCmd     = clientCmd.Command("resubmit-transaction", "Resubmit a transaction")
-	resubmitTransactionTransId = resubmitTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
-	filterLogsCmd              = clientCmd.Command("filter-logs", "Filter Logs")
-	filterLogsQuery            = filterLogsCmd.Arg("query", "Query").String() // a|b,c|d
-	filterLogsFromBlockNumber  = filterLogsCmd.Arg("from", "From Block Number").Int64()
-	filterLogsToBlockNumber    = filterLogsCmd.Arg("to", "From Block Number").Int64()
+	statusCmd                   = clientCmd.Command("status", "Get status")
+	balanceCmd                  = clientCmd.Command("balance", "Get the balance of an account")
+	balanceAtCmd                = clientCmd.Command("balance-at", "Get the balance of an account")
+	balanceAtBlock              = balanceAtCmd.Arg("block-number", "Block Number").Required().Int64()
+	getTransactionCmd           = clientCmd.Command("get-transaction", "Get info about the given transaction hash")
+	getTransactionTransId       = getTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
+	resubmitTransactionCmd      = clientCmd.Command("resubmit-transaction", "Resubmit a transaction")
+	resubmitTransactionTransId  = resubmitTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
+	resubmitTransactionGasLimit = resubmitTransactionCmd.Flag("gas-limit", "Use this gas limit instead of increasing by 10%").Int64()
+	cancelTransactionCmd        = clientCmd.Command("cancel-transaction", "Cancel a transaction")
+	cancelTransactionTransId    = cancelTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
+	filterLogsCmd               = clientCmd.Command("filter-logs", "Filter Logs")
+	filterLogsQuery             = filterLogsCmd.Arg("query", "Query").String() // a|b,c|d
+	filterLogsFromBlockNumber   = filterLogsCmd.Arg("from", "From Block Number").Int64()
+	filterLogsToBlockNumber     = filterLogsCmd.Arg("to", "From Block Number").Int64()
 )
 
 func newClient() (*client.Client, error) {
@@ -66,6 +69,8 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return true, doClientGetTransaction(ctx, client)
 	case "resubmit-transaction":
 		return true, doClientResubmitTransaction(ctx, client)
+	case "cancel-transaction":
+		return true, doClientCancelTransaction(ctx, client)
 	case "filter-logs":
 		return true, doClientFilterLogs(ctx, client)
 	case "token2":
@@ -146,10 +151,50 @@ func doClientResubmitTransaction(ctx context.Context, c *client.Client) error {
 		return err
 	}
 	pAddress := tx.To()
-	incPrice := new(big.Int).Div(tx.GasPrice(), big.NewInt(10))
-	price := new(big.Int).Add(tx.GasPrice(), incPrice)
-	fmt.Printf("Increasing gas price from %d to %d\n", tx.GasPrice(), price)
+	var price *big.Int
+	if *resubmitTransactionGasLimit == 0 {
+		incPrice := new(big.Int).Div(tx.GasPrice(), big.NewInt(10))
+		price = new(big.Int).Add(tx.GasPrice(), incPrice)
+		fmt.Printf("Increasing gas price from %d to %d\n", tx.GasPrice(), price)
+	} else {
+		price = new(big.Int).Mul(big.NewInt(*resubmitTransactionGasLimit), big.NewInt(1e9))
+		fmt.Printf("Using gas price %d\n", price)
+	}
 	newTx := types.NewTransaction(tx.Nonce(), *pAddress, tx.Value(), tx.Gas(), price, tx.Data())
+	chainID, err := c.Client.NetworkID(ctx)
+	if err != nil {
+		return err
+	}
+	txSigned, err := account.SignTx(newTx, chainID)
+	if err != nil {
+		return err
+	}
+	json, err := txSigned.MarshalJSON()
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Transaction %s: %s\n", txSigned.Hash().String(), string(json))
+
+	return c.SendTransaction(ctx, txSigned)
+}
+
+func doClientCancelTransaction(ctx context.Context, c *client.Client) error {
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet locked")
+	}
+
+	hash := common.HexToHash(*cancelTransactionTransId)
+	tx, _, err := c.TransactionByHash(ctx, hash)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Clearing valid and data for transaction\n")
+	newTx := types.NewTransaction(tx.Nonce(), account.Address(), nil, tx.Gas(), tx.GasPrice(), nil)
 	chainID, err := c.Client.NetworkID(ctx)
 	if err != nil {
 		return err
