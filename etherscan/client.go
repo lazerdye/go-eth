@@ -137,7 +137,7 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	return transactionResult.Result, nil
 }
 
-func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, sinceBlockNo, untilBlockNo *string, page, offset int, sort string) ([]Transaction, error) {
+func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contractaddress string, startblock, endblock *string, page, offset int, sort string) ([]Transaction, error) {
 	checkRate()
 
 	var transactionResult transactionResult
@@ -146,12 +146,14 @@ func (c *Client) TokenTransactionsByAddress(ctx context.Context, address, contra
 	params.Set("module", "account")
 	params.Set("action", "tokentx")
 	params.Set("address", address)
-	params.Set("contractaddress", contractaddress)
-	if sinceBlockNo != nil {
-		params.Set("sinceblockno", *sinceBlockNo)
+	if contractaddress != "" {
+		params.Set("contractaddress", contractaddress)
 	}
-	if untilBlockNo != nil {
-		params.Set("untilblockno", *untilBlockNo)
+	if startblock != nil {
+		params.Set("startblock", *startblock)
+	}
+	if endblock != nil {
+		params.Set("endblock", *endblock)
 	}
 	params.Set("page", strconv.Itoa(page))
 	params.Set("offset", strconv.Itoa(offset))
