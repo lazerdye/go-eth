@@ -68,15 +68,19 @@ func NewClient(ctx context.Context, client *client.Client) (*Client, error) {
 	return &Client{client, contractRegistryInstance, converterRegistryInstance, networkInstance}, nil
 }
 
+func (c *Client) BancorNetworkContract(ctx context.Context) (common.Address, error) {
+	return getContractByName(c.DefaultCallOpts(ctx), c.contractRegistryInstance, "BancorNetwork")
+}
+
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, convertGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
 	log.Infof("Gas price: %s", gasPrice)
 	// Multiply by gas limit.
-	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(tradeGasLimit)))
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(convertGasLimit)))
 	log.Infof("Trade fee: %s", fee)
 
 	return fee.Shift(-18), nil
