@@ -22,11 +22,8 @@ var (
 )
 
 const (
-	convertGasSpeed = gasoracle.Fastest
-	convertGasLimit = uint64(700000)
-
-	tradeGasSpeed = gasoracle.Fastest
-	tradeGasLimit = uint64(300000)
+	defaultConvertGasSpeed = gasoracle.Fastest
+	defaultConvertGasLimit = uint64(700000)
 )
 
 type Client struct {
@@ -35,6 +32,9 @@ type Client struct {
 	contractRegistryInstance  *ContractRegistry
 	converterRegistryInstance *ConverterRegistry
 	networkInstance           *Network
+
+	convertGasSpeed gasoracle.GasSpeed
+	convertGasLimit uint64
 }
 
 func getContractByName(opts *bind.CallOpts, registry *ContractRegistry, contractName string) (common.Address, error) {
@@ -65,7 +65,15 @@ func NewClient(ctx context.Context, client *client.Client) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{client, contractRegistryInstance, converterRegistryInstance, networkInstance}, nil
+	return &Client{client, contractRegistryInstance, converterRegistryInstance, networkInstance, defaultConvertGasSpeed, defaultConvertGasLimit}, nil
+}
+
+func (c *Client) SetGasSpeed(gasSpeed gasoracle.GasSpeed) {
+	c.convertGasSpeed = gasSpeed
+}
+
+func (c *Client) SetConvertGasLimit(gasLimit uint64) {
+	c.convertGasLimit = gasLimit
 }
 
 func (c *Client) BancorNetworkContract(ctx context.Context) (common.Address, error) {
@@ -74,13 +82,13 @@ func (c *Client) BancorNetworkContract(ctx context.Context) (common.Address, err
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, convertGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, c.convertGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
 	log.Infof("Gas price: %s", gasPrice)
 	// Multiply by gas limit.
-	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(convertGasLimit)))
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.convertGasLimit)))
 	log.Infof("Trade fee: %s", fee)
 
 	return fee.Shift(-18), nil
@@ -125,11 +133,11 @@ func (c *Client) ConvertByPath(ctx context.Context, account *wallet.Account, pat
 	if path[0] == EthAddress {
 		ethAmount = amount
 	}
-	gasPrice, err := c.GasPrice(ctx, convertGasSpeed)
+	gasPrice, err := c.GasPrice(ctx, c.convertGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, ethAmount, gasPrice, convertGasLimit)
+	opts, err := account.NewTransactor(ctx, ethAmount, gasPrice, c.convertGasLimit)
 	if err != nil {
 		return nil, err
 	}
