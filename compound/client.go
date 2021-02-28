@@ -3,6 +3,7 @@ package compound
 import (
 	"context"
 
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
@@ -31,6 +32,7 @@ var (
 
 type Client interface {
 	Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
+	Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
 }
 
 type cethClient struct {
@@ -79,6 +81,24 @@ func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount d
 	return c.ceth.Mint(opts)
 }
 
+func (c *cethClient) Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
+	opts := &bind.CallOpts{Context: ctx}
+	decimals, err := c.ceth.Decimals(opts)
+	if err != nil {
+		return nil, err
+	}
+	amountWei := amount.Shift(int32(decimals.Int64())).BigInt()
+	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	trans, err := account.NewTransactor(ctx, nil, gasPrice, mintGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	return c.ceth.Redeem(trans, amountWei)
+}
+
 func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
@@ -94,4 +114,22 @@ func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount
 	}
 
 	return c.cerc20.Mint(opts, amountWei)
+}
+
+func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
+	opts := &bind.CallOpts{Context: ctx}
+	decimals, err := c.cerc20.Decimals(opts)
+	if err != nil {
+		return nil, err
+	}
+	amountWei := amount.Shift(int32(decimals.Int64())).BigInt()
+	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	trans, err := account.NewTransactor(ctx, nil, gasPrice, mintGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	return c.cerc20.Redeem(trans, amountWei)
 }

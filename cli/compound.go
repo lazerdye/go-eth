@@ -17,6 +17,8 @@ var (
 	clientCompoundToken   = clientCompoundCommand.Flag("token", "Token for compound").String()
 	clientMintCommand     = clientCompoundCommand.Command("mint", "Mint currency")
 	clientMintAmount      = clientMintCommand.Arg("amount", "Amount to mint").Required().Float64()
+	clientRedeemCommand   = clientCompoundCommand.Command("redeem", "Redeem currency")
+	clientRedeemAmount    = clientRedeemCommand.Arg("amount", "Amount to redeem").Required().String()
 )
 
 func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
@@ -44,6 +46,8 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 	switch commands[0] {
 	case "mint":
 		return true, compoundMint(ctx, compoundClient)
+	case "redeem":
+		return true, compoundRedeem(ctx, compoundClient)
 	}
 	return false, nil
 }
@@ -63,6 +67,28 @@ func compoundMint(ctx context.Context, compoundClient compound.Client) error {
 		return err
 	}
 	fmt.Printf("Mint TX: %s\n", tx.Hash().String())
+
+	return nil
+}
+
+func compoundRedeem(ctx context.Context, compoundClient compound.Client) error {
+	account, opened, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !opened {
+		return errors.New("Account not unlocked")
+	}
+
+	amountBig, err := decimal.NewFromString(*clientRedeemAmount)
+	if err != nil {
+		return err
+	}
+	tx, err := compoundClient.Redeem(ctx, account, amountBig)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Redeem TX: %s\n", tx.Hash().String())
 
 	return nil
 }
