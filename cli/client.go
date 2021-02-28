@@ -32,6 +32,8 @@ var (
 	resubmitTransactionGasLimit = resubmitTransactionCmd.Flag("gas-limit", "Use this gas limit instead of increasing by 10%").Int64()
 	cancelTransactionCmd        = clientCmd.Command("cancel-transaction", "Cancel a transaction")
 	cancelTransactionTransId    = cancelTransactionCmd.Arg("transaction-id", "Transaction ID").Required().String()
+	submitTransactionCmd        = clientCmd.Command("submit-transaction", "Submit a transaction from json")
+	submitTransactionTrans      = submitTransactionCmd.Arg("transaction", "transaction json").Required().String()
 	filterLogsCmd               = clientCmd.Command("filter-logs", "Filter Logs")
 	filterLogsQuery             = filterLogsCmd.Arg("query", "Query").String() // a|b,c|d
 	filterLogsFromBlockNumber   = filterLogsCmd.Arg("from", "From Block Number").Int64()
@@ -67,6 +69,8 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return true, doClientBalanceAt(ctx, client)
 	case "get-transaction":
 		return true, doClientGetTransaction(ctx, client)
+	case "submit-transaction":
+		return true, doClientSubmitTransaction(ctx, client)
 	case "resubmit-transaction":
 		return true, doClientResubmitTransaction(ctx, client)
 	case "cancel-transaction":
@@ -134,6 +138,32 @@ func doClientGetTransaction(ctx context.Context, c *client.Client) error {
 		fmt.Printf("Transaction: %s\n", string(json))
 	}
 	return nil
+}
+
+func doClientSubmitTransaction(ctx context.Context, c *client.Client) error {
+	account, unlocked, err := getAccount()
+	if err != nil {
+		return err
+	}
+	if !unlocked {
+		return errors.New("Wallet locked")
+	}
+	txValue := *submitTransactionTrans
+	var tx types.Transaction
+	if err := tx.UnmarshalJSON([]byte(txValue)); err != nil {
+		return err
+	}
+	fmt.Printf("%s\n", tx)
+	chainID, err := c.Client.NetworkID(ctx)
+	if err != nil {
+		return err
+	}
+	txSigned, err := account.SignTx(&tx, chainID)
+	if err != nil {
+		return err
+	}
+
+	return c.SendTransaction(ctx, txSigned)
 }
 
 func doClientResubmitTransaction(ctx context.Context, c *client.Client) error {
