@@ -30,7 +30,7 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 		if err != nil {
 			return false, err
 		}
-	case "bat", "zrx", "usdc", "usdt":
+	case "bat", "dai", "zrx", "usdc", "usdt":
 		tok, err := reg.ByName(*clientCompoundToken)
 		if err != nil {
 			return false, err
