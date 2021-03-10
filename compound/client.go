@@ -23,6 +23,7 @@ var (
 		"bat":  common.HexToAddress("0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e"),
 		"dai":  common.HexToAddress("0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643"),
 		"zrx":  common.HexToAddress("0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407"),
+		"uni":  common.HexToAddress("0x35A18000230DA775CAc24873d00Ff85BccdeD550"),
 		"usdc": common.HexToAddress("0x39aa39c021dfbae8fac545936693ac917d5e7563"),
 		"usdt": common.HexToAddress("0xf650c3d88d12db855b8bf7d11be6c55a4e07dcc9"),
 	}
