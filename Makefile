@@ -74,6 +74,12 @@ eth2/deposit.go: eth2/deposit.abi
 digixdao/dgdinterface.go: digixdao/dgdinterface.abi
 	abigen --abi=digixdao/dgdinterface.abi --pkg=digixdao --type=DGDInterface --out=digixdao/dgdinterface.go
 
+sushi/sushiv2factory.go: sushi/sushiv2factory.abi
+	abigen --abi=sushi/sushiv2factory.abi --pkg=sushi --type=SushiV2Factory --out=sushi/sushiv2factory.go
+
+sushi/pair.go: sushi/pair.abi
+	abigen --abi=sushi/pair.abi --pkg=sushi --type=Pair --out=sushi/pair.go
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
