@@ -80,6 +80,10 @@ sushi/sushiv2factory.go: sushi/sushiv2factory.abi
 sushi/pair.go: sushi/pair.abi
 	abigen --abi=sushi/pair.abi --pkg=sushi --type=Pair --out=sushi/pair.go
 
+sushi/sushiv2router02.go: sushi/sushiv2router02.abi
+	abigen --abi=sushi/sushiv2router02.abi --pkg=sushi --type=SushiV2Router02 --out=sushi/sushiv2router02.go
+
+
 gofmt:
 	go fmt $(PACKAGE)/...
 
