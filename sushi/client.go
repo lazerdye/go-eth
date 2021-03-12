@@ -9,12 +9,16 @@ import (
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 )
 
 var (
 	SushiV2FactoryContract  = common.HexToAddress("0xC0AEe478e3658e2610c5F7A4A2E1777cE9e4f2Ac")
 	SushiV2Router02Contract = common.HexToAddress("0xd9e1cE17f2641f24aE83637ab66a2cca9C378B9F")
+
+	defaultSwapGasSpeed = gasoracle.Fastest
+	defaultSwapGasLimit = uint64(700000)
 )
 
 type Client struct {
@@ -22,6 +26,9 @@ type Client struct {
 
 	factory *SushiV2Factory
 	router  *SushiV2Router02
+
+	swapGasSpeed  gasoracle.GasSpeed
+	swapGaslLimit uint64
 }
 
 func NewClient(client *client.Client) (*Client, error) {
@@ -34,7 +41,12 @@ func NewClient(client *client.Client) (*Client, error) {
 		return nil, err
 	}
 
-	return &Client{client, factoryInstance, routerInstance}, nil
+	return &Client{client, factoryInstance, routerInstance,
+		defaultSwapGasSpeed, defaultSwapGasLimit}, nil
+}
+
+func (c *Client) SetSwapGasSpeed(gasSpeed gasoracle.GasSpeed) {
+	c.swapGasSpeed = gasSpeed
 }
 
 type PairClient struct {
@@ -81,6 +93,15 @@ func (c *Client) GetPairs(ctx context.Context) ([]*PairClient, error) {
 		}
 	}
 	return pairs, nil
+}
+
+func (c *Client) GetPair(ctx context.Context, token0 *token2.Client, token1 *token2.Client) (*PairClient, error) {
+	opts := c.DefaultCallOpts(ctx)
+	pair, err := c.factory.GetPair(opts, token0.Address, token1.Address)
+	if err != nil {
+		return nil, err
+	}
+	return NewPairClient(c.Client, pair)
 }
 
 func (c *Client) GetAmountsIn(ctx context.Context, amountOut decimal.Decimal, tokenPath []*token2.Client) (decimal.Decimal, error) {
