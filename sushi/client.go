@@ -7,6 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
@@ -59,8 +60,11 @@ func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) 
 	if err != nil {
 		return decimal.Zero, err
 	}
+	log.Infof("Gas price: %s", gasPrice)
 	// Multiply by gas limit.
 	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.swapGasLimit)))
+	log.Infof("SwapGasLimit: %d", c.swapGasLimit)
+	log.Infof("Fee: %s", fee)
 
 	return fee.Shift(-18), nil
 }
