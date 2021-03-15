@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -28,11 +27,6 @@ var (
 	transferAmount = kingpin.Flag("amount", "Transfer amount").Float64()
 	contract       = kingpin.Flag("contract", "Contract for approval/allowance").String()
 
-	accountCmd       = kingpin.Command("account", "Account operations")
-	listAccounts     = accountCmd.Command("list", "List the accounts")
-	newAccount       = accountCmd.Command("new", "Create new account")
-	unlockAccountCmd = accountCmd.Command("unlock", "Unlock an account")
-
 	transferCmd      = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit = transferCmd.Flag("transmit", "Transmit transaction").Bool()
 
@@ -43,34 +37,6 @@ var (
 	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Float64()
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
-
-func doAccountList(keystore string) error {
-	w, err := wallet.Open(keystore)
-	if err != nil {
-		return err
-	}
-	err = w.PrintAccounts()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func doAccountNew(keystore string, passphrase string) error {
-	w, err := wallet.Open(keystore)
-	if err != nil {
-		return err
-	}
-	account, err := w.NewAccount(passphrase)
-	if err != nil {
-		return err
-	}
-	err = w.PrintAccount(account)
-	if err != nil {
-		return err
-	}
-	return nil
-}
 
 func doClientTransfer(server string, account *wallet.Account, destAddress string, amount float64) error {
 	ctx := context.Background()
@@ -131,31 +97,6 @@ func newZeroexClient() (*zeroex.Client, error) {
 	return zeroex.NewClient(client)
 }
 
-func getAccount() (*wallet.Account, bool, error) {
-	if *address == "" {
-		return nil, false, errors.New("address parameter required")
-	}
-	if *keystore == "" {
-		return nil, false, errors.New("keystore parameter required")
-	}
-	w, err := wallet.Open(*keystore)
-	if err != nil {
-		return nil, false, err
-	}
-	account, err := w.Account(*address)
-	if err != nil {
-		return nil, false, err
-	}
-	if *passphrase != "" {
-		if err := account.Unlock(*passphrase); err != nil {
-			return nil, false, err
-		}
-		return account, true, nil
-	} else {
-		return account, false, nil
-	}
-}
-
 func main() {
 	kingpin.UsageTemplate(kingpin.CompactUsageTemplate).Version("0.1").Author("Lazerdye")
 	kingpin.CommandLine.Help = "Ethereum test client"
@@ -164,6 +105,14 @@ func main() {
 	commandsSplit := strings.Split(commands, " ")
 	ctx := context.Background()
 	switch commandsSplit[0] {
+	case "account":
+		done, err := accountCommands(ctx, commandsSplit[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if done {
+			return
+		}
 	case "client":
 		done, err := clientCommands(ctx, commandsSplit[1:])
 		if err != nil {
@@ -184,32 +133,6 @@ func main() {
 
 	// WIP
 	switch kingpin.Parse() {
-	case "account list":
-		if *keystore == "" {
-			log.Fatal("Parameter --keystore required")
-		}
-		if err := doAccountList(*keystore); err != nil {
-			log.Fatal(err)
-		}
-	case "account new":
-		if *keystore == "" {
-			log.Fatal("Parameter --keystore required")
-		}
-		if *passphrase == "" {
-			log.Fatal("Parameter --passphrase required")
-		}
-		if err := doAccountNew(*keystore, *passphrase); err != nil {
-			log.Fatal(err)
-		}
-	case "account unlock":
-		_, unlocked, err := getAccount()
-		if err != nil {
-			log.Fatal(err)
-		}
-		if !unlocked {
-			log.Fatal("Passphrase required")
-		}
-		fmt.Printf("Unlocked %s\n", *address)
 	case "client transfer":
 		account, unlocked, err := getAccount()
 		if err != nil {

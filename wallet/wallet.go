@@ -2,6 +2,7 @@ package wallet
 
 import (
 	"context"
+	"crypto/ecdsa"
 	"fmt"
 	"math/big"
 
@@ -47,6 +48,14 @@ func (w *Wallet) Account(address string) (*Account, error) {
 		return nil, err
 	}
 	return &Account{w.ks, nil, account}, nil
+}
+
+func (w *Wallet) ImportAccount(pkey *ecdsa.PrivateKey, passphrase string) (*Account, error) {
+	a, err := w.ks.ImportECDSA(pkey, passphrase)
+	if err != nil {
+		return nil, err
+	}
+	return &Account{ks: w.ks, Account: a}, nil
 }
 
 func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
