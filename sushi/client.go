@@ -27,8 +27,8 @@ type Client struct {
 	factory *SushiV2Factory
 	router  *SushiV2Router02
 
-	swapGasSpeed  gasoracle.GasSpeed
-	swapGaslLimit uint64
+	swapGasSpeed gasoracle.GasSpeed
+	swapGasLimit uint64
 }
 
 func NewClient(client *client.Client) (*Client, error) {
@@ -47,6 +47,22 @@ func NewClient(client *client.Client) (*Client, error) {
 
 func (c *Client) SetSwapGasSpeed(gasSpeed gasoracle.GasSpeed) {
 	c.swapGasSpeed = gasSpeed
+}
+
+func (c *Client) SetSwapGasLimit(gasLimit uint64) {
+	c.swapGasLimit = gasLimit
+}
+
+func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
+	// Get gas price for trade.
+	gasPrice, err := c.GasPrice(ctx, c.swapGasSpeed)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	// Multiply by gas limit.
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.swapGasLimit)))
+
+	return fee.Shift(-18), nil
 }
 
 type PairClient struct {
