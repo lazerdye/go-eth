@@ -92,7 +92,8 @@ func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transa
 }
 
 func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice decimal.Decimal, gasLimit uint64) (*bind.TransactOpts, error) {
-	t, err := bind.NewKeyStoreTransactor(a.ks, a.Account)
+	// TODO: Configure chain id for other networks.
+	t, err := bind.NewKeyStoreTransactorWithChainID(a.ks, a.Account, big.NewInt(1))
 	if err != nil {
 		return nil, err
 	}
