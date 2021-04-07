@@ -93,6 +93,9 @@ func doClientStatus(ctx context.Context, c *client.Client) error {
 		return err
 	}
 	fmt.Printf("%+v\n", stat)
+	if stat != nil {
+		return errors.New("Sync in progress")
+	}
 	return nil
 }
 
