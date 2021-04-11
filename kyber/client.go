@@ -22,10 +22,9 @@ const (
 )
 
 var (
-	tradeGasLimit            = uint64(400000)
+	DefaultTradeGasLimit     = uint64(1000000)
 	KyberNetworkProxyAddress = common.HexToAddress(KyberNetworkProxyAddressString)
 	EthereumAddress          = common.HexToAddress(EthereumAddressString)
-	ethAmounts               = []float64{0.2, 0.5, 1.0, 10.0}
 
 	tradeGasSpeed = gasoracle.Fastest
 
@@ -35,7 +34,8 @@ var (
 type Client struct {
 	*client.Client
 
-	instance *Kyber
+	instance      *Kyber
+	tradeGasLimit uint64
 }
 
 func NewClient(client *client.Client) (*Client, error) {
@@ -44,9 +44,14 @@ func NewClient(client *client.Client) (*Client, error) {
 		return nil, err
 	}
 	return &Client{
-		Client:   client,
-		instance: instance,
+		Client:        client,
+		instance:      instance,
+		tradeGasLimit: DefaultTradeGasLimit,
 	}, nil
+}
+
+func (c *Client) SetTradeGasLimit(tradeGasLimit uint64) {
+	c.tradeGasLimit = tradeGasLimit
 }
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
@@ -57,7 +62,7 @@ func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) 
 	}
 	log.Infof("Gas price: %s", gasPrice)
 	// Multiply by gas limit.
-	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(tradeGasLimit)))
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.tradeGasLimit)))
 	log.Infof("Trade fee: %s", fee)
 
 	return fee.Shift(-18), nil
@@ -86,8 +91,8 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 	log.Infof("Gas price: %f", gasPrice)
 
 	amountInt := client.EthToWei(amount)
-	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, tradeGasLimit)
-	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, tradeGasLimit)
+	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, c.tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, c.tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +110,7 @@ func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, 
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, c.tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
