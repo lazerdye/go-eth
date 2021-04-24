@@ -129,6 +129,14 @@ func main() {
 		if done {
 			return
 		}
+	case "zxmesh":
+		done, err := zxmeshCommands(ctx, commandsSplit[1:])
+		if err != nil {
+			log.Fatal(err)
+		}
+		if done {
+			return
+		}
 	}
 
 	// WIP
