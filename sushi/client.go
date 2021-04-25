@@ -5,6 +5,7 @@ import (
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
@@ -12,6 +13,7 @@ import (
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
+	"github.com/lazerdye/go-eth/wallet"
 )
 
 var (
@@ -158,4 +160,82 @@ func (c *Client) GetAmountsOut(ctx context.Context, amountIn decimal.Decimal, to
 		return decimal.Zero, errors.Errorf("Expected reults of length 2: %+v", amounts)
 	}
 	return lastToken.FromWei(amounts[1]), nil
+}
+
+func (c *Client) SwapETHForExactTokens(ctx context.Context, account *wallet.Account, maxAmountIn decimal.Decimal, amountOut decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+	// TODO: Verify tokenPath[len(tokenPath) - 1] == weth
+	gasPrice, err := c.GasPrice(ctx, c.swapGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	maxAmountInBig := tokenPath[len(tokenPath)-1].ToWei(maxAmountIn)
+	opts, err := account.NewTransactor(ctx, maxAmountInBig, gasPrice, c.swapGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	path := make([]common.Address, len(tokenPath))
+	for i, token := range tokenPath {
+		path[len(tokenPath)-1-i] = token.Address
+	}
+	amountOutBig := tokenPath[0].ToWei(amountOut)
+	t, err := c.router.SwapETHForExactTokens(opts, amountOutBig, path, to, big.NewInt(deadline))
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+func (c *Client) SwapExactTokensForETH(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
+	gasPrice, err := c.GasPrice(ctx, c.swapGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	opts, err := account.NewTransactor(ctx, nil, gasPrice, c.swapGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	path := make([]common.Address, len(tokenPath))
+	for i, token := range tokenPath {
+		path[i] = token.Address
+	}
+	amountInBig, err := tokenPath[0].ToWeiCapped(ctx, amountIn, account)
+	if err != nil {
+		return nil, err
+	}
+	amountOutMinBig := tokenPath[len(tokenPath)-1].ToWei(amountOutMin)
+	if false {
+		return nil, errors.New("Not Implemented")
+	}
+	t, err := c.router.SwapExactTokensForETH(opts, amountInBig, amountOutMinBig, path, to, big.NewInt(deadline))
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
+}
+
+func (c *Client) SwapExactETHForTokens(ctx context.Context, account *wallet.Account, amountIn decimal.Decimal, amountOutMin decimal.Decimal, tokenPath []*token2.Client, to common.Address, deadline int64) (*types.Transaction, error) {
+	// TODO: Verify tokenPath[len(tokenPath)-1] == weth
+	gasPrice, err := c.GasPrice(ctx, c.swapGasSpeed)
+	if err != nil {
+		return nil, err
+	}
+	path := make([]common.Address, len(tokenPath))
+	for i, token := range tokenPath {
+		path[i] = token.Address
+	}
+	amountInBig := tokenPath[0].ToWei(amountIn)
+	opts, err := account.NewTransactor(ctx, amountInBig, gasPrice, c.swapGasLimit)
+	if err != nil {
+		return nil, err
+	}
+	amountOutMinBig := tokenPath[len(tokenPath)-1].ToWei(amountOutMin)
+	if false {
+		return nil, errors.New("Not Implemented")
+	}
+	t, err := c.router.SwapExactETHForTokens(opts, amountOutMinBig, path, to, big.NewInt(deadline))
+	if err != nil {
+		return nil, err
+	}
+	return t, nil
 }
