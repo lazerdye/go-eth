@@ -46,6 +46,20 @@ func NewClient(tokenClient *client.Client) (*Client, error) {
 	}, nil
 }
 
+func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
+	// Get gas price for trade.
+	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	if err != nil {
+		return decimal.Zero, err
+	}
+	log.Infof("Gas price: %s", gasPrice)
+	// Multiply by gas limit.
+	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(gasLimit)))
+	log.Infof("Trade fee: %s", fee)
+
+	return fee.Shift(-18), nil
+}
+
 func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
