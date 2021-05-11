@@ -4,10 +4,15 @@ import (
 	"encoding/json"
 	"math/big"
 	"net/url"
+	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
+)
+
+var (
+	heartbeatTimeout = time.Second * 20
 )
 
 type Client struct {
@@ -67,11 +72,14 @@ func (z *Client) Start(id string, message []byte) error {
 func (z *Client) listen() {
 	log.Infof("Starting listen loop...")
 	for {
+		z.c.SetReadDeadline(time.Now().Add(heartbeatTimeout))
 		_, message, err := z.c.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
-				log.Printf("error: %v", err)
+			// TODO: Handle this more cleanly.
+			for _, c := range z.listeners {
+				close(c)
 			}
+			log.Fatalf("error: %v", err)
 			return
 		}
 		log.Infof("Message: %+v", string(message))
