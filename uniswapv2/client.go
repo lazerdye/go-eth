@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
@@ -40,6 +42,10 @@ type Client struct {
 	swapGasLimit  uint64
 	claimGasSpeed gasoracle.GasSpeed
 	claimGasLimit uint64
+}
+
+func CompileRouter02ABI() (abi.ABI, error) {
+	return abi.JSON(strings.NewReader(Router02ABI))
 }
 
 func NewClient(client *client.Client) (*Client, error) {
