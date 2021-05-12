@@ -243,3 +243,26 @@ func CalculateFee(t *Transaction) *big.Int {
 	gasUsedInt, _ := new(big.Int).SetString(t.GasUsed, 10)
 	return new(big.Int).Mul(gasPriceInt, gasUsedInt)
 }
+
+func (c *Client) EventLogs(ctx context.Context, fromBlock, toBlock, address string, topics []string) error {
+	// NOTE: This doesn't seem to work...
+	checkRate()
+	var eventLogsResponse interface{}
+
+	params := url.Values{}
+	params.Set("module", "logs")
+	params.Set("action", "getLogs")
+	params.Set("apikey", c.apikey)
+	params.Set("fromBlock", fromBlock)
+	params.Set("toBlock", toBlock)
+	params.Set("address", address)
+	if len(topics) > 0 {
+		return errors.New("Topics not yet supported")
+	}
+	log.Infof("%+v", params)
+	if err := c.httpClient.Get(ctx, etherscanApi, params, &eventLogsResponse); err != nil {
+		return err
+	}
+	log.Infof("RESP: %+v", eventLogsResponse)
+	return errors.New("Not Implemented")
+}
