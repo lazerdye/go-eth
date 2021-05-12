@@ -130,6 +130,9 @@ func (c *Client) FilterTransferLogs(ctx context.Context, fromBlockNumber *big.In
 	if err != nil {
 		return err
 	}
+	if len(logs) == 0 {
+		log.Infof("No dice")
+	}
 	for _, l := range logs {
 		log.Infof("Log: %+v", l)
 		log.Infof("Address: %s", l.Address.String())

@@ -152,6 +152,8 @@ func token2Commands(ctx context.Context, client *client.Client, commands []strin
 		return eth2Commands(ctx, client, reg, commands[1:])
 	case "1inchv3":
 		return oneInchV3Commands(ctx, client, reg, commands[1:])
+	case "zxmesh":
+		return zxmeshToken2Commands(ctx, client, reg, commands[1:])
 	}
 
 	return false, nil

@@ -168,8 +168,38 @@ type StatsResponse struct {
 	} `json:"data"`
 }
 
+type UnknownAssetData struct {
+	AssetName string
+}
+
+func (decoder AssetDataDecoder) DecodeToInterface(assetData []byte) (interface{}, error) {
+	if len(assetData) == 0 {
+		return nil, nil
+	}
+	assetName, err := decoder.GetName(assetData)
+	if err != nil {
+		return "", err
+	}
+	switch assetName {
+	case "ERC20Token":
+		args, err := decoder.Decode(assetData)
+		if err != nil {
+			return "", err
+		}
+		argList := args.([]interface{})
+		return ERC20AssetData{
+			Address: argList[0].(common.Address),
+		}, nil
+	default:
+		return UnknownAssetData{
+			AssetName: assetName,
+		}, nil
+	}
+}
+
 type Query struct {
-	Query string `json:"query"`
+	Query     string      `json:"query"`
+	Variables interface{} `json:"variables,omitempty"`
 }
 
 const statsQuery = `
@@ -271,15 +301,15 @@ type SignedOrder struct {
 	Hash                  common.Hash
 	SenderAddress         common.Address
 	MakerAddress          common.Address
-	MakerAssetData        []byte
+	MakerAssetData        interface{}
 	MakerAssetAmount      *big.Int
 	MakerFee              *big.Int
-	MakerFeeAssetData     []byte
+	MakerFeeAssetData     interface{}
 	TakerAddress          common.Address
-	TakerAssetData        []byte
+	TakerAssetData        interface{}
 	TakerAssetAmount      *big.Int
 	TakerFee              *big.Int
-	TakerFeeAssetData     []byte
+	TakerFeeAssetData     interface{}
 	FeeRecipientAddress   common.Address
 	ExpirationTimeSeconds *big.Int
 	Salt                  *big.Int
@@ -292,13 +322,13 @@ type OrderEvent struct {
 	SignedOrder *SignedOrder
 }
 
-type MessageData struct {
+type OrderSubscriptionResponse struct {
 	Data struct {
 		OrderEvents []*OrderEventPayload `json:"orderEvents"`
 	} `json:"data"`
 }
 
-func orderPayloadToSignedOrder(orderPayload *SignedOrderPayload) *SignedOrder {
+func orderPayloadToSignedOrder(decoder *AssetDataDecoder, orderPayload *SignedOrderPayload) *SignedOrder {
 	if orderPayload == nil {
 		return nil
 	}
@@ -308,19 +338,23 @@ func orderPayloadToSignedOrder(orderPayload *SignedOrderPayload) *SignedOrder {
 	takerFee, _ := new(big.Int).SetString(orderPayload.TakerFee, 10)
 	expirationTimeSeconds, _ := new(big.Int).SetString(orderPayload.ExpirationTimeSeconds, 10)
 	salt, _ := new(big.Int).SetString(orderPayload.Salt, 10)
+	makerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerAssetData))
+	makerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerFeeAssetData))
+	takerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerAssetData))
+	takerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerFeeAssetData))
 	return &SignedOrder{
 		Hash:                  common.HexToHash(orderPayload.Hash),
 		SenderAddress:         orderPayload.SenderAddress,
 		MakerAddress:          orderPayload.MakerAddress,
-		MakerAssetData:        common.FromHex(orderPayload.MakerAssetData),
+		MakerAssetData:        makerAssetData,
 		MakerAssetAmount:      makerAssetAmount,
 		MakerFee:              makerFee,
-		MakerFeeAssetData:     common.FromHex(orderPayload.MakerFeeAssetData),
+		MakerFeeAssetData:     makerFeeAssetData,
 		TakerAddress:          orderPayload.TakerAddress,
-		TakerAssetData:        common.FromHex(orderPayload.TakerAssetData),
+		TakerAssetData:        takerAssetData,
 		TakerAssetAmount:      takerAssetAmount,
 		TakerFee:              takerFee,
-		TakerFeeAssetData:     common.FromHex(orderPayload.TakerFeeAssetData),
+		TakerFeeAssetData:     takerFeeAssetData,
 		FeeRecipientAddress:   orderPayload.FeeRecipientAddress,
 		ExpirationTimeSeconds: expirationTimeSeconds,
 		Salt:                  salt,
@@ -341,8 +375,9 @@ func (z *Client) SubscribeToOrders(orderChan chan []*OrderEvent) error {
 		return err
 	}
 	go func() {
+		decoder := NewAssetDataDecoder()
 		for msg := range c {
-			var messageData MessageData
+			var messageData OrderSubscriptionResponse
 			if err := json.Unmarshal(msg, &messageData); err != nil {
 				log.Warnf("%+v", err)
 				break
@@ -352,10 +387,73 @@ func (z *Client) SubscribeToOrders(orderChan chan []*OrderEvent) error {
 				orderEvents[i] = &OrderEvent{
 					Timestamp:   orderEvent.Timestamp,
 					EndState:    orderEvent.EndState,
-					SignedOrder: orderPayloadToSignedOrder(orderEvent.SignedOrder),
+					SignedOrder: orderPayloadToSignedOrder(decoder, orderEvent.SignedOrder),
 				}
 			}
 			orderChan <- orderEvents
+		}
+		close(orderChan)
+	}()
+	return nil
+}
+
+const orderQuery = `
+query Orders($limit: Int!) {
+	orders(limit:$limit) {
+		hash
+                makerAddress
+                takerAddress
+                feeRecipientAddress
+                senderAddress
+                makerAssetAmount
+                takerAssetAmount
+                makerFee
+                takerFee
+                expirationTimeSeconds
+                salt
+                makerAssetData
+                takerAssetData
+                makerFeeAssetData
+                takerFeeAssetData
+                hash
+                fillableTakerAssetAmount
+                signature
+	}
+}
+`
+
+type OrdersResponse struct {
+	Data struct {
+		Orders []*SignedOrderPayload `json:"orders"`
+	} `json:"data"`
+}
+
+func (z *Client) Orders(orderChan chan []*SignedOrder, limit int64) error {
+	id := "orders"
+	c := make(chan []byte)
+	z.Listen(id, c)
+	q, err := json.Marshal(Query{Query: orderQuery, Variables: map[string]int64{"limit": limit}})
+	if err != nil {
+		return err
+	}
+	log.Infof("Start: %s", string(q))
+	if err := z.Start(id, q); err != nil {
+		return err
+	}
+	go func() {
+		decoder := NewAssetDataDecoder()
+		for msg := range c {
+			//log.Infof("MSG: %+v", msg)
+			var messageData OrdersResponse
+			if err := json.Unmarshal(msg, &messageData); err != nil {
+				log.Warnf("%+v", err)
+				break
+			}
+			orders := make([]*SignedOrder, len(messageData.Data.Orders))
+			for i, order := range messageData.Data.Orders {
+				orders[i] = orderPayloadToSignedOrder(decoder, order)
+			}
+			orderChan <- orders
 		}
 		close(orderChan)
 	}()
