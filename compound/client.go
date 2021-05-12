@@ -2,12 +2,16 @@ package compound
 
 import (
 	"context"
+	"math/big"
+	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
@@ -18,8 +22,8 @@ import (
 const ()
 
 var (
-	CethContractAddress       = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
-	compoundContractAddresses = map[string]common.Address{
+	CethContractAddress     = common.HexToAddress("0x4ddc2d193948926d02f9b1fe9e1daa0718270ed5")
+	CErc20ContractAddresses = map[string]common.Address{
 		"bat":  common.HexToAddress("0x6c8c6b02e7b2be14d4fa6022dfd6d75921d90e4e"),
 		"dai":  common.HexToAddress("0x5d3a536E4D6DbD6114cc1Ead35777bAB948E3643"),
 		"zrx":  common.HexToAddress("0xb3319f5d18bc0d84dd1b4825dcde5d5f7266d407"),
@@ -30,11 +34,15 @@ var (
 
 	mintGasSpeed = gasoracle.Fast
 	mintGasLimit = uint64(300000)
+
+	mintLogHash = common.HexToHash("0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f")
 )
 
 type Client interface {
+	FromWei(*big.Int) decimal.Decimal
 	Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
 	Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
+	ParseLog(log *types.Log) (interface{}, error)
 }
 
 type cethClient struct {
@@ -43,14 +51,7 @@ type cethClient struct {
 	ceth *Ceth
 }
 
-type cerc20Client struct {
-	*client.Client
-
-	tok    *token2.Client
-	cerc20 *CErc20
-}
-
-func NewEthClient(client *client.Client) (Client, error) {
+func NewCEthClient(client *client.Client) (Client, error) {
 	ceth, err := NewCeth(CethContractAddress, client)
 	if err != nil {
 		return nil, err
@@ -58,16 +59,12 @@ func NewEthClient(client *client.Client) (Client, error) {
 	return &cethClient{client, ceth}, nil
 }
 
-func NewErc20Client(client *client.Client, tokName string, tok *token2.Client) (Client, error) {
-	address, ok := compoundContractAddresses[tokName]
-	if !ok {
-		return nil, errors.Errorf("Unsupported token: %s", tokName)
-	}
-	cerc20, err := NewCErc20(address, client)
-	if err != nil {
-		return nil, err
-	}
-	return &cerc20Client{client, tok, cerc20}, nil
+func CompileCEthABI() (abi.ABI, error) {
+	return abi.JSON(strings.NewReader(CethABI))
+}
+
+func (c *cethClient) FromWei(wei *big.Int) decimal.Decimal {
+	return client.EthFromWei(wei)
 }
 
 func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
@@ -101,6 +98,32 @@ func (c *cethClient) Redeem(ctx context.Context, account *wallet.Account, amount
 	return c.ceth.Redeem(trans, amountWei)
 }
 
+func (c *cethClient) ParseLog(log *types.Log) (interface{}, error) {
+	return nil, errors.New("Not Implemented")
+}
+
+type cerc20Client struct {
+	*token2.Client
+
+	cerc20 *CErc20
+}
+
+func NewCErc20Client(ctx context.Context, client *client.Client, address common.Address) (Client, error) {
+	tok, err := token2.ByAddress(ctx, client, address)
+	if err != nil {
+		return nil, err
+	}
+	cerc20, err := NewCErc20(address, client)
+	if err != nil {
+		return nil, err
+	}
+	return &cerc20Client{tok, cerc20}, nil
+}
+
+func CompileCErc20ABI() (abi.ABI, error) {
+	return abi.JSON(strings.NewReader(CErc20ABI))
+}
+
 func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
 	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
@@ -110,7 +133,7 @@ func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount
 	if err != nil {
 		return nil, err
 	}
-	amountWei, err := c.tok.ToWeiCapped(ctx, amount, account)
+	amountWei, err := c.ToWeiCapped(ctx, amount, account)
 	if err != nil {
 		return nil, err
 	}
@@ -134,4 +157,13 @@ func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amou
 		return nil, err
 	}
 	return c.cerc20.Redeem(trans, amountWei)
+}
+
+func (c *cerc20Client) ParseLog(logObj *types.Log) (interface{}, error) {
+	switch logObj.Topics[0] {
+	case mintLogHash:
+		log.Infof("Found CethMint")
+		return c.cerc20.ParseMint(*logObj)
+	}
+	return nil, nil
 }

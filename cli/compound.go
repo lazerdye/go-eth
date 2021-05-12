@@ -26,7 +26,7 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 	var err error
 	switch *clientCompoundToken {
 	case "eth", "":
-		compoundClient, err = compound.NewEthClient(client)
+		compoundClient, err = compound.NewCEthClient(client)
 		if err != nil {
 			return false, err
 		}
@@ -35,7 +35,7 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 		if err != nil {
 			return false, err
 		}
-		compoundClient, err = compound.NewErc20Client(client, *clientCompoundToken, tok)
+		compoundClient, err = compound.NewCErc20Client(ctx, client, tok.Address)
 		if err != nil {
 			return false, err
 		}
