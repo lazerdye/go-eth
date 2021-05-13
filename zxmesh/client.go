@@ -273,22 +273,23 @@ subscription {
 `
 
 type SignedOrderPayload struct {
-	Hash                  string         `json:"hash"`
-	SenderAddress         common.Address `json:"senderAddress"`
-	MakerAddress          common.Address `json:"makerAddress"`
-	MakerAssetData        string         `json:"makerAssetData"`
-	MakerAssetAmount      string         `json:"makerAssetAmount"`
-	MakerFee              string         `json:"makerFee"`
-	MakerFeeAssetData     string         `json:"makerFeeAssetData"`
-	TakerAddress          common.Address `json:"takerAddress"`
-	TakerAssetData        string         `json:"takerAssetData"`
-	TakerAssetAmount      string         `json:"takerAssetAmount"`
-	TakerFee              string         `json:"takerFee"`
-	TakerFeeAssetData     string         `json:"takerFeeAssetData"`
-	FeeRecipientAddress   common.Address `json:"feeRecipientAddress"`
-	ExpirationTimeSeconds string         `json:"expirationTimeSeconds"`
-	Salt                  string         `json:"salt"`
-	Signature             string         `json:"signature"`
+	Hash                     string         `json:"hash"`
+	SenderAddress            common.Address `json:"senderAddress"`
+	MakerAddress             common.Address `json:"makerAddress"`
+	MakerAssetData           string         `json:"makerAssetData"`
+	MakerAssetAmount         string         `json:"makerAssetAmount"`
+	MakerFee                 string         `json:"makerFee"`
+	MakerFeeAssetData        string         `json:"makerFeeAssetData"`
+	TakerAddress             common.Address `json:"takerAddress"`
+	TakerAssetData           string         `json:"takerAssetData"`
+	TakerAssetAmount         string         `json:"takerAssetAmount"`
+	TakerFee                 string         `json:"takerFee"`
+	TakerFeeAssetData        string         `json:"takerFeeAssetData"`
+	FeeRecipientAddress      common.Address `json:"feeRecipientAddress"`
+	ExpirationTimeSeconds    string         `json:"expirationTimeSeconds"`
+	Salt                     string         `json:"salt"`
+	Signature                string         `json:"signature"`
+	FillableTakerAssetAmount *string        `json:"fillableTakerAssetAmount,omitempty"`
 }
 
 type OrderEventPayload struct {
@@ -298,22 +299,23 @@ type OrderEventPayload struct {
 }
 
 type SignedOrder struct {
-	Hash                  common.Hash
-	SenderAddress         common.Address
-	MakerAddress          common.Address
-	MakerAssetData        interface{}
-	MakerAssetAmount      *big.Int
-	MakerFee              *big.Int
-	MakerFeeAssetData     interface{}
-	TakerAddress          common.Address
-	TakerAssetData        interface{}
-	TakerAssetAmount      *big.Int
-	TakerFee              *big.Int
-	TakerFeeAssetData     interface{}
-	FeeRecipientAddress   common.Address
-	ExpirationTimeSeconds *big.Int
-	Salt                  *big.Int
-	Signature             []byte
+	Hash                     common.Hash
+	SenderAddress            common.Address
+	MakerAddress             common.Address
+	MakerAssetData           interface{}
+	MakerAssetAmount         *big.Int
+	MakerFee                 *big.Int
+	MakerFeeAssetData        interface{}
+	TakerAddress             common.Address
+	TakerAssetData           interface{}
+	TakerAssetAmount         *big.Int
+	TakerFee                 *big.Int
+	TakerFeeAssetData        interface{}
+	FeeRecipientAddress      common.Address
+	ExpirationTimeSeconds    *big.Int
+	Salt                     *big.Int
+	Signature                []byte
+	FillableTakerAssetAmount *big.Int
 }
 
 type OrderEvent struct {
@@ -338,27 +340,32 @@ func orderPayloadToSignedOrder(decoder *AssetDataDecoder, orderPayload *SignedOr
 	takerFee, _ := new(big.Int).SetString(orderPayload.TakerFee, 10)
 	expirationTimeSeconds, _ := new(big.Int).SetString(orderPayload.ExpirationTimeSeconds, 10)
 	salt, _ := new(big.Int).SetString(orderPayload.Salt, 10)
+	var fillableTakerAssetAmount *big.Int
+	if orderPayload.FillableTakerAssetAmount != nil {
+		fillableTakerAssetAmount, _ = new(big.Int).SetString(*orderPayload.FillableTakerAssetAmount, 10)
+	}
 	makerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerAssetData))
 	makerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerFeeAssetData))
 	takerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerAssetData))
 	takerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerFeeAssetData))
 	return &SignedOrder{
-		Hash:                  common.HexToHash(orderPayload.Hash),
-		SenderAddress:         orderPayload.SenderAddress,
-		MakerAddress:          orderPayload.MakerAddress,
-		MakerAssetData:        makerAssetData,
-		MakerAssetAmount:      makerAssetAmount,
-		MakerFee:              makerFee,
-		MakerFeeAssetData:     makerFeeAssetData,
-		TakerAddress:          orderPayload.TakerAddress,
-		TakerAssetData:        takerAssetData,
-		TakerAssetAmount:      takerAssetAmount,
-		TakerFee:              takerFee,
-		TakerFeeAssetData:     takerFeeAssetData,
-		FeeRecipientAddress:   orderPayload.FeeRecipientAddress,
-		ExpirationTimeSeconds: expirationTimeSeconds,
-		Salt:                  salt,
-		Signature:             common.FromHex(orderPayload.Salt),
+		Hash:                     common.HexToHash(orderPayload.Hash),
+		SenderAddress:            orderPayload.SenderAddress,
+		MakerAddress:             orderPayload.MakerAddress,
+		MakerAssetData:           makerAssetData,
+		MakerAssetAmount:         makerAssetAmount,
+		MakerFee:                 makerFee,
+		MakerFeeAssetData:        makerFeeAssetData,
+		TakerAddress:             orderPayload.TakerAddress,
+		TakerAssetData:           takerAssetData,
+		TakerAssetAmount:         takerAssetAmount,
+		TakerFee:                 takerFee,
+		TakerFeeAssetData:        takerFeeAssetData,
+		FeeRecipientAddress:      orderPayload.FeeRecipientAddress,
+		ExpirationTimeSeconds:    expirationTimeSeconds,
+		Salt:                     salt,
+		Signature:                common.FromHex(orderPayload.Salt),
+		FillableTakerAssetAmount: fillableTakerAssetAmount,
 	}
 }
 
