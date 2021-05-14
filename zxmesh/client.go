@@ -168,35 +168,6 @@ type StatsResponse struct {
 	} `json:"data"`
 }
 
-type UnknownAssetData struct {
-	AssetName string
-}
-
-func (decoder AssetDataDecoder) DecodeToInterface(assetData []byte) (interface{}, error) {
-	if len(assetData) == 0 {
-		return nil, nil
-	}
-	assetName, err := decoder.GetName(assetData)
-	if err != nil {
-		return "", err
-	}
-	switch assetName {
-	case "ERC20Token":
-		args, err := decoder.Decode(assetData)
-		if err != nil {
-			return "", err
-		}
-		argList := args.([]interface{})
-		return ERC20AssetData{
-			Address: argList[0].(common.Address),
-		}, nil
-	default:
-		return UnknownAssetData{
-			AssetName: assetName,
-		}, nil
-	}
-}
-
 type Query struct {
 	Query     string      `json:"query"`
 	Variables interface{} `json:"variables,omitempty"`
@@ -302,15 +273,15 @@ type SignedOrder struct {
 	Hash                     common.Hash
 	SenderAddress            common.Address
 	MakerAddress             common.Address
-	MakerAssetData           interface{}
+	MakerAssetData           *AssetData
 	MakerAssetAmount         *big.Int
 	MakerFee                 *big.Int
-	MakerFeeAssetData        interface{}
+	MakerFeeAssetData        *AssetData
 	TakerAddress             common.Address
-	TakerAssetData           interface{}
+	TakerAssetData           *AssetData
 	TakerAssetAmount         *big.Int
 	TakerFee                 *big.Int
-	TakerFeeAssetData        interface{}
+	TakerFeeAssetData        *AssetData
 	FeeRecipientAddress      common.Address
 	ExpirationTimeSeconds    *big.Int
 	Salt                     *big.Int
@@ -330,7 +301,7 @@ type OrderSubscriptionResponse struct {
 	} `json:"data"`
 }
 
-func orderPayloadToSignedOrder(decoder *AssetDataDecoder, orderPayload *SignedOrderPayload) *SignedOrder {
+func orderPayloadToSignedOrder(decoder *AssetDataEncoderDecoder, orderPayload *SignedOrderPayload) *SignedOrder {
 	if orderPayload == nil {
 		return nil
 	}
@@ -344,10 +315,10 @@ func orderPayloadToSignedOrder(decoder *AssetDataDecoder, orderPayload *SignedOr
 	if orderPayload.FillableTakerAssetAmount != nil {
 		fillableTakerAssetAmount, _ = new(big.Int).SetString(*orderPayload.FillableTakerAssetAmount, 10)
 	}
-	makerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerAssetData))
-	makerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.MakerFeeAssetData))
-	takerAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerAssetData))
-	takerFeeAssetData, _ := decoder.DecodeToInterface(common.FromHex(orderPayload.TakerFeeAssetData))
+	makerAssetData, _ := decoder.Decode(common.FromHex(orderPayload.MakerAssetData))
+	makerFeeAssetData, _ := decoder.Decode(common.FromHex(orderPayload.MakerFeeAssetData))
+	takerAssetData, _ := decoder.Decode(common.FromHex(orderPayload.TakerAssetData))
+	takerFeeAssetData, _ := decoder.Decode(common.FromHex(orderPayload.TakerFeeAssetData))
 	return &SignedOrder{
 		Hash:                     common.HexToHash(orderPayload.Hash),
 		SenderAddress:            orderPayload.SenderAddress,
@@ -382,7 +353,7 @@ func (z *Client) SubscribeToOrders(orderChan chan []*OrderEvent) error {
 		return err
 	}
 	go func() {
-		decoder := NewAssetDataDecoder()
+		decoder := NewAssetDataEncoderDecoder()
 		for msg := range c {
 			var messageData OrderSubscriptionResponse
 			if err := json.Unmarshal(msg, &messageData); err != nil {
@@ -448,7 +419,7 @@ func (z *Client) Orders(orderChan chan []*SignedOrder, limit int64) error {
 		return err
 	}
 	go func() {
-		decoder := NewAssetDataDecoder()
+		decoder := NewAssetDataEncoderDecoder()
 		for msg := range c {
 			//log.Infof("MSG: %+v", msg)
 			var messageData OrdersResponse
