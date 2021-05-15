@@ -20,6 +20,7 @@ require (
 	github.com/shopspring/decimal v1.2.0
 	github.com/sirupsen/logrus v1.6.0
 	github.com/status-im/keycard-go v0.0.0-20191119114148-6dd40a46baa0 // indirect
+	github.com/stretchr/testify v1.7.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/yaml.v2 v2.4.0
 )

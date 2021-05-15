@@ -6,7 +6,7 @@ import (
 	"math/big"
 
 	//"github.com/pkg/errors"
-	//"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/common"
 	"gopkg.in/alecthomas/kingpin.v2"
 	//log "github.com/sirupsen/logrus"
 
@@ -92,6 +92,7 @@ func zxmeshToken2Commands(ctx context.Context, client *client.Client, reg *token
 }
 
 func zxmeshOrders(ctx context.Context, zx *zxmesh.Client, client *client.Client, reg *token2.Registry) error {
+	decoder := zxmesh.NewAssetDataEncoderDecoder()
 	c := make(chan []*zxmesh.SignedOrder)
 	err := zx.Orders(c, 5)
 	if err != nil {
@@ -119,15 +120,23 @@ func zxmeshOrders(ctx context.Context, zx *zxmesh.Client, client *client.Client,
 					fmt.Printf("TakerFeeAssetData:\t%s\n", order.TakerFeeAssetData)
 				}
 			}
-			ercMakerAsset, okMaker := order.MakerAssetData.(zxmesh.ERC20AssetData)
-			ercTakerAsset, okTaker := order.TakerAssetData.(zxmesh.ERC20AssetData)
-			if okMaker && okTaker {
-				makerTokenName, makerToken, err := reg.ByAddress(ercMakerAsset.Address)
+			makerAssetName, _ := decoder.GetName(order.MakerAssetData)
+			takerAssetName, _ := decoder.GetName(order.TakerAssetData)
+			if makerAssetName == "ERC20Token" && takerAssetName == "ERC20Token" {
+				makerAssetAddress, ok := order.MakerAssetData.Params[0].(common.Address)
+				if !ok {
+					continue
+				}
+				makerTokenName, makerToken, err := reg.ByAddress(makerAssetAddress)
 				if err != nil {
 					continue
 				}
 				makerTokenAmount := makerToken.FromWei(order.MakerAssetAmount)
-				takerTokenName, takerToken, err := reg.ByAddress(ercTakerAsset.Address)
+				takerAssetAddress, ok := order.TakerAssetData.Params[0].(common.Address)
+				if !ok {
+					continue
+				}
+				takerTokenName, takerToken, err := reg.ByAddress(takerAssetAddress)
 				if err != nil {
 					continue
 				}

@@ -156,7 +156,7 @@ func doClientSubmitTransaction(ctx context.Context, c *client.Client) error {
 	if err := tx.UnmarshalJSON([]byte(txValue)); err != nil {
 		return err
 	}
-	fmt.Printf("%s\n", tx)
+	fmt.Printf("%+v\n", tx)
 	chainID, err := c.Client.NetworkID(ctx)
 	if err != nil {
 		return err

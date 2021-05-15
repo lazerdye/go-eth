@@ -172,5 +172,6 @@ func (ed *AssetDataEncoderDecoder) Encode(assetData *AssetData) ([]byte, error) 
 	if err != nil {
 		return nil, err
 	}
-	return data, nil
+	prefix := common.Hex2Bytes(assetData.Id)
+	return append(prefix, data...), nil
 }
