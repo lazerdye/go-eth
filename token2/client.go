@@ -103,11 +103,11 @@ func (c *Client) Allowance(ctx context.Context, address, contract common.Address
 }
 
 func (c *Client) Approve(ctx context.Context, from *wallet.Account, contract common.Address, value decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := from.NewTransactor(ctx, nil, gasPrice, approveGasLimit)
+	opts, err := from.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, approveGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -126,11 +126,11 @@ func (c *Client) BalanceOf(ctx context.Context, account common.Address) (decimal
 }
 
 func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, destAccount common.Address, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := sourceAccount.NewTransactor(ctx, nil, gasPrice, transferGasLimit)
+	opts, err := sourceAccount.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, transferGasLimit)
 	if err != nil {
 		return nil, err
 	}

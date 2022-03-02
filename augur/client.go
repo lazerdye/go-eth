@@ -34,11 +34,11 @@ func NewClient(client *client.Client) (*Client, error) {
 }
 
 func (c *Client) MigrateFromLegacyReputationToken(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}

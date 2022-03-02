@@ -44,8 +44,12 @@ func Dial(url string, gasoracle gasoracle.GasOracle) (*Client, error) {
 	return &Client{client, nil, gasoracle}, nil
 }
 
-func (c *Client) GasPrice(ctx context.Context, speed gasoracle.GasSpeed) (decimal.Decimal, error) {
-	return c.gasoracle(ctx, speed)
+func (c *Client) GasPrice(ctx context.Context, speed gasoracle.GasSpeed) (decimal.Decimal, decimal.Decimal, error) {
+	oracleResult, err := c.gasoracle(ctx)
+	if err != nil {
+		return decimal.Zero, decimal.Zero, err
+	}
+	return oracleResult.GasFeeCap, oracleResult.GasTipCap[speed], nil
 }
 
 func (c *Client) BalanceAt(ctx context.Context, address common.Address, blockNumber *big.Int) (decimal.Decimal, error) {
@@ -81,19 +85,28 @@ func (c *Client) Transfer(ctx context.Context, sourceAccount *wallet.Account, de
 	}
 	log.Infof("Gas limit: %d", gasLimit)
 
-	gasPrice, err := c.GasPrice(ctx, TransferGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Gas price: %d", gasPrice)
-
-	tx := types.NewTransaction(nonce, destAddress, valueInt, gasLimit, gasPrice.Shift(9).BigInt(), nil)
+	log.Infof("GasFeeCap: %d, GasTipCap: %d", gasFeeCap, gasTipCap)
 
 	chainID, err := c.Client.NetworkID(ctx)
 	if err != nil {
 		return nil, err
 	}
 	log.Infof("ChainID: %+v", chainID)
+
+	tx := types.NewTx(&types.DynamicFeeTx{
+		ChainID:   chainID,
+		Nonce:     nonce,
+		GasFeeCap: gasFeeCap.Shift(9).BigInt(),
+		GasTipCap: gasTipCap.Shift(9).BigInt(),
+		Gas:       gasLimit,
+		To:        &destAddress,
+		Value:     valueInt,
+		Data:      nil,
+	})
 
 	txSigned, err := sourceAccount.SignTx(tx, chainID)
 	if err != nil {

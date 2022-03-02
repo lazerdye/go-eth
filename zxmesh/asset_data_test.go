@@ -1,8 +1,8 @@
 package zxmesh
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 
 	"github.com/ethereum/go-ethereum/common"
 )

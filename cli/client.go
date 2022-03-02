@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/lazerdye/go-eth/etherscan"
 	"math/big"
 	"strings"
 
@@ -13,7 +14,6 @@ import (
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
-	"github.com/lazerdye/go-eth/gasstation"
 )
 
 var (
@@ -44,7 +44,7 @@ func newClient() (*client.Client, error) {
 	if *clientServer == "" {
 		return nil, errors.New("clientServer parameter required")
 	}
-	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	o := gasoracle.GasOracleFromEtherscan(etherscan.NewClient(*etherscanApikey))
 	c, err := client.Dial(*clientServer, o)
 	if err != nil {
 		return nil, err

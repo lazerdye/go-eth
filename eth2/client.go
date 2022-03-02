@@ -52,7 +52,7 @@ type deposit struct {
 
 func (c *Client) Deposit(ctx context.Context, account *wallet.Account, depositFile string) ([]*types.Transaction, error) {
 
-	gasPrice, err := c.GasPrice(ctx, depositGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, depositGasSpeed)
 	if err != nil {
 		return nil, err
 	}
@@ -83,7 +83,7 @@ func (c *Client) Deposit(ctx context.Context, account *wallet.Account, depositFi
 
 		fmt.Printf("%d: %x / %x / %x / %x\n", i, pubkey, withdrawCredentials, signature, depositDataRoot)
 
-		opts, err := account.NewTransactor(ctx, client.EthToWei(decimal.NewFromInt(32)), gasPrice, depositGasLimit)
+		opts, err := account.NewTransactor(ctx, client.EthToWei(decimal.NewFromInt(32)), gasFeeCap, gasTipCap, depositGasLimit)
 		if err != nil {
 			return txs, err
 		}

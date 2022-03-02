@@ -82,11 +82,13 @@ func (c *Client) BancorNetworkContract(ctx context.Context) (common.Address, err
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, c.convertGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, c.convertGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
-	log.Infof("Gas price: %s", gasPrice)
+	log.Infof("GasFeeCap: %d, GasTipCap: %d", gasFeeCap, gasTipCap)
+	// Calculate gas price.
+	gasPrice := gasFeeCap.Add(gasTipCap)
 	// Multiply by gas limit.
 	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.convertGasLimit)))
 	log.Infof("Trade fee: %s", fee)
@@ -133,11 +135,11 @@ func (c *Client) ConvertByPath(ctx context.Context, account *wallet.Account, pat
 	if path[0] == EthAddress {
 		ethAmount = amount
 	}
-	gasPrice, err := c.GasPrice(ctx, c.convertGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, c.convertGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, ethAmount, gasPrice, c.convertGasLimit)
+	opts, err := account.NewTransactor(ctx, ethAmount, gasFeeCap, gasTipCap, c.convertGasLimit)
 	if err != nil {
 		return nil, err
 	}

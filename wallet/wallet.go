@@ -91,7 +91,9 @@ func (a *Account) SignTx(tx *types.Transaction, chainID *big.Int) (*types.Transa
 	return a.ks.SignTx(a.Account, tx, chainID)
 }
 
-func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice decimal.Decimal, gasLimit uint64) (*bind.TransactOpts, error) {
+func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasFeeCap decimal.Decimal, gasTipCap decimal.Decimal,
+	gasLimit uint64) (*bind.TransactOpts, error) {
+
 	// TODO: Configure chain id for other networks.
 	t, err := bind.NewKeyStoreTransactorWithChainID(a.ks, a.Account, big.NewInt(1))
 	if err != nil {
@@ -100,7 +102,8 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasPrice de
 	t.Context = ctx
 	t.Value = value
 	t.From = a.Account.Address
-	t.GasPrice = gasPrice.Shift(9).BigInt()
+	t.GasFeeCap = gasFeeCap.Shift(9).BigInt()
+	t.GasTipCap = gasTipCap.Shift(9).BigInt()
 	t.GasLimit = gasLimit
 	t.Nonce = a.NextNonceOverride() // Will be nil if no nonce override
 	return t, err

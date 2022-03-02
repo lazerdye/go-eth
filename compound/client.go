@@ -68,11 +68,11 @@ func (c *cethClient) FromWei(wei *big.Int) decimal.Decimal {
 }
 
 func (c *cethClient) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, client.EthToWei(amount), gasPrice, mintGasLimit)
+	opts, err := account.NewTransactor(ctx, client.EthToWei(amount), gasFeeCap, gasTipCap, mintGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -87,11 +87,11 @@ func (c *cethClient) Redeem(ctx context.Context, account *wallet.Account, amount
 		return nil, err
 	}
 	amountWei := amount.Shift(int32(decimals.Int64())).BigInt()
-	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	trans, err := account.NewTransactor(ctx, nil, gasPrice, mintGasLimit)
+	trans, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, mintGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -125,11 +125,11 @@ func CompileCErc20ABI() (abi.ABI, error) {
 }
 
 func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, mintGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, mintGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -148,11 +148,11 @@ func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amou
 		return nil, err
 	}
 	amountWei := amount.Shift(int32(decimals.Int64())).BigInt()
-	gasPrice, err := c.GasPrice(ctx, mintGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	trans, err := account.NewTransactor(ctx, nil, gasPrice, mintGasLimit)
+	trans, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, mintGasLimit)
 	if err != nil {
 		return nil, err
 	}

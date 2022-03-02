@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/lazerdye/go-eth/etherscan"
 	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -12,7 +13,6 @@ import (
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
-	"github.com/lazerdye/go-eth/gasstation"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
@@ -40,7 +40,7 @@ var (
 
 func doClientTransfer(server string, account *wallet.Account, destAddress string, amount float64) error {
 	ctx := context.Background()
-	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	o := gasoracle.GasOracleFromEtherscan(etherscan.NewClient(*etherscanApikey))
 	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func doClientTransfer(server string, account *wallet.Account, destAddress string
 }
 
 func doClientKyberExpectedRate(server string, source, dest string, quantity float64) error {
-	o := gasoracle.GasOracleFromGasStation(gasstation.NewClient())
+	o := gasoracle.GasOracleFromEtherscan(etherscan.NewClient(*etherscanApikey))
 	c, err := client.Dial(server, o)
 	if err != nil {
 		return err
@@ -184,11 +184,6 @@ func main() {
 			log.Fatal(err)
 		}
 		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
-			log.Fatal(err)
-		}
-	case "gasstation":
-		client := gasstation.NewClient()
-		if err := gasstationCommand(context.Background(), client); err != nil {
 			log.Fatal(err)
 		}
 	}
