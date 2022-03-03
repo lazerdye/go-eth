@@ -64,10 +64,12 @@ func (e *ExchangeClient) ContractAddress() common.Address {
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, swapGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
+	// Calculate gas price.
+	gasPrice := gasFeeCap.Add(gasTipCap)
 	// Multiply by gas limit.
 	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(swapGasLimit)))
 
@@ -115,11 +117,11 @@ func (e *ExchangeClient) GetTokenToEthOutputPrice(ctx context.Context, ethBought
 }
 
 func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wallet.Account, maxEthSold decimal.Decimal, tokensBought decimal.Decimal, deadline int) (*types.Transaction, error) {
-	gasPrice, err := e.GasPrice(ctx, swapGasSpeed)
+	gasFeeCap, gasTipCap, err := e.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, client.EthToWei(maxEthSold), gasPrice, swapGasLimit)
+	opts, err := account.NewTransactor(ctx, client.EthToWei(maxEthSold), gasFeeCap, gasTipCap, swapGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -133,11 +135,11 @@ func (e *ExchangeClient) EthToTokenSwapOutput(ctx context.Context, account *wall
 }
 
 func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *wallet.Account, tokensSold decimal.Decimal, minEth decimal.Decimal, deadline int) (*types.Transaction, error) {
-	gasPrice, err := e.GasPrice(ctx, swapGasSpeed)
+	gasFeeCap, gasTipCap, err := e.GasPrice(ctx, swapGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, swapGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, swapGasLimit)
 	if err != nil {
 		return nil, err
 	}

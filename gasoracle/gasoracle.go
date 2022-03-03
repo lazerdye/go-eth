@@ -3,11 +3,9 @@ package gasoracle
 import (
 	"context"
 
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/etherscan"
-	"github.com/lazerdye/go-eth/gasstation"
 )
 
 type GasSpeed string
@@ -19,60 +17,28 @@ const (
 	Fastest = GasSpeed("fastest")
 )
 
-type GasOracle func(ctx context.Context, speed GasSpeed) (decimal.Decimal, error)
-
-func GasOracleFromGasStation(station *gasstation.Client) GasOracle {
-	return func(ctx context.Context, speed GasSpeed) (decimal.Decimal, error) {
-		var stationSpeed gasstation.Speed
-		switch speed {
-		case Low:
-			stationSpeed = gasstation.SafeLow
-		case Average:
-			stationSpeed = gasstation.Average
-		case Fast:
-			stationSpeed = gasstation.Fast
-		case Fastest:
-			stationSpeed = gasstation.Fastest
-		default:
-			return decimal.Zero, errors.Errorf("Unknown gas speed: %s", speed)
-		}
-		amount, _, err := station.GasPrice(ctx, stationSpeed)
-		return amount, err
-	}
+type GasOracleResponse struct {
+	GasFeeCap decimal.Decimal
+	GasTipCap map[GasSpeed]decimal.Decimal
 }
 
+type GasOracle func(ctx context.Context) (*GasOracleResponse, error)
+
 func GasOracleFromEtherscan(etherscan *etherscan.Client) GasOracle {
-	return func(ctx context.Context, speed GasSpeed) (decimal.Decimal, error) {
+	return func(ctx context.Context) (*GasOracleResponse, error) {
 		etherGasOracle, err := etherscan.GasOracle(ctx)
 		if err != nil {
-			return decimal.Zero, err
+			return nil, err
 		}
-		var decimalGasOracle decimal.Decimal
-		switch speed {
-		case Low:
-			decimalGasOracle, err = decimal.NewFromString(etherGasOracle.SafeGasPrice)
-			if err != nil {
-				return decimal.Zero, err
-			}
-		case Average:
-			decimalGasOracle, err = decimal.NewFromString(etherGasOracle.ProposeGasPrice)
-			if err != nil {
-				return decimal.Zero, err
-			}
-		case Fast:
-			decimalGasOracle, err = decimal.NewFromString(etherGasOracle.FastGasPrice)
-			if err != nil {
-				return decimal.Zero, err
-			}
-		case Fastest:
-			// There is no 'fastest' with etherscan...
-			decimalGasOracle, err = decimal.NewFromString(etherGasOracle.FastGasPrice)
-			if err != nil {
-				return decimal.Zero, err
-			}
-		default:
-			return decimal.Zero, errors.Errorf("Unknown gas speed: %s", speed)
-		}
-		return decimalGasOracle, nil
+
+		return &GasOracleResponse{
+			GasFeeCap: etherGasOracle.SuggestBaseFee,
+			GasTipCap: map[GasSpeed]decimal.Decimal{
+				Low:     etherGasOracle.SafeGasPrice.Sub(etherGasOracle.SuggestBaseFee),
+				Average: etherGasOracle.ProposeGasPrice.Sub(etherGasOracle.SuggestBaseFee),
+				Fast:    etherGasOracle.FastGasPrice.Sub(etherGasOracle.SuggestBaseFee),
+				Fastest: etherGasOracle.FastGasPrice.Sub(etherGasOracle.SuggestBaseFee),
+			},
+		}, nil
 	}
 }

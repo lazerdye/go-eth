@@ -33,11 +33,11 @@ func NewClient(client *client.Client) (*Client, error) {
 }
 
 func (c *Client) Burn(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, burnGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, burnGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, burnGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, burnGasLimit)
 	if err != nil {
 		return nil, err
 	}

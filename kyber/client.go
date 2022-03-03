@@ -56,11 +56,13 @@ func (c *Client) SetTradeGasLimit(tradeGasLimit uint64) {
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
-	log.Infof("Gas price: %s", gasPrice)
+	log.Infof("GasFeeCap: %d, GasTipCap: %d", gasFeeCap, gasTipCap)
+	// Calculate gas price.
+	gasPrice := gasFeeCap.Add(gasTipCap)
 	// Multiply by gas limit.
 	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(c.tradeGasLimit)))
 	log.Infof("Trade fee: %s", fee)
@@ -84,15 +86,15 @@ func (c *Client) GetExpectedRate(ctx context.Context, source, dest *token2.Clien
 }
 
 func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, minRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	log.Infof("Gas price: %f", gasPrice)
+	log.Infof("GasFeeCap: %f, GasTipCap: %f", gasFeeCap, gasTipCap)
 
 	amountInt := client.EthToWei(amount)
-	log.Infof("Amount: %s, gasPrice: %s, gasLimit: %s", amountInt.String(), gasPrice, c.tradeGasLimit)
-	transactOpts, err := account.NewTransactor(ctx, amountInt, gasPrice, c.tradeGasLimit)
+	log.Infof("Amount: %s, gasFeeCap: %s, gasTipCap: %s, gasLimit: %s", amountInt.String(), gasFeeCap, gasTipCap, c.tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, amountInt, gasFeeCap, gasTipCap, c.tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -106,11 +108,11 @@ func (c *Client) SwapEtherToToken(ctx context.Context, account *wallet.Account, 
 }
 
 func (c *Client) SwapTokenToEther(ctx context.Context, account *wallet.Account, tok *token2.Client, amount decimal.Decimal, maxRate decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, tradeGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, tradeGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, c.tradeGasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, c.tradeGasLimit)
 	if err != nil {
 		return nil, err
 	}

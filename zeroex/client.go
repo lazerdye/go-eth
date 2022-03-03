@@ -48,11 +48,13 @@ func NewClient(tokenClient *client.Client) (*Client, error) {
 
 func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) {
 	// Get gas price for trade.
-	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return decimal.Zero, err
 	}
-	log.Infof("Gas price: %s", gasPrice)
+	log.Infof("GasFeeCap: %d, GasTipCap: %d", gasFeeCap, gasTipCap)
+	// Calculate price based on fee + tip
+	gasPrice := gasFeeCap.Add(gasTipCap)
 	// Multiply by gas limit.
 	fee := gasPrice.Shift(9).Mul(decimal.NewFromInt(int64(gasLimit)))
 	log.Infof("Trade fee: %s", fee)
@@ -61,11 +63,11 @@ func (c *Client) EstimateTradeFee(ctx context.Context) (decimal.Decimal, error) 
 }
 
 func (c *Client) EtherTokenDeposit(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.TransferGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.TransferGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, client.EthToWei(amount), gasPrice, client.GasLimit)
+	opts, err := account.NewTransactor(ctx, client.EthToWei(amount), gasFeeCap, gasTipCap, client.GasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -83,11 +85,11 @@ func (c *Client) EtherTokenBalanceOf(ctx context.Context, account *wallet.Accoun
 }
 
 func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -96,11 +98,11 @@ func (c *Client) FillOrder(ctx context.Context, account *wallet.Account, order e
 }
 
 func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -108,11 +110,11 @@ func (c *Client) BatchFillOrders(ctx context.Context, account *wallet.Account, o
 }
 
 func (c *Client) FillOrKillOrder(ctx context.Context, account *wallet.Account, order exchange.LibOrderOrder, amount *big.Int, signature []byte) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, gasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -121,11 +123,11 @@ func (c *Client) FillOrKillOrder(ctx context.Context, account *wallet.Account, o
 }
 
 func (c *Client) BatchFillOrKillOrders(ctx context.Context, account *wallet.Account, orders []exchange.LibOrderOrder, amounts []*big.Int, signatures [][]byte) (*types.Transaction, error) {
-	gasPrice, err := c.GasPrice(ctx, client.SellGasSpeed)
+	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, client.SellGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	transactOpts, err := account.NewTransactor(ctx, nil, gasPrice, gasLimit)
+	transactOpts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, gasLimit)
 	if err != nil {
 		return nil, err
 	}

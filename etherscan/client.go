@@ -2,6 +2,7 @@ package etherscan
 
 import (
 	"context"
+	"github.com/shopspring/decimal"
 	"math/big"
 	"net/url"
 	"strconv"
@@ -207,9 +208,10 @@ func (c *Client) ContractExecutionStatus(ctx context.Context, transaction string
 
 type GasOracle struct {
 	LastBlock       string
-	SafeGasPrice    string
-	ProposeGasPrice string
-	FastGasPrice    string
+	SafeGasPrice    decimal.Decimal
+	ProposeGasPrice decimal.Decimal
+	FastGasPrice    decimal.Decimal
+	SuggestBaseFee  decimal.Decimal
 }
 
 type gasOracleResponse struct {

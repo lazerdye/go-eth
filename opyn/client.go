@@ -127,11 +127,11 @@ func (t *OTokenClient) MaxOTokensIssuable(ctx context.Context, collateralAmount 
 }
 
 func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
+	gasFeeCap, gasTipCap, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, openVaultGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, openVaultGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -145,11 +145,11 @@ func (t *OTokenClient) OpenVault(ctx context.Context, account *wallet.Account) (
 }
 
 func (t *OTokenClient) RedeemVaultBalance(ctx context.Context, account *wallet.Account) (*types.Transaction, error) {
-	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
+	gasFeeCap, gasTipCap, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, redeemVaultGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, redeemVaultGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -162,11 +162,11 @@ func (t *OTokenClient) RedeemVaultBalance(ctx context.Context, account *wallet.A
 }
 
 func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
-	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
+	gasFeeCap, gasTipCap, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, openVaultGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, openVaultGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -185,11 +185,11 @@ func (t *OTokenClient) AddERC20CollateralOption(ctx context.Context, account *wa
 }
 
 func (t *OTokenClient) AddAndSellERC20CollateralOption(ctx context.Context, account *wallet.Account, amtToCreate decimal.Decimal, amtCollateral decimal.Decimal, receiver common.Address) (*types.Transaction, error) {
-	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
+	gasFeeCap, gasTipCap, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, openVaultGasLimit)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, openVaultGasLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -212,13 +212,13 @@ func (t *OTokenClient) GetVault(ctx context.Context, address common.Address) (*b
 }
 
 func (t *OTokenClient) Exercise(ctx context.Context, account *wallet.Account, amount decimal.Decimal, vaults []common.Address) (*types.Transaction, error) {
-	gasPrice, err := t.GasPrice(ctx, opynGasSpeed)
+	gasFeeCap, gasTipCap, err := t.GasPrice(ctx, opynGasSpeed)
 	if err != nil {
 		return nil, err
 	}
 	amountWei := amount.Shift(int32(t.Decimals)).BigInt()
 
-	opts, err := account.NewTransactor(ctx, nil, gasPrice, 0)
+	opts, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, 0)
 	if err != nil {
 		return nil, err
 	}
