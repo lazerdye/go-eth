@@ -23,6 +23,7 @@ type Account struct {
 	ks            *keystore.KeyStore
 	overrideNonce *big.Int
 	Account       accounts.Account
+	ChainID       int
 }
 
 func Open(dir string) (*Wallet, error) {
@@ -47,7 +48,7 @@ func (w *Wallet) Account(address string) (*Account, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Account{w.ks, nil, account}, nil
+	return &Account{w.ks, nil, account, 1}, nil
 }
 
 func (w *Wallet) ImportAccount(pkey *ecdsa.PrivateKey, passphrase string) (*Account, error) {
@@ -63,7 +64,7 @@ func (w *Wallet) NewAccount(passphrase string) (*Account, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Account{ks: w.ks, Account: a}, nil
+	return &Account{ks: w.ks, Account: a, ChainID: 1}, nil
 }
 
 func (a *Account) OverrideNonce(nonce *big.Int) {
@@ -95,7 +96,7 @@ func (a *Account) NewTransactor(ctx context.Context, value *big.Int, gasFeeCap d
 	gasLimit uint64) (*bind.TransactOpts, error) {
 
 	// TODO: Configure chain id for other networks.
-	t, err := bind.NewKeyStoreTransactorWithChainID(a.ks, a.Account, big.NewInt(1))
+	t, err := bind.NewKeyStoreTransactorWithChainID(a.ks, a.Account, big.NewInt(int64(a.ChainID)))
 	if err != nil {
 		return nil, err
 	}
