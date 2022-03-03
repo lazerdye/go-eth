@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/lazerdye/go-eth/etherscan"
 	"math/big"
 	"strings"
 
@@ -13,6 +12,7 @@ import (
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/etherscan"
 	"github.com/lazerdye/go-eth/gasoracle"
 )
 
