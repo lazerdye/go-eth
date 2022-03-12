@@ -1,0 +1,6 @@
+*.sw?
+Dockerfile
+bin
+.idea
+*.iml
+
