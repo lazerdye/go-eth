@@ -3,6 +3,7 @@ package client
 import (
 	"context"
 	"math/big"
+	"time"
 
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -154,6 +155,15 @@ func (c *Client) FilterTransferLogs(ctx context.Context, fromBlockNumber *big.In
 		}
 	}
 	return nil
+}
+
+func (c *Client) TimestampOfBlock(ctx context.Context, blockNumber *big.Int) (time.Time, error) {
+	header, err := c.HeaderByNumber(ctx, blockNumber)
+	if err != nil {
+		return time.Now(), err
+	}
+
+	return time.Unix(int64(header.Time), 0), nil
 }
 
 func EthToWei(amount decimal.Decimal) *big.Int {

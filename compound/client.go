@@ -9,14 +9,12 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/pkg/errors"
-	"github.com/shopspring/decimal"
-	log "github.com/sirupsen/logrus"
-
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 )
 
 const ()
@@ -35,14 +33,15 @@ var (
 	mintGasSpeed = gasoracle.Fast
 	mintGasLimit = uint64(300000)
 
-	mintLogHash = common.HexToHash("0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f")
+	mintLogHash   = common.HexToHash("0x4c209b5fc8ad50758f13e2e1088ba56a560dff690a1c6fef26394f4c03821c4f")
+	redeemLogHash = common.HexToHash("0xe5b754fb1abb7f01b499791d0b820ae3b6af3424ac1c59768edb53f4ec31a929")
 )
 
 type Client interface {
 	FromWei(*big.Int) decimal.Decimal
 	Mint(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
 	Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error)
-	ParseLog(log *types.Log) (interface{}, error)
+	ParseLog(log *types.Log) (string, interface{}, error)
 }
 
 type cethClient struct {
@@ -98,8 +97,8 @@ func (c *cethClient) Redeem(ctx context.Context, account *wallet.Account, amount
 	return c.ceth.Redeem(trans, amountWei)
 }
 
-func (c *cethClient) ParseLog(log *types.Log) (interface{}, error) {
-	return nil, errors.New("Not Implemented")
+func (c *cethClient) ParseLog(log *types.Log) (string, interface{}, error) {
+	return "", nil, errors.New("Not Implemented")
 }
 
 type cerc20Client struct {
@@ -159,11 +158,14 @@ func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amou
 	return c.cerc20.Redeem(trans, amountWei)
 }
 
-func (c *cerc20Client) ParseLog(logObj *types.Log) (interface{}, error) {
+func (c *cerc20Client) ParseLog(logObj *types.Log) (string, interface{}, error) {
 	switch logObj.Topics[0] {
 	case mintLogHash:
-		log.Infof("Found CethMint")
-		return c.cerc20.ParseMint(*logObj)
+		mint, err := c.cerc20.ParseMint(*logObj)
+		return "mint", mint, err
+	case redeemLogHash:
+		redeem, err := c.cerc20.ParseRedeem(*logObj)
+		return "redeem", redeem, err
 	}
-	return nil, nil
+	return "", nil, nil
 }

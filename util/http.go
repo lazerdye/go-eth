@@ -57,7 +57,9 @@ func (h *HttpClient) Post(ctx context.Context, reqUrl string, params url.Values,
 	return h.Do(ctx, "POST", reqUrl, params, header, bytes.NewBuffer(bodyStr), data)
 }
 
-func (h *HttpClient) Do(ctx context.Context, method string, reqUrl string, params url.Values, header *http.Header, body io.Reader, data interface{}) error {
+func (h *HttpClient) Do(ctx context.Context, method string, reqUrl string, params url.Values, header *http.Header,
+	body io.Reader, data interface{}) error {
+
 	base, err := url.Parse(reqUrl)
 	if err != nil {
 		return err
@@ -85,8 +87,13 @@ func (h *HttpClient) Do(ctx context.Context, method string, reqUrl string, param
 
 	log.Infof("Resp: %+v", resp)
 
-	dec := json.NewDecoder(resp.Body)
-	if err := dec.Decode(data); err != nil {
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := json.Unmarshal(bodyBytes, data); err != nil {
+		log.Warnf("Could not decode message: %s", bodyBytes)
 		return err
 	}
 

@@ -126,7 +126,7 @@ func (c *Client) NormalTransactionsByAddress(ctx context.Context, address string
 	params.Set("apikey", c.apikey)
 
 	if err := c.httpClient.Get(ctx, etherscanApi, params, &transactionResult); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "Get account/txlist")
 	}
 
 	if transactionResult.Status != "1" {
