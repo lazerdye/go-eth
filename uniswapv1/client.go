@@ -3,14 +3,16 @@ package uniswapv1
 import (
 	"context"
 	"math/big"
+	"strings"
 
+	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
 )
@@ -22,12 +24,19 @@ var (
 	swapGasLimit = uint64(500000)
 
 	dnil = decimal.Decimal{}
+
+	tokenPurchaseHash = common.HexToHash("0xcd60aa75dea3072fbc07ae6d7d856b5dc5f4eee88854f5b4abf7b680ef8bc50f")
+	ethPurchaseHash   = common.HexToHash("0x7f4091b46c33e918a0f3aa42307641d17bb67029427a5369e54b353984238705")
 )
 
 type Client struct {
 	*client.Client
 
 	factory *Factory
+}
+
+func CompileExchangeABI() (abi.ABI, error) {
+	return abi.JSON(strings.NewReader(ExchangeABI))
 }
 
 type ExchangeClient struct {
@@ -157,9 +166,23 @@ func (e *ExchangeClient) TokenToEthSwapInput(ctx context.Context, account *walle
 }
 
 func (e *ExchangeClient) ParseTokenPurchase(log types.Log) (*ExchangeTokenPurchase, error) {
+	// @Deprecated
 	return e.exchange.ParseTokenPurchase(log)
 }
 
 func (e *ExchangeClient) ParseEthPurchase(log types.Log) (*ExchangeEthPurchase, error) {
+	// @Deprecated
 	return e.exchange.ParseEthPurchase(log)
+}
+
+func (e *ExchangeClient) ParseLog(logObj *types.Log) (string, interface{}, error) {
+	switch logObj.Topics[0] {
+	case tokenPurchaseHash:
+		tokenPurchase, err := e.exchange.ParseTokenPurchase(*logObj)
+		return "tokenPurchase", tokenPurchase, err
+	case ethPurchaseHash:
+		ethPurchase, err := e.exchange.ParseEthPurchase(*logObj)
+		return "ethPurchase", ethPurchase, err
+	}
+	return "", nil, nil
 }
