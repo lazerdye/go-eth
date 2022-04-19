@@ -25,7 +25,7 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 	var compoundClient compound.Client
 	var err error
 	switch *clientCompoundToken {
-	case "eth", "":
+	case "eth":
 		compoundClient, err = compound.NewCEthClient(client)
 		if err != nil {
 			return false, err
@@ -39,6 +39,8 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 		if err != nil {
 			return false, err
 		}
+	case "":
+		return false, errors.New("--token required")
 	default:
 		return false, errors.Errorf("Unsupported token: %s", *clientCompoundToken)
 	}

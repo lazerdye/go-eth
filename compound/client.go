@@ -5,6 +5,10 @@ import (
 	"math/big"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
+
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
@@ -13,8 +17,6 @@ import (
 	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/wallet"
-	"github.com/pkg/errors"
-	"github.com/shopspring/decimal"
 )
 
 const ()
@@ -105,6 +107,7 @@ type cerc20Client struct {
 	*token2.Client
 
 	cerc20 *CErc20
+	underlyingToken *token2.Client
 }
 
 func NewCErc20Client(ctx context.Context, client *client.Client, address common.Address) (Client, error) {
@@ -112,11 +115,24 @@ func NewCErc20Client(ctx context.Context, client *client.Client, address common.
 	if err != nil {
 		return nil, err
 	}
-	cerc20, err := NewCErc20(address, client)
+	symbol, err := tok.Symbol(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return &cerc20Client{tok, cerc20}, nil
+	contractAddress, ok := CErc20ContractAddresses[strings.ToLower(symbol)]
+	if !ok {
+		return nil, errors.Errorf("Could not find contract for: %s", symbol)
+	}
+	log.Infof("Cerc20 For Address %+v", contractAddress)
+	underlying, err := token2.ByAddress(ctx, client, contractAddress)
+	if err != nil {
+		return nil, err
+	}
+	cerc20, err := NewCErc20(contractAddress, client)
+	if err != nil {
+		return nil, err
+	}
+	return &cerc20Client{tok, cerc20, underlying}, nil
 }
 
 func CompileCErc20ABI() (abi.ABI, error) {
@@ -141,12 +157,10 @@ func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount
 }
 
 func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
-	opts := &bind.CallOpts{Context: ctx}
-	decimals, err := c.cerc20.Decimals(opts)
+	amountWei, err := c.underlyingToken.ToWeiCapped(ctx, amount, account)
 	if err != nil {
 		return nil, err
 	}
-	amountWei := amount.Shift(int32(decimals.Int64())).BigInt()
 	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
 		return nil, err
