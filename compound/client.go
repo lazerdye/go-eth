@@ -5,9 +5,9 @@ import (
 	"math/big"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -106,7 +106,7 @@ func (c *cethClient) ParseLog(log *types.Log) (string, interface{}, error) {
 type cerc20Client struct {
 	*token2.Client
 
-	cerc20 *CErc20
+	cerc20          *CErc20
 	underlyingToken *token2.Client
 }
 
