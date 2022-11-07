@@ -83,6 +83,10 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return augurCommands(ctx, client, commands[1:])
 	case "digixdao":
 		return digixDaoCommands(ctx, client, commands[1:])
+	case "maker":
+		return makerCommands(ctx, client, commands[1:])
+	case "weth":
+		return wethCommands(ctx, client, commands[1:])
 	}
 	return false, nil
 }

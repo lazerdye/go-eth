@@ -68,6 +68,12 @@ opyn/options_factory.go: opyn/options_factory.abi
 opyn/otoken.go: opyn/otoken.abi
 	abigen --abi=opyn/otoken.abi --pkg=opyn --type=OToken --out=opyn/otoken.go
 
+maker/cdp_manager.go: maker/cdp_manager.abi
+	abigen --abi=maker/cdp_manager.abi --pkg=maker --type=CDPManager --out=maker/cdp_manager.go
+
+maker/gem_join.go: maker/gem_join.abi
+	abigen --abi=maker/gem_join.abi --pkg=maker --type=GemJoin --out=maker/gem_join.go
+
 eth2/deposit.go: eth2/deposit.abi
 	abigen --abi=eth2/deposit.abi --pkg=eth2 --type=Deposit --out=eth2/deposit.go
 
@@ -82,6 +88,9 @@ sushi/pair.go: sushi/pair.abi
 
 sushi/sushiv2router02.go: sushi/sushiv2router02.abi
 	abigen --abi=sushi/sushiv2router02.abi --pkg=sushi --type=SushiV2Router02 --out=sushi/sushiv2router02.go
+
+weth/weth.go: weth/weth.abi
+	abigen --abi=weth/weth.abi --pkg=weth --type=Weth --out=weth/weth.go
 
 
 gofmt:

@@ -5,9 +5,9 @@ import (
 	"math/big"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
@@ -106,7 +106,7 @@ func (c *cethClient) ParseLog(log *types.Log) (string, interface{}, error) {
 type cerc20Client struct {
 	*token2.Client
 
-	cerc20 *CErc20
+	cerc20          *CErc20
 	underlyingToken *token2.Client
 }
 
@@ -157,17 +157,24 @@ func (c *cerc20Client) Mint(ctx context.Context, account *wallet.Account, amount
 }
 
 func (c *cerc20Client) Redeem(ctx context.Context, account *wallet.Account, amount decimal.Decimal) (*types.Transaction, error) {
+	allowanceWei, err := c.underlyingToken.Allowance(ctx, account.Address(), c.Address)
+	if err != nil {
+		return nil, errors.Wrap(err, "Allowance")
+	}
+	if allowanceWei.Cmp(amount) < 0 {
+		return nil, errors.Errorf("Insufficient allowance for contract %s: %s", c.Address, allowanceWei)
+	}
 	amountWei, err := c.underlyingToken.ToWeiCapped(ctx, amount, account)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "ToWeiCapped")
 	}
 	gasFeeCap, gasTipCap, err := c.GasPrice(ctx, mintGasSpeed)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "GasPrice")
 	}
 	trans, err := account.NewTransactor(ctx, nil, gasFeeCap, gasTipCap, mintGasLimit)
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "NewTransactor")
 	}
 	return c.cerc20.Redeem(trans, amountWei)
 }
