@@ -1,3 +1,5 @@
+// CLI to interact with the Ethereum network and various smart contracts.
+// See README.md for getting started instructions.
 package main
 
 import (

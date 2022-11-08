@@ -1,7 +1,12 @@
 
-Test code for interacting with Ethereum network and smart contracts with Go.
+# Experimental code for interacting with the Ethereum Network
 
-USE AT YOUR OWN RISK
+*Warning*: USE AT YOUR OWN RISK - use of this code can cause loss of funds.
 
-Improper use of this code can cause loss of funds.
+## Getting Started
 
+```
+make bin/cli
+export ETHEREUM_SERVER=ws://server.example.net:8546/
+./bin/cli status
+```
