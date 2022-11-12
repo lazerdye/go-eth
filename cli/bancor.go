@@ -129,18 +129,19 @@ func doRatePath(ctx context.Context, reg *token2.Registry, b *bancor.Client) err
 	return nil
 }
 
-func bancorCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func bancorCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	b, err := bancor.NewClient(ctx, client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "get-convertible-tokens":
-		return true, doGetConvertibleTokens(ctx, reg, b)
+		return doGetConvertibleTokens(ctx, reg, b)
 	case "get-conversion-path":
-		return true, doGetConversionPath(ctx, reg, b)
+		return doGetConversionPath(ctx, reg, b)
 	case "rate-path":
-		return true, doRatePath(ctx, reg, b)
+		return doRatePath(ctx, reg, b)
+	default:
+		return errors.Errorf("Unknown bancor subcommand: %s", commands[0])
 	}
-	return false, nil
 }

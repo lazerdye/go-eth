@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/digixdao"
 )
@@ -13,17 +15,17 @@ var (
 	clientDigixDaoBurnCmd = clientDigixDaoCommand.Command("burn", "Burn Digix tokens")
 )
 
-func digixDaoCommands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func digixDaoCommands(ctx context.Context, client *client.Client, commands []string) error {
 	dgd, err := digixdao.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "burn":
-		return true, doDigixDaoBurn(ctx, dgd)
+		return doDigixDaoBurn(ctx, dgd)
+	default:
+		return errors.Errorf("Unknown digixDao subcommand: %s", commands[0])
 	}
-
-	return false, nil
 }
 
 func doDigixDaoBurn(ctx context.Context, dgd *digixdao.Client) error {

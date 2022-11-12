@@ -3,9 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/shopspring/decimal"
 	"math/big"
+
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
+	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/maker"
@@ -32,26 +34,27 @@ var (
 	clientMakerGemExitAmount  = clientMakerGemExit.Arg("amount", "Vault urn").Required().String()
 )
 
-func makerCommands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func makerCommands(ctx context.Context, client *client.Client, commands []string) error {
 	cdpClient, err := maker.NewCDPManagerClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "open-vault":
-		return true, doMakerOpen(ctx, cdpClient)
+		return doMakerOpen(ctx, cdpClient)
 	case "last-vault":
-		return true, doMakerLastVault(ctx, cdpClient)
+		return doMakerLastVault(ctx, cdpClient)
 	case "urns-vault":
-		return true, doMakerUrnsVault(ctx, cdpClient)
+		return doMakerUrnsVault(ctx, cdpClient)
 	case "frob-vault":
-		return true, doMakerFrobVault(ctx, cdpClient)
+		return doMakerFrobVault(ctx, cdpClient)
 	case "join":
-		return true, doMakerGemJoin(ctx, cdpClient)
+		return doMakerGemJoin(ctx, cdpClient)
 	case "exit":
-		return true, doMakerGemExit(ctx, cdpClient)
+		return doMakerGemExit(ctx, cdpClient)
+	default:
+		return errors.Errorf("Unknown maker subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func doMakerOpen(ctx context.Context, cdpClient *maker.CDPManagerClient) error {

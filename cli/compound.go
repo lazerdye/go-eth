@@ -21,37 +21,38 @@ var (
 	clientRedeemAmount    = clientRedeemCommand.Arg("amount", "Amount to redeem").Required().String()
 )
 
-func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	var compoundClient compound.Client
 	var err error
 	switch *clientCompoundToken {
 	case "eth":
 		compoundClient, err = compound.NewCEthClient(client)
 		if err != nil {
-			return false, err
+			return err
 		}
 	case "bat", "dai", "zrx", "uni", "usdc", "usdt":
 		tok, err := reg.ByName(*clientCompoundToken)
 		if err != nil {
-			return false, err
+			return err
 		}
 		compoundClient, err = compound.NewCErc20Client(ctx, client, tok.Address)
 		if err != nil {
-			return false, err
+			return err
 		}
 	case "":
-		return false, errors.New("--token required")
+		return errors.New("--token required")
 	default:
-		return false, errors.Errorf("Unsupported token: %s", *clientCompoundToken)
+		return errors.Errorf("Unsupported token: %s", *clientCompoundToken)
 	}
 
 	switch commands[0] {
 	case "mint":
-		return true, compoundMint(ctx, compoundClient)
+		return compoundMint(ctx, compoundClient)
 	case "redeem":
-		return true, compoundRedeem(ctx, compoundClient)
+		return compoundRedeem(ctx, compoundClient)
+	default:
+		return errors.Errorf("Unknown compound subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func compoundMint(ctx context.Context, compoundClient compound.Client) error {

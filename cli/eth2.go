@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/eth2"
 	"github.com/lazerdye/go-eth/token2"
@@ -15,18 +17,18 @@ var (
 	clientEth2DepositDepositData = clientEth2DepositCommand.Arg("deposit-data", "JSON deposit data").Required().String()
 )
 
-func eth2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func eth2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	eth2Client, err := eth2.NewClient(client, reg)
 	if err != nil {
-		return false, err
+		return err
 	}
 
 	switch commands[0] {
 	case "deposit":
-		return true, doDeposit(ctx, eth2Client)
+		return doDeposit(ctx, eth2Client)
+	default:
+		return errors.Errorf("Unknown eth2 subcommand: %s", commands[0])
 	}
-
-	return false, nil
 }
 
 func doDeposit(ctx context.Context, eth2Client *eth2.Client) error {

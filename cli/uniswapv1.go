@@ -38,28 +38,29 @@ const (
 	deadlineOffset = 1200 // 20 minutes
 )
 
-func uniswapV1Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func uniswapV1Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	uniswapv1Client, err := uniswapv1.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "get-exchange":
-		return true, uniswapGetExchange(ctx, reg, uniswapv1Client)
+		return uniswapGetExchange(ctx, reg, uniswapv1Client)
 	case "eth-to-token-input":
-		return true, uniswapGetEthToTokenInputPrice(ctx, reg, uniswapv1Client)
+		return uniswapGetEthToTokenInputPrice(ctx, reg, uniswapv1Client)
 	case "eth-to-token-output":
-		return true, uniswapGetEthToTokenOutputPrice(ctx, reg, uniswapv1Client)
+		return uniswapGetEthToTokenOutputPrice(ctx, reg, uniswapv1Client)
 	case "token-to-eth-input":
-		return true, uniswapGetTokenToEthInputPrice(ctx, reg, uniswapv1Client)
+		return uniswapGetTokenToEthInputPrice(ctx, reg, uniswapv1Client)
 	case "token-to-eth-output":
-		return true, uniswapGetTokenToEthOutputPrice(ctx, reg, uniswapv1Client)
+		return uniswapGetTokenToEthOutputPrice(ctx, reg, uniswapv1Client)
 	case "graph":
-		return true, uniswapGraph(ctx, uniswapv1Client)
+		return uniswapGraph(ctx, uniswapv1Client)
 	case "token-to-eth-swap-input":
-		return true, uniswapTokenToEthSwapInput(ctx, reg, uniswapv1Client)
+		return uniswapTokenToEthSwapInput(ctx, reg, uniswapv1Client)
+	default:
+		return errors.Errorf("Unknown uniswapv1 subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func getExchange(ctx context.Context, reg *token2.Registry, client *uniswapv1.Client) (*uniswapv1.ExchangeClient, error) {

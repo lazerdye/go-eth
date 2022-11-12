@@ -2,19 +2,11 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/alecthomas/kingpin.v2"
 
-	"github.com/lazerdye/go-eth/client"
-	"github.com/lazerdye/go-eth/etherscan"
-	"github.com/lazerdye/go-eth/gasoracle"
-	"github.com/lazerdye/go-eth/kyber"
-	"github.com/lazerdye/go-eth/token2"
 	"github.com/lazerdye/go-eth/zeroex"
 )
 
@@ -28,65 +20,7 @@ var (
 
 	transferCmd      = clientCmd.Command("transfer", "Transfer ethereum")
 	transferTransmit = transferCmd.Flag("transmit", "Transmit transaction").Bool()
-
-	tokenKyberCmd          = clientCmd.Command("kyber", "Kyber Network")
-	tokenKyberTokenFile    = tokenKyberCmd.Flag("token-file", "Token file").Required().String()
-	tokenKyberSource       = tokenKyberCmd.Flag("source", "Source exchange").String()
-	tokenKyberDest         = tokenKyberCmd.Flag("dest", "Dest exchange").String()
-	tokenKyberQuantity     = tokenKyberCmd.Flag("quantity", "Source quantity").Float64()
-	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
-
-func doClientTransfer(ctx context.Context, client *client.Client) error {
-	account, err := getAccount(true)
-	if err != nil {
-		log.Fatal(err)
-	}
-	destAddressHex := common.HexToAddress(*destAddress)
-	transferAmountDec := decimal.NewFromFloat(*transferAmount)
-	tx, err := client.Transfer(ctx, account, destAddressHex, transferAmountDec, *transferTransmit)
-	if err != nil {
-		return err
-	}
-	if *transferTransmit {
-		fmt.Printf("Transaction: %s\n", tx.Hash().Hex())
-	} else {
-		fmt.Printf("Transaction(unsent): %s\n", tx.Hash().Hex())
-	}
-	return nil
-}
-
-func doClientKyberExpectedRate(server string, source, dest string, quantity float64) error {
-	o := gasoracle.GasOracleFromEtherscan(etherscan.NewClient(*etherscanApikey))
-	c, err := client.Dial(server, o)
-	if err != nil {
-		return err
-	}
-	k, err := kyber.NewClient(c)
-	if err != nil {
-		return err
-	}
-	r, err := token2.RegistryFromFile(c, *tokenKyberTokenFile)
-	if err != nil {
-		return err
-	}
-	quantityFloat := decimal.NewFromFloat(quantity)
-	sourceToken, err := r.ByName(source)
-	if err != nil {
-		return err
-	}
-	destToken, err := r.ByName(dest)
-	if err != nil {
-		return err
-	}
-	expectedRate, slippageRate, err := k.GetExpectedRate(context.Background(), sourceToken, destToken, quantityFloat)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Expected Rate: %s\n", expectedRate.String())
-	fmt.Printf("Slippage Rate: %s\n", slippageRate.String())
-	return nil
-}
 
 func newZeroexClient() (*zeroex.Client, error) {
 	client, err := newClient()
@@ -105,20 +39,14 @@ func main() {
 	ctx := context.Background()
 	switch commandsSplit[0] {
 	case "account":
-		done, err := accountCommands(ctx, commandsSplit[1:])
+		err := accountCommands(ctx, commandsSplit[1:])
 		if err != nil {
 			log.Fatal(err)
-		}
-		if done {
-			return
 		}
 	case "client":
-		done, err := clientCommands(ctx, commandsSplit[1:])
+		err := clientCommands(ctx, commandsSplit[1:])
 		if err != nil {
 			log.Fatal(err)
-		}
-		if done {
-			return
 		}
 	case "etherscan":
 		done, err := etherscanCommands(ctx, commandsSplit[1:])
@@ -129,46 +57,8 @@ func main() {
 			return
 		}
 	case "zxmesh":
-		done, err := zxmeshCommands(ctx, commandsSplit[1:])
+		err := zxmeshCommands(ctx, commandsSplit[1:])
 		if err != nil {
-			log.Fatal(err)
-		}
-		if done {
-			return
-		}
-	}
-
-	// TODO: Fix this!
-	switch kingpin.Parse() {
-	case "client kyber expectedRate":
-		if *tokenKyberSource == "" || *tokenKyberDest == "" {
-			log.Fatal("Both --source and --dest flags required")
-		}
-		if err := doClientKyberExpectedRate(*clientServer, *tokenKyberSource, *tokenKyberDest, *tokenKyberQuantity); err != nil {
-			log.Fatal(err)
-		}
-	case "client zeroex deposit":
-		zClient, err := newZeroexClient()
-		if err != nil {
-			log.Fatal(err)
-		}
-		account, err := getAccount(true)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := zeroexDepositCommand(zClient, account); err != nil {
-			log.Fatal(err)
-		}
-	case "client zeroex balanceof":
-		zClient, err := newZeroexClient()
-		if err != nil {
-			log.Fatal(err)
-		}
-		account, err := getAccount(false)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := zeroexBalanceOfCommand(zClient, account); err != nil {
 			log.Fatal(err)
 		}
 	}

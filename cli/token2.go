@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -115,20 +116,20 @@ func doTokenTransfer(ctx context.Context, reg *token2.Registry) error {
 	return nil
 }
 
-func token2Commands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func token2Commands(ctx context.Context, client *client.Client, commands []string) error {
 	reg, err := newTokenRegistry(ctx, client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "balance-of":
-		return true, doTokenBalanceOf(ctx, reg)
+		return doTokenBalanceOf(ctx, reg)
 	case "allowance":
-		return true, doTokenAllowance(ctx, reg)
+		return doTokenAllowance(ctx, reg)
 	case "transfer":
-		return true, doTokenTransfer(ctx, reg)
+		return doTokenTransfer(ctx, reg)
 	case "approve":
-		return true, doTokenApprove(ctx, reg)
+		return doTokenApprove(ctx, reg)
 	case "uniswapv1":
 		return uniswapV1Commands(ctx, client, reg, commands[1:])
 	case "uniswapv2":
@@ -147,7 +148,7 @@ func token2Commands(ctx context.Context, client *client.Client, commands []strin
 		return oneInchV3Commands(ctx, client, reg, commands[1:])
 	case "zxmesh":
 		return zxmeshToken2Commands(ctx, client, reg, commands[1:])
+	default:
+		return errors.Errorf("Unknown token2 subcommand: %s", commands[0])
 	}
-
-	return false, nil
 }

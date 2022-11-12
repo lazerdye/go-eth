@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -15,16 +17,17 @@ var (
 	clientWethDepositAmount = clientWethDeposit.Arg("amount", "Amount to depoit").Required().String()
 )
 
-func wethCommands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func wethCommands(ctx context.Context, client *client.Client, commands []string) error {
 	wethClient, err := weth.NewWethClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "deposit":
-		return true, doWethDeposit(ctx, wethClient)
+		return doWethDeposit(ctx, wethClient)
+	default:
+		return errors.Errorf("Unknown weth subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func doWethDeposit(ctx context.Context, wethClient *weth.WethClient) error {

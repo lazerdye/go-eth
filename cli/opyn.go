@@ -42,32 +42,33 @@ var (
 	clientOpynExerciseVaults                    = clientOpynExerciseCommand.Arg("vualts", "List of vaults to exercise").Required().String()
 )
 
-func opynCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func opynCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	opynClient, err := opyn.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "list-options-contracts":
-		return true, opynListOptionsContracts(ctx, opynClient, reg)
+		return opynListOptionsContracts(ctx, opynClient, reg)
 	case "open-vault":
-		return true, opynOpenVault(ctx, opynClient, reg)
+		return opynOpenVault(ctx, opynClient, reg)
 	case "redeem-vault-balance":
-		return true, opynRedeemVaultBalance(ctx, opynClient, reg)
+		return opynRedeemVaultBalance(ctx, opynClient, reg)
 	case "estimate":
-		return true, opynEstimateContract(ctx, opynClient, reg)
+		return opynEstimateContract(ctx, opynClient, reg)
 	case "add-collateral-option":
-		return true, opynAddCollateralOption(ctx, opynClient, reg)
+		return opynAddCollateralOption(ctx, opynClient, reg)
 	case "add-and-sell-collateral-option":
-		return true, opynAddAndSellCollateralOption(ctx, opynClient, reg)
+		return opynAddAndSellCollateralOption(ctx, opynClient, reg)
 	case "get-vault":
-		return true, opynGetVault(ctx, opynClient, reg)
+		return opynGetVault(ctx, opynClient, reg)
 	case "list-vaults":
-		return true, opynListVaults(ctx, opynClient, reg)
+		return opynListVaults(ctx, opynClient, reg)
 	case "exercise":
-		return true, opynExercise(ctx, opynClient, reg)
+		return opynExercise(ctx, opynClient, reg)
+	default:
+		return errors.Errorf("Unknown opyn subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func getOToken(ctx context.Context, opynClient *opyn.Client, reg *token2.Registry) (*opyn.OTokenClient, error) {

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
@@ -42,28 +43,29 @@ var (
 	clientUniswapv2ClaimMerkleProof                 = clientUniswapv2Claim.Arg("merkle-proof", "Token claim merkle proof - comma separated hex").String()
 )
 
-func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func uniswapV2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	uniswapv2Client, err := uniswapv2.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "get-pairs":
-		return true, uniswapV2GetPairs(ctx, uniswapv2Client)
+		return uniswapV2GetPairs(ctx, uniswapv2Client)
 	case "get-pair":
-		return true, uniswapV2GetPair(ctx, reg, uniswapv2Client)
+		return uniswapV2GetPair(ctx, reg, uniswapv2Client)
 	case "get-amount-out":
-		return true, uniswapV2GetAmountOut(ctx, reg, uniswapv2Client)
+		return uniswapV2GetAmountOut(ctx, reg, uniswapv2Client)
 	case "get-amount-in":
-		return true, uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
+		return uniswapV2GetAmountIn(ctx, reg, uniswapv2Client)
 	case "get-reserves":
-		return true, uniswapV2GetReserves(ctx, reg, uniswapv2Client)
+		return uniswapV2GetReserves(ctx, reg, uniswapv2Client)
 	case "swap-eth-for-exact-tokens":
-		return true, uniswapV2SwapETHForExactTokens(ctx, reg, uniswapv2Client)
+		return uniswapV2SwapETHForExactTokens(ctx, reg, uniswapv2Client)
 	case "claim-token":
-		return true, uniswapV2Claim(ctx, reg, uniswapv2Client)
+		return uniswapV2Claim(ctx, reg, uniswapv2Client)
+	default:
+		return errors.Errorf("Unknown uniswapv2 subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func uniswapV2GetPairs(ctx context.Context, client *uniswapv2.Client) error {

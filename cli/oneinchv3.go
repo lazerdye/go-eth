@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -20,15 +21,17 @@ var (
 	clientOneInchV3QuoteAmount    = clientOneInchV3QuoteCommand.Arg("amount", "Amount").Required().String()
 )
 
-func oneInchV3Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func oneInchV3Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	oneInchV3 := oneinchv3.NewClient()
 	switch commands[0] {
 	case "tokens":
-		return true, oneInchV3Tokens(ctx, oneInchV3)
+		return oneInchV3Tokens(ctx, oneInchV3)
 	case "quote":
-		return true, oneInchV3Quote(ctx, reg, oneInchV3)
+		return oneInchV3Quote(ctx, reg, oneInchV3)
+	default:
+		return errors.Errorf("Unknown oneInch subcommand: %s", commands[0])
 	}
-	return false, nil
+	return nil
 }
 
 func oneInchV3Tokens(ctx context.Context, oneInchV3 *oneinchv3.Client) error {

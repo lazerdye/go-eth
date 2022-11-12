@@ -81,16 +81,17 @@ func getAccount(needUnlocked bool) (*wallet.Account, error) {
 	return account, nil
 }
 
-func accountCommands(ctx context.Context, commands []string) (bool, error) {
+func accountCommands(ctx context.Context, commands []string) error {
 	switch commands[0] {
 	case "list":
-		return true, doAccountList()
+		return doAccountList()
 	case "new":
-		return true, doAccountNew()
+		return doAccountNew()
 	case "unlock":
-		return true, doAccountUnlock()
+		return doAccountUnlock()
+	default:
+		return errors.Errorf("Unknown account subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func doAccountList() error {

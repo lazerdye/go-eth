@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
@@ -26,20 +27,21 @@ var (
 	clientSushiAmountsOutAmountIn = clientSushiAmountsOut.Arg("amount-in", "Amount In").String()
 )
 
-func sushiCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func sushiCommands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	sushiClient, err := sushi.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "get-pairs":
-		return true, sushiGetPairs(ctx, sushiClient)
+		return sushiGetPairs(ctx, sushiClient)
 	case "amounts-in":
-		return true, sushiAmountsIn(ctx, sushiClient, reg)
+		return sushiAmountsIn(ctx, sushiClient, reg)
 	case "amounts-out":
-		return true, sushiAmountsOut(ctx, sushiClient, reg)
+		return sushiAmountsOut(ctx, sushiClient, reg)
+	default:
+		return errors.Errorf("Unknown sushi subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func sushiGetPairs(ctx context.Context, client *sushi.Client) error {

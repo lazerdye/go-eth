@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/pkg/errors"
+
 	"github.com/lazerdye/go-eth/augur"
 	"github.com/lazerdye/go-eth/client"
 )
@@ -28,15 +30,15 @@ func doMigrateFromLegacy(ctx context.Context, augur *augur.Client) error {
 	return nil
 }
 
-func augurCommands(ctx context.Context, client *client.Client, commands []string) (bool, error) {
+func augurCommands(ctx context.Context, client *client.Client, commands []string) error {
 	augur, err := augur.NewClient(client)
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "migrate-from-legacy":
-		return true, doMigrateFromLegacy(ctx, augur)
+		return doMigrateFromLegacy(ctx, augur)
+	default:
+		return errors.Errorf("Unknown augur subcommand: %s", commands[0])
 	}
-
-	return false, nil
 }

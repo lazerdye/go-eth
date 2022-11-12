@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"math/big"
 
-	//"github.com/pkg/errors"
 	"github.com/ethereum/go-ethereum/common"
+	"github.com/pkg/errors"
 	"gopkg.in/alecthomas/kingpin.v2"
-	//log "github.com/sirupsen/logrus"
 
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/token2"
@@ -27,22 +26,23 @@ var (
 	zxmeshToken2Orders  = zxmeshToken2Command.Command("orders", "ZXMesg Orders")
 )
 
-func zxmeshCommands(ctx context.Context, commands []string) (bool, error) {
+func zxmeshCommands(ctx context.Context, commands []string) error {
 	zxMesh, err := zxmesh.New(*zxmeshServer)
 	if err != nil {
-		return false, err
+		return err
 	}
 	defer zxMesh.Close()
 	if err := zxMesh.Connect(); err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "status":
-		return true, zxmeshStatus(zxMesh)
+		return zxmeshStatus(zxMesh)
 	case "listen":
-		return true, zxmeshListen(zxMesh)
+		return zxmeshListen(zxMesh)
+	default:
+		return errors.Errorf("Unknown zxmesh subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func zxmeshStatus(zx *zxmesh.Client) error {
@@ -75,20 +75,21 @@ func zxmeshListen(zx *zxmesh.Client) error {
 	return nil
 }
 
-func zxmeshToken2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) (bool, error) {
+func zxmeshToken2Commands(ctx context.Context, client *client.Client, reg *token2.Registry, commands []string) error {
 	zxMesh, err := zxmesh.New(*zxmeshToken2Server)
 	if err != nil {
-		return false, err
+		return err
 	}
 	defer zxMesh.Close()
 	if err := zxMesh.Connect(); err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "orders":
-		return true, zxmeshOrders(ctx, zxMesh, client, reg)
+		return zxmeshOrders(ctx, zxMesh, client, reg)
+	default:
+		return errors.Errorf("Unknown zxmesh subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func zxmeshOrders(ctx context.Context, zx *zxmesh.Client, client *client.Client, reg *token2.Registry) error {

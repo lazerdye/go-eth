@@ -5,6 +5,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/shopspring/decimal"
 	"math/big"
 	"strings"
 
@@ -57,42 +58,47 @@ func newClient() (*client.Client, error) {
 	return c, err
 }
 
-func clientCommands(ctx context.Context, commands []string) (bool, error) {
+func clientCommands(ctx context.Context, commands []string) error {
 	client, err := newClient()
 	if err != nil {
-		return false, err
+		return err
 	}
 	switch commands[0] {
 	case "status":
-		return true, doClientStatus(ctx, client)
+		return doClientStatus(ctx, client)
 	case "balance":
-		return true, doClientBalance(ctx, client)
+		return doClientBalance(ctx, client)
 	case "balance-at":
-		return true, doClientBalanceAt(ctx, client)
+		return doClientBalanceAt(ctx, client)
 	case "transfer":
-		return true, doClientTransfer(ctx, client)
+		return doClientTransfer(ctx, client)
 	case "get-transaction":
-		return true, doClientGetTransaction(ctx, client)
+		return doClientGetTransaction(ctx, client)
 	case "submit-transaction":
-		return true, doClientSubmitTransaction(ctx, client)
+		return doClientSubmitTransaction(ctx, client)
 	case "resubmit-transaction":
-		return true, doClientResubmitTransaction(ctx, client)
+		return doClientResubmitTransaction(ctx, client)
 	case "cancel-transaction":
-		return true, doClientCancelTransaction(ctx, client)
+		return doClientCancelTransaction(ctx, client)
 	case "filter-logs":
-		return true, doClientFilterLogs(ctx, client)
+		return doClientFilterLogs(ctx, client)
 	case "token2":
 		return token2Commands(ctx, client, commands[1:])
 	case "augur":
 		return augurCommands(ctx, client, commands[1:])
 	case "digixdao":
 		return digixDaoCommands(ctx, client, commands[1:])
+	case "kyber":
+		return kyberCommands(ctx, client, commands[1:])
 	case "maker":
 		return makerCommands(ctx, client, commands[1:])
 	case "weth":
 		return wethCommands(ctx, client, commands[1:])
+	case "zeroex":
+		return zeroexCommands(ctx, client, commands[1:])
+	default:
+		return errors.Errorf("Unknown client subcommand: %s", commands[0])
 	}
-	return false, nil
 }
 
 func doClientStatus(ctx context.Context, c *client.Client) error {
@@ -132,6 +138,25 @@ func doClientBalanceAt(ctx context.Context, c *client.Client) error {
 		return err
 	}
 	fmt.Printf("Balance of %s: %s\n", queryAddress.String(), eth)
+	return nil
+}
+
+func doClientTransfer(ctx context.Context, client *client.Client) error {
+	account, err := getAccount(true)
+	if err != nil {
+		return err
+	}
+	destAddressHex := common.HexToAddress(*destAddress)
+	transferAmountDec := decimal.NewFromFloat(*transferAmount)
+	tx, err := client.Transfer(ctx, account, destAddressHex, transferAmountDec, *transferTransmit)
+	if err != nil {
+		return err
+	}
+	if *transferTransmit {
+		fmt.Printf("Transaction: %s\n", tx.Hash().Hex())
+	} else {
+		fmt.Printf("Transaction(unsent): %s\n", tx.Hash().Hex())
+	}
 	return nil
 }
 
