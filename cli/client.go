@@ -69,6 +69,8 @@ func clientCommands(ctx context.Context, commands []string) (bool, error) {
 		return true, doClientBalance(ctx, client)
 	case "balance-at":
 		return true, doClientBalanceAt(ctx, client)
+	case "transfer":
+		return true, doClientTransfer(ctx, client)
 	case "get-transaction":
 		return true, doClientGetTransaction(ctx, client)
 	case "submit-transaction":

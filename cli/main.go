@@ -15,7 +15,6 @@ import (
 	"github.com/lazerdye/go-eth/gasoracle"
 	"github.com/lazerdye/go-eth/kyber"
 	"github.com/lazerdye/go-eth/token2"
-	"github.com/lazerdye/go-eth/wallet"
 	"github.com/lazerdye/go-eth/zeroex"
 )
 
@@ -38,14 +37,14 @@ var (
 	tokenKyberExpectedRate = tokenKyberCmd.Command("expectedRate", "Expected rate")
 )
 
-func doClientTransfer(server string, account *wallet.Account, destAddress string, amount float64) error {
-	ctx := context.Background()
-	o := gasoracle.GasOracleFromEtherscan(etherscan.NewClient(*etherscanApikey))
-	c, err := client.Dial(server, o)
+func doClientTransfer(ctx context.Context, client *client.Client) error {
+	account, err := getAccount(true)
 	if err != nil {
-		return err
+		log.Fatal(err)
 	}
-	tx, err := c.Transfer(ctx, account, common.HexToAddress(destAddress), decimal.NewFromFloat(amount), *transferTransmit)
+	destAddressHex := common.HexToAddress(*destAddress)
+	transferAmountDec := decimal.NewFromFloat(*transferAmount)
+	tx, err := client.Transfer(ctx, account, destAddressHex, transferAmountDec, *transferTransmit)
 	if err != nil {
 		return err
 	}
@@ -141,14 +140,6 @@ func main() {
 
 	// TODO: Fix this!
 	switch kingpin.Parse() {
-	case "client transfer":
-		account, err := getAccount(true)
-		if err != nil {
-			log.Fatal(err)
-		}
-		if err := doClientTransfer(*clientServer, account, *destAddress, *transferAmount); err != nil {
-			log.Fatal(err)
-		}
 	case "client kyber expectedRate":
 		if *tokenKyberSource == "" || *tokenKyberDest == "" {
 			log.Fatal("Both --source and --dest flags required")
