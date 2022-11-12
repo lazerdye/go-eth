@@ -21,7 +21,7 @@ require (
 	github.com/stretchr/testify v1.7.2
 	github.com/tyler-smith/go-bip39 v1.1.0 // indirect
 	golang.org/x/crypto v0.1.0 // indirect
-	golang.org/x/term v0.2.0 // indirect
+	golang.org/x/term v0.2.0
 	gopkg.in/alecthomas/kingpin.v2 v2.2.6
 	gopkg.in/yaml.v2 v2.4.0
 )
