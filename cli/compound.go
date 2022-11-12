@@ -55,12 +55,9 @@ func compoundCommands(ctx context.Context, client *client.Client, reg *token2.Re
 }
 
 func compoundMint(ctx context.Context, compoundClient compound.Client) error {
-	account, opened, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !opened {
-		return errors.New("Account not unlocked")
 	}
 
 	amountBig := decimal.NewFromFloat(*clientMintAmount)
@@ -74,12 +71,9 @@ func compoundMint(ctx context.Context, compoundClient compound.Client) error {
 }
 
 func compoundRedeem(ctx context.Context, compoundClient compound.Client) error {
-	account, opened, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !opened {
-		return errors.New("Account not unlocked")
 	}
 
 	amountBig, err := decimal.NewFromString(*clientRedeemAmount)

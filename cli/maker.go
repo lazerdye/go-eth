@@ -7,8 +7,6 @@ import (
 	"github.com/shopspring/decimal"
 	"math/big"
 
-	"github.com/pkg/errors"
-
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/maker"
 )
@@ -57,12 +55,9 @@ func makerCommands(ctx context.Context, client *client.Client, commands []string
 }
 
 func doMakerOpen(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet Locked")
 	}
 
 	tx, err := cdpClient.Open(ctx, *clientMakerOpenVaultIlk, account)
@@ -74,7 +69,7 @@ func doMakerOpen(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
 }
 
 func doMakerLastVault(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
-	account, _, err := getAccount()
+	account, err := getAccount(false)
 	if err != nil {
 		return err
 	}
@@ -98,12 +93,9 @@ func doMakerUrnsVault(ctx context.Context, cdpClient *maker.CDPManagerClient) er
 }
 
 func doMakerFrobVault(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet Locked")
 	}
 	cdpId, _ := new(big.Int).SetString(*clientMakerFrobVaultCdpId, 10)
 	dink, _ := decimal.NewFromString(*clientMakerFrobVaultDink)
@@ -118,12 +110,9 @@ func doMakerFrobVault(ctx context.Context, cdpClient *maker.CDPManagerClient) er
 }
 
 func doMakerGemJoin(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet Locked")
 	}
 	gem, err := maker.NewGemJoinClient(cdpClient.Client, *clientMakerGemJoinIlk)
 	if err != nil {
@@ -140,12 +129,9 @@ func doMakerGemJoin(ctx context.Context, cdpClient *maker.CDPManagerClient) erro
 }
 
 func doMakerGemExit(ctx context.Context, cdpClient *maker.CDPManagerClient) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet Locked")
 	}
 	gem, err := maker.NewGemJoinClient(cdpClient.Client, *clientMakerGemExitIlk)
 	if err != nil {

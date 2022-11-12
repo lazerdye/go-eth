@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/lazerdye/go-eth/digixdao"
-	"github.com/pkg/errors"
-
 	"github.com/lazerdye/go-eth/client"
+	"github.com/lazerdye/go-eth/digixdao"
 )
 
 var (
@@ -29,12 +27,9 @@ func digixDaoCommands(ctx context.Context, client *client.Client, commands []str
 }
 
 func doDigixDaoBurn(ctx context.Context, dgd *digixdao.Client) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 
 	tx, err := dgd.Burn(ctx, account)

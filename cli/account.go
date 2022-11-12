@@ -3,16 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"syscall"
 
 	"github.com/pkg/errors"
 	log "github.com/sirupsen/logrus"
+	"golang.org/x/term"
 	"gopkg.in/alecthomas/kingpin.v2"
 
 	"github.com/lazerdye/go-eth/wallet"
-)
-
-const (
-	defaultHdPath = "m/44'/60'/0'/0/0"
 )
 
 var (
@@ -24,29 +22,63 @@ var (
 	restoreAccountMnemonic = restoreAccountCmd.Arg("mnemonic", "Restore Mnemonic").String()
 )
 
-func getAccount() (*wallet.Account, bool, error) {
+func getPassphrase(repeat bool) (string, error) {
+	if *passphrase != "" {
+		return *passphrase, nil
+	}
+	fmt.Print("Enter Passphrase: ")
+	passwordBytes1, err := term.ReadPassword(int(syscall.Stdin))
+	if err != nil {
+		return "", err
+	}
+	fmt.Print("\n")
+	if repeat {
+		fmt.Print("Repeat: ")
+		passwordBytes2, err := term.ReadPassword(int(syscall.Stdin))
+		if err != nil {
+			return "", err
+		}
+		fmt.Print("\n")
+		if string(passwordBytes1) != string(passwordBytes2) {
+			return "", errors.New("Passwords do not match")
+		}
+	}
+	return string(passwordBytes1), nil
+}
+
+func getAccount(needUnlocked bool) (*wallet.Account, error) {
 	if *address == "" {
-		return nil, false, errors.New("address parameter required")
+		return nil, errors.New("address parameter required")
 	}
 	if *keystore == "" {
-		return nil, false, errors.New("keystore parameter required")
+		return nil, errors.New("keystore parameter required")
 	}
 	w, err := wallet.Open(*keystore)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
 	account, err := w.Account(*address)
 	if err != nil {
-		return nil, false, err
+		return nil, err
 	}
-	if *passphrase != "" {
-		if err := account.Unlock(*passphrase); err != nil {
-			return nil, false, err
+	unlockPassphrase := *passphrase
+	// If we do not have a password set by CLI, try getting one from the user.
+	if unlockPassphrase == "" && needUnlocked {
+		var err error
+		unlockPassphrase, err = getPassphrase(false)
+		if err != nil {
+			return nil, err
 		}
-		return account, true, nil
-	} else {
-		return account, false, nil
+		if unlockPassphrase == "" {
+			return nil, errors.New("Passphrase required")
+		}
 	}
+	if unlockPassphrase != "" {
+		if err := account.Unlock(unlockPassphrase); err != nil {
+			return nil, err
+		}
+	}
+	return account, nil
 }
 
 func accountCommands(ctx context.Context, commands []string) (bool, error) {
@@ -80,14 +112,15 @@ func doAccountNew() error {
 	if *keystore == "" {
 		log.Fatal("Parameter --keystore required")
 	}
-	if *passphrase == "" {
-		log.Fatal("Parameter --passphrase required")
+	passphrase, err := getPassphrase(true)
+	if err != nil {
+		return err
 	}
 	w, err := wallet.Open(*keystore)
 	if err != nil {
 		return err
 	}
-	account, err := w.NewAccount(*passphrase)
+	account, err := w.NewAccount(passphrase)
 	if err != nil {
 		return err
 	}
@@ -95,12 +128,9 @@ func doAccountNew() error {
 }
 
 func doAccountUnlock() error {
-	_, unlocked, err := getAccount()
+	_, err := getAccount(true)
 	if err != nil {
 		log.Fatal(err)
-	}
-	if !unlocked {
-		log.Fatal("Passphrase required")
 	}
 	fmt.Printf("Unlocked %s\n", *address)
 	return nil

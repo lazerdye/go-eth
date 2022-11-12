@@ -139,15 +139,12 @@ func main() {
 		}
 	}
 
-	// WIP
+	// TODO: Fix this!
 	switch kingpin.Parse() {
 	case "client transfer":
-		account, unlocked, err := getAccount()
+		account, err := getAccount(true)
 		if err != nil {
 			log.Fatal(err)
-		}
-		if !unlocked {
-			log.Fatal("Passphrase required")
 		}
 		if err := doClientTransfer(*clientServer, account, *destAddress, *transferAmount); err != nil {
 			log.Fatal(err)
@@ -164,12 +161,9 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		account, unlocked, err := getAccount()
+		account, err := getAccount(true)
 		if err != nil {
 			log.Fatal(err)
-		}
-		if !unlocked {
-			log.Fatal("Passphrase required")
 		}
 		if err := zeroexDepositCommand(zClient, account); err != nil {
 			log.Fatal(err)
@@ -179,7 +173,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		account, _, err := getAccount()
+		account, err := getAccount(false)
 		if err != nil {
 			log.Fatal(err)
 		}

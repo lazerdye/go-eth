@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-
 	"github.com/lazerdye/go-eth/augur"
 	"github.com/lazerdye/go-eth/client"
 )
@@ -16,12 +14,9 @@ var (
 )
 
 func doMigrateFromLegacy(ctx context.Context, augur *augur.Client) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 
 	tx, err := augur.MigrateFromLegacyReputationToken(ctx, account)

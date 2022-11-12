@@ -98,8 +98,10 @@ func doClientStatus(ctx context.Context, c *client.Client) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("%+v\n", stat)
-	if stat != nil {
+	if stat == nil {
+		fmt.Printf("Client in sync\n")
+	} else {
+		fmt.Printf("%+v\n", stat)
 		return errors.New("Sync in progress")
 	}
 	return nil
@@ -150,12 +152,9 @@ func doClientGetTransaction(ctx context.Context, c *client.Client) error {
 }
 
 func doClientSubmitTransaction(ctx context.Context, c *client.Client) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 	txValue := *submitTransactionTrans
 	var tx types.Transaction
@@ -176,12 +175,9 @@ func doClientSubmitTransaction(ctx context.Context, c *client.Client) error {
 }
 
 func doClientResubmitTransaction(ctx context.Context, c *client.Client) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 
 	hash := common.HexToHash(*resubmitTransactionTransId)
@@ -219,12 +215,9 @@ func doClientResubmitTransaction(ctx context.Context, c *client.Client) error {
 }
 
 func doClientCancelTransaction(ctx context.Context, c *client.Client) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 
 	hash := common.HexToHash(*cancelTransactionTransId)

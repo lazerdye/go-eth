@@ -40,7 +40,7 @@ func etherscanCommands(ctx context.Context, commands []string) (bool, error) {
 }
 
 func doEtherscanList(ctx context.Context, c *etherscan.Client) error {
-	account, _, err := getAccount()
+	account, err := getAccount(false)
 	if err != nil {
 		return err
 	}

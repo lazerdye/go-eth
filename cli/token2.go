@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -42,7 +41,7 @@ func doTokenBalanceOf(ctx context.Context, reg *token2.Registry) error {
 	}
 	var address common.Address
 	if *clientToken2BalanceOfAddress == "" {
-		account, _, err := getAccount()
+		account, err := getAccount(false)
 		if err != nil {
 			return err
 		}
@@ -78,12 +77,9 @@ func doTokenApprove(ctx context.Context, reg *token2.Registry) error {
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 	contract := common.HexToAddress(*clientToken2ApproveContract)
 	amount := decimal.NewFromFloat(*clientToken2ApproveAmount)
@@ -100,12 +96,9 @@ func doTokenTransfer(ctx context.Context, reg *token2.Registry) error {
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 	address := common.HexToAddress(*clientToken2TransferAddress)
 	amount, err := decimal.NewFromString(*clientToken2TransferAmount)

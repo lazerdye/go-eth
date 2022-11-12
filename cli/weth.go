@@ -3,8 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-
 	"github.com/shopspring/decimal"
 
 	"github.com/lazerdye/go-eth/client"
@@ -30,12 +28,9 @@ func wethCommands(ctx context.Context, client *client.Client, commands []string)
 }
 
 func doWethDeposit(ctx context.Context, wethClient *weth.WethClient) error {
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet Locked")
 	}
 	amount, _ := decimal.NewFromString(*clientWethDepositAmount)
 	tx, err := wethClient.Deposit(ctx, account, amount)

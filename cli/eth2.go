@@ -4,8 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/pkg/errors"
-
 	"github.com/lazerdye/go-eth/client"
 	"github.com/lazerdye/go-eth/eth2"
 	"github.com/lazerdye/go-eth/token2"
@@ -32,13 +30,9 @@ func eth2Commands(ctx context.Context, client *client.Client, reg *token2.Regist
 }
 
 func doDeposit(ctx context.Context, eth2Client *eth2.Client) error {
-
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 
 	txs, err := eth2Client.Deposit(ctx, account, *clientEth2DepositDepositData)

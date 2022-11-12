@@ -188,12 +188,9 @@ func uniswapTokenToEthSwapInput(ctx context.Context, reg *token2.Registry, clien
 	tokensSold := decimal.NewFromFloat(*clientUniswap1TokenToEthSwapInputTokensSold)
 	minEth := decimal.NewFromFloat(*clientUniswap1TokenToEthSwapInputMinEth)
 
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 
 	deadline := int(time.Now().Unix() + deadlineOffset)

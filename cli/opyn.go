@@ -150,12 +150,9 @@ func opynOpenVault(ctx context.Context, opynClient *opyn.Client, reg *token2.Reg
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 	tx, err := otoken.OpenVault(ctx, account)
 	if err != nil {
@@ -170,12 +167,9 @@ func opynRedeemVaultBalance(ctx context.Context, opynClient *opyn.Client, reg *t
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 	tx, err := otoken.RedeemVaultBalance(ctx, account)
 	if err != nil {
@@ -314,12 +308,9 @@ func opynAddCollateralOption(ctx context.Context, opynClient *opyn.Client, reg *
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 
 	receiver := common.HexToAddress(*clientOpynAddCollateralReceiver)
@@ -353,12 +344,9 @@ func opynAddAndSellCollateralOption(ctx context.Context, opynClient *opyn.Client
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 
 	receiver := common.HexToAddress(*clientOpynAddAndSellCollateralReceiver)
@@ -384,7 +372,7 @@ func opynGetVault(ctx context.Context, opynClient *opyn.Client, reg *token2.Regi
 	if err != nil {
 		return err
 	}
-	account, _, err := getAccount()
+	account, err := getAccount(false)
 	if err != nil {
 		return err
 	}
@@ -447,12 +435,9 @@ func opynExercise(ctx context.Context, opynClient *opyn.Client, reg *token2.Regi
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet is locked")
 	}
 	amount, err := decimal.NewFromString(*clientOpynExerciseAmount)
 	if err != nil {

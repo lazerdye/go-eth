@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
-	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 	log "github.com/sirupsen/logrus"
 
@@ -187,12 +186,9 @@ func uniswapV2SwapETHForExactTokens(ctx context.Context, registry *token2.Regist
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 	deadline := int64(time.Now().Unix() + deadlineOffset)
 	tx, err := client.SwapETHForExactTokens(ctx, account, maxAmountIn, amountOut, []*token2.Client{token0, wethToken}, account.Address(), deadline)
@@ -208,12 +204,9 @@ func uniswapV2Claim(ctx context.Context, registry *token2.Registry, client *unis
 	if err != nil {
 		return err
 	}
-	account, unlocked, err := getAccount()
+	account, err := getAccount(true)
 	if err != nil {
 		return err
-	}
-	if !unlocked {
-		return errors.New("Wallet locked")
 	}
 	proofs := strings.Split(*clientUniswapv2ClaimMerkleProof, ",")
 	proofsByte := make([][32]byte, len(proofs))
