@@ -108,6 +108,12 @@ func doClientStatus(ctx context.Context, c *client.Client) error {
 	}
 	if stat == nil {
 		fmt.Printf("Client in sync\n")
+		latestHeader, err := c.HeaderByNumber(ctx, nil)
+		if err != nil {
+			return err
+		}
+		fmt.Printf("Latest txid: %s\n", latestHeader.TxHash)
+		fmt.Printf("Block Number: %d\n", latestHeader.Number.Int64())
 	} else {
 		fmt.Printf("%+v\n", stat)
 		return errors.New("Sync in progress")
